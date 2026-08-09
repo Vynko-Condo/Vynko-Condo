@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================
+   SUPABASE
+   ========================= */
+
+const SUPABASE_URL =
+  "https://dozqaznwcodjvuhsremx.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_wNjWBcOg-Y3PeFEAXJ-yLg_df8WzKob";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vynko Condomínio</title>
@@ -1282,6 +1301,57 @@ function gerarSenha(){
    ENCOMENDA
    ========================= */
 
+
+/* =========================
+   SALVAR ENCOMENDA NO SUPABASE
+   ========================= */
+
+async function salvarEncomendaOnline(encomenda){
+
+  try{
+
+    const registro = {
+      id: encomenda.id,
+      nome: encomenda.nome,
+      apto: encomenda.apto,
+      bloco: encomenda.bloco,
+      transportadora: encomenda.transportadora,
+      rastreio: encomenda.rastreio,
+      senha: encomenda.senha,
+      status: encomenda.status,
+      foto_url: encomenda.foto || null
+    };
+
+    const { error } =
+      await supabaseClient
+        .from("encomendas")
+        .upsert(
+          registro,
+          { onConflict: "id" }
+        );
+
+    if(error){
+      console.error(
+        "Erro ao salvar encomenda no Supabase:",
+        error
+      );
+
+      return false;
+    }
+
+    return true;
+
+  }catch(erro){
+
+    console.error(
+      "Erro de conexão com Supabase:",
+      erro
+    );
+
+    return false;
+  }
+}
+
 function salvarEncomenda(){
 
   const nome =
@@ -2381,6 +2451,117 @@ function atualizarTudo(){
   atualizarRelatorios();
 }
 
+
+/* =========================
+   CARREGAR ENCOMENDAS ONLINE
+   ========================= */
+
+async function carregarEncomendasOnline(){
+
+  if(!navigator.onLine){
+    return;
+  }
+
+  try{
+
+    const { data, error } =
+      await supabaseClient
+        .from("encomendas")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+    if(error){
+      console.warn(
+        "Supabase indisponível para leitura:",
+        error.message
+      );
+      return;
+    }
+
+    if(!Array.isArray(data)){
+      return;
+    }
+
+    /*
+     * Mantém dados locais que ainda não existem online.
+     * Os registros online passam a complementar a lista local.
+     */
+    const porId = new Map();
+
+    encomendas.forEach(e => {
+      porId.set(String(e.id), e);
+    });
+
+    data.forEach(e => {
+
+      const existente =
+        porId.get(String(e.id));
+
+      const convertido = {
+        id: e.id,
+        codigoPublico:
+          existente?.codigoPublico ||
+          ("EN-" + e.id),
+        data:
+          existente?.data ||
+          (e.created_at
+            ? new Date(e.created_at)
+                .toLocaleDateString("pt-BR")
+            : ""),
+        hora:
+          existente?.hora ||
+          (e.created_at
+            ? new Date(e.created_at)
+                .toLocaleTimeString(
+                  "pt-BR",
+                  {
+                    hour:"2-digit",
+                    minute:"2-digit"
+                  }
+                )
+            : ""),
+        nome: e.nome || "",
+        apto: e.apto || "",
+        bloco: e.bloco || "",
+        transportadora: e.transportadora || "",
+        rastreio: e.rastreio || "",
+        senha: e.senha || "",
+        status: e.status || "Aguardando",
+        retirada:
+          existente?.retirada ||
+          null,
+        foto:
+          e.foto_url ||
+          existente?.foto ||
+          ""
+      };
+
+      porId.set(
+        String(e.id),
+        convertido
+      );
+    });
+
+    encomendas =
+      Array.from(porId.values())
+        .sort((a,b) => Number(b.id) - Number(a.id));
+
+    localStorage.setItem(
+      "vynko_encomendas",
+      JSON.stringify(encomendas)
+    );
+
+    atualizarTudo();
+
+  }catch(erro){
+
+    console.warn(
+      "Não foi possível sincronizar agora:",
+      erro
+    );
+  }
+}
+
 /* =========================
    INICIALIZAÇÃO
    ========================= */
@@ -2408,6 +2589,9 @@ document.addEventListener(
     }
 
     atualizarTudo();
+
+    // Quando houver internet, tenta sincronizar com o banco online.
+    carregarEncomendasOnline();
 
     /*
      * Pré-visualização da foto
