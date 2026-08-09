@@ -831,22 +831,15 @@ function extrairRastreio(texto){
 
 async function lerEtiqueta(){
 
-  const campoFoto =
-    document.getElementById("eFoto");
+  const campoFoto = document.getElementById("eFoto");
 
-  if(
-    !campoFoto ||
-    !campoFoto.files ||
-    !campoFoto.files[0]
-  ){
+  if(!campoFoto || !campoFoto.files || !campoFoto.files[0]){
     return;
   }
 
-  const arquivo =
-    campoFoto.files[0];
+  const arquivo = campoFoto.files[0];
 
-  const status =
-    document.getElementById("leituraStatus");
+  const status = document.getElementById("leituraStatus");
 
   try{
 
@@ -854,290 +847,284 @@ async function lerEtiqueta(){
       status.innerText = "🔎 Lendo etiqueta...";
     }
 
-    const campoNome =
-      document.getElementById("eNome");
+    const campoNome = document.getElementById("eNome");
+    const campoApto = document.getElementById("eApto");
+    const campoBloco = document.getElementById("eBloco");
+    const campoRastreio = document.getElementById("eRastreio");
+    const campoTransportadora = document.getElementById("eTransportadora");
 
-    const campoApto =
-      document.getElementById("eApto");
-
-    const campoBloco =
-      document.getElementById("eBloco");
-
-    const campoRastreio =
-      document.getElementById("eRastreio");
-
-    const campoTransportadora =
-      document.getElementById("eTransportadora");
-
-    const worker =
-      await carregarOCR();
-
-    const resultado =
-      await worker.recognize(arquivo);
-
-    const texto =
-      (resultado.data.text || "").trim();
+    const worker = await carregarOCR();
+    const resultado = await worker.recognize(arquivo);
+    const texto = (resultado.data.text || "").trim();
 
     console.log("TEXTO LIDO DA ETIQUETA:");
     console.log(texto);
 
     if(!texto){
-
-      if(status){
-        status.innerText =
-          "⚠️ Não foi possível ler o texto da etiqueta.";
-      }
-
-      alert(
-        "Não foi possível identificar o texto da etiqueta."
-      );
-
+      if(status) status.innerText = "❌ Não foi possível ler a etiqueta.";
+      alert("Não foi possível identificar o texto da etiqueta.");
       return;
     }
 
+    const textoNormalizado = texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .toUpperCase();
+
     /* =========================
-       RASTREIO
+       CÓDIGO DE RASTREIO
        ========================= */
 
-    const rastreio =
-      extrairRastreio(texto);
+    let rastreio = "";
 
-    if(
-      rastreio &&
-      campoRastreio
-    ){
-      campoRastreio.value =
-        rastreio;
+    const padroesRastreio = [
+      /\b[A-Z]{2}\d{8,15}BR\b/gi,
+      /\b[A-Z]{2}\d{8,18}\b/gi,
+      /\b[A-Z]{2,5}\d{6,18}\b/gi,
+      /\b\d{10,20}\b/g,
+      /\b[A-Z0-9]{10,25}\b/gi
+    ];
+
+    for(const padrao of padroesRastreio){
+
+      const encontrados = texto.match(padrao);
+
+      if(encontrados && encontrados.length){
+
+        rastreio = encontrados
+          .map(x => x.trim())
+          .sort((a,b) => b.length - a.length)[0];
+
+        if(rastreio) break;
+      }
+    }
+
+    if(rastreio && campoRastreio){
+      campoRastreio.value = rastreio;
     }
 
     /* =========================
        TRANSPORTADORA
        ========================= */
 
-    const transportadora =
-      detectarTransportadora(
-        texto,
-        rastreio
-      );
+    if(campoTransportadora){
 
-    if(
-      transportadora &&
-      campoTransportadora
-    ){
+      let transportadora = "";
 
-      campoTransportadora.value =
-        transportadora;
+      if(
+        textoNormalizado.includes("AMAZON") ||
+        textoNormalizado.includes("AMAZON LOGISTICS") ||
+        textoNormalizado.includes("AMZ") ||
+        (rastreio && /^TBA/i.test(rastreio))
+      ){
+        transportadora = "Amazon";
 
+      }else if(
+        textoNormalizado.includes("MERCADO LIVRE") ||
+        textoNormalizado.includes("MERCADOLIVRE") ||
+        textoNormalizado.includes("MELI")
+      ){
+        transportadora = "Mercado Livre";
+
+      }else if(
+        textoNormalizado.includes("CORREIOS") ||
+        textoNormalizado.includes("SEDEX") ||
+        textoNormalizado.includes("PAC") ||
+        (rastreio && /^[A-Z]{2}\d{9}BR$/i.test(rastreio))
+      ){
+        transportadora = "Correios";
+
+      }else if(textoNormalizado.includes("JADLOG")){
+        transportadora = "Jadlog";
+
+      }else if(textoNormalizado.includes("LOGGI")){
+        transportadora = "Loggi";
+
+      }else if(textoNormalizado.includes("SHOPEE")){
+        transportadora = "Shopee";
+
+      }else{
+        transportadora = "Outra";
+      }
+
+      campoTransportadora.value = transportadora;
     }
 
     /* =========================
        APARTAMENTO
        ========================= */
 
-    const aptos =
-      texto.match(
-        /\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi
-      );
+    const aptos = textoNormalizado.match(
+      /\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi
+    );
 
-    if(
-      aptos &&
-      aptos.length &&
-      campoApto
-    ){
+    if(aptos && aptos.length && campoApto){
 
-      const numero =
-        aptos[0].match(/\d{1,5}/);
+      const numero = aptos[0].match(/\d{1,5}/);
 
       if(numero){
-        campoApto.value =
-          numero[0];
+        campoApto.value = numero[0];
       }
     }
 
-    /*
-     * Se não encontrou "APTO",
-     * tenta encontrar um número de 3 ou 4 dígitos.
-     */
+    /* Se não encontrou "APTO", procura número de 3 ou 4 dígitos. */
+    if(campoApto && !campoApto.value){
 
-    if(
-      campoApto &&
-      !campoApto.value
-    ){
+      const numeros = textoNormalizado.match(/\b\d{3,4}\b/g);
 
-      const numeros =
-        texto.match(/\b\d{3,4}\b/g);
+      if(numeros && numeros.length){
 
-      if(
-        numeros &&
-        numeros.length
-      ){
-
-        const numeroApto =
-          numeros.find(n=>{
-
-            const nInt =
-              parseInt(n,10);
-
-            return (
-              nInt >= 101 &&
-              nInt <= 9999
-            );
-
-          });
+        const numeroApto = numeros.find(n => {
+          const nInt = parseInt(n,10);
+          return nInt >= 101 && nInt <= 9999;
+        });
 
         if(numeroApto){
-          campoApto.value =
-            numeroApto;
+          campoApto.value = numeroApto;
         }
       }
     }
 
     /* =========================
-       BLOCO
+       BLOCO / TORRE
+       1 = NATURE
+       2 = BOTANIQUE
+       3 = JARDIN
        ========================= */
 
-    const blocos =
-      texto.match(
-        /\b(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z0-9]+)\b/gi
+    const mapaBlocos = {
+      "1":"NATURE",
+      "2":"BOTANIQUE",
+      "3":"JARDIN"
+    };
+
+    let blocoDetectado = "";
+
+    // Primeiro: nomes oficiais dos blocos.
+    if(/\bNATURE\b/i.test(textoNormalizado)){
+      blocoDetectado = "NATURE";
+
+    }else if(/\bBOTANIQUE\b/i.test(textoNormalizado)){
+      blocoDetectado = "BOTANIQUE";
+
+    }else if(/\bJARDIN\b/i.test(textoNormalizado)){
+      blocoDetectado = "JARDIN";
+    }
+
+    // Segundo: "Bloco 1", "Bloco 2", "Bloco 3".
+    if(!blocoDetectado){
+
+      const blocoNumerico = textoNormalizado.match(
+        /\b(?:BLOCO|BL|TORRE)[\s.:#-]*([123])\b/i
       );
 
-    if(
-      blocos &&
-      blocos.length &&
-      campoBloco
-    ){
-
-      const bloco =
-        blocos[0].match(
-          /(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z0-9]+)/i
-        );
-
-      if(bloco){
-
-        campoBloco.value =
-          bloco[1].toUpperCase();
-
+      if(blocoNumerico){
+        blocoDetectado = mapaBlocos[blocoNumerico[1]];
       }
     }
 
+    // Terceiro: algumas etiquetas trazem somente 1, 2 ou 3
+    // em uma linha própria.
+    if(!blocoDetectado){
+
+      const linhas = textoNormalizado
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(Boolean);
+
+      const linhaBloco = linhas.find(l => /^[123]$/.test(l));
+
+      if(linhaBloco){
+        blocoDetectado = mapaBlocos[linhaBloco];
+      }
+    }
+
+    if(blocoDetectado && campoBloco){
+      campoBloco.value = blocoDetectado;
+    }
+
     /* =========================
-       MORADOR
+       IDENTIFICA MORADOR
        ========================= */
 
     const moradoresCadastrados =
-      JSON.parse(
-        localStorage.getItem("vynko_moradores")
-      ) || [];
+      JSON.parse(localStorage.getItem("vynko_moradores")) || [];
 
-    if(
-      moradoresCadastrados.length &&
-      campoNome
-    ){
-
-      const textoBusca =
-        normalizarTexto(texto);
+    if(moradoresCadastrados.length && campoNome){
 
       let encontrado = null;
 
-      /*
-       * Primeiro tenta pelo apartamento.
-       */
+      // Primeiro tenta apartamento + bloco.
+      if(campoApto && campoApto.value){
 
-      if(
-        campoApto &&
-        campoApto.value
-      ){
+        const aptoBusca = String(campoApto.value).trim();
 
-        encontrado =
-          moradoresCadastrados.find(m=>{
+        encontrado = moradoresCadastrados.find(m => {
 
-            const aptoMorador =
-              String(
-                m.apto ||
-                m.apartamento ||
-                ""
-              ).trim();
+          const mesmoApto =
+            String(m.apto || m.apartamento || "").trim() === aptoBusca;
 
-            return (
-              aptoMorador ===
-              String(
-                campoApto.value
-              ).trim()
-            );
+          if(!mesmoApto) return false;
 
-          });
+          if(!campoBloco.value) return true;
+
+          const blocoMorador = String(m.bloco || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .toUpperCase()
+            .trim();
+
+          return blocoMorador === campoBloco.value.toUpperCase().trim();
+        });
+
+        // Se não houver correspondência pelo bloco,
+        // ainda tenta pelo apartamento.
+        if(!encontrado){
+
+          encontrado = moradoresCadastrados.find(m =>
+            String(m.apto || m.apartamento || "").trim() === aptoBusca
+          );
+        }
       }
 
-      /*
-       * Depois tenta pelo nome completo.
-       */
-
+      // Depois tenta pelo nome completo.
       if(!encontrado){
 
-        encontrado =
-          moradoresCadastrados.find(m=>{
+        encontrado = moradoresCadastrados.find(m => {
 
-            const nomeMorador =
-              normalizarTexto(
-                m.nome ||
-                m.name ||
-                ""
-              );
+          const nomeMorador = String(m.nome || m.name || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .toUpperCase()
+            .trim();
 
-            return (
-              nomeMorador &&
-              textoBusca.includes(
-                nomeMorador
-              )
-            );
-
-          });
+          return nomeMorador &&
+            textoNormalizado.includes(nomeMorador);
+        });
       }
 
-      /*
-       * Por último tenta comparar partes
-       * do nome, útil quando o OCR erra
-       * uma parte pequena da etiqueta.
-       */
-
+      // Por fim, tenta por partes do nome.
       if(!encontrado){
 
-        encontrado =
-          moradoresCadastrados.find(m=>{
+        encontrado = moradoresCadastrados.find(m => {
 
-            const nomeMorador =
-              normalizarTexto(
-                m.nome ||
-                m.name ||
-                ""
-              );
+          const nomeMorador = String(m.nome || m.name || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .toUpperCase();
 
-            if(!nomeMorador) return false;
+          const partes = nomeMorador
+            .split(/\s+/)
+            .filter(p => p.length >= 3);
 
-            const partes =
-              nomeMorador
-                .split(/\s+/)
-                .filter(
-                  p=>p.length >= 3
-                );
+          if(partes.length < 2) return false;
 
-            const acertos =
-              partes.filter(
-                parte =>
-                  textoBusca.includes(
-                    parte
-                  )
-              );
+          const acertos = partes.filter(parte =>
+            textoNormalizado.includes(parte)
+          );
 
-            return (
-              acertos.length >= 2 ||
-              (
-                partes.length === 1 &&
-                acertos.length === 1
-              )
-            );
-
-          });
+          return acertos.length >= 2;
+        });
       }
 
       if(encontrado){
@@ -1149,50 +1136,41 @@ async function lerEtiqueta(){
 
         if(
           campoApto &&
-          (
-            encontrado.apto ||
-            encontrado.apartamento
-          )
+          encontrado.apto &&
+          !campoApto.value
         ){
-
-          campoApto.value =
-            encontrado.apto ||
-            encontrado.apartamento;
-
+          campoApto.value = encontrado.apto;
         }
 
+        // Não sobrescreve um bloco que foi lido corretamente da etiqueta.
         if(
           campoBloco &&
-          encontrado.bloco
+          encontrado.bloco &&
+          !campoBloco.value
         ){
-
-          campoBloco.value =
-            encontrado.bloco;
-
+          campoBloco.value = encontrado.bloco;
         }
       }
     }
 
+    if(status){
+      status.innerText = "✅ Etiqueta lida. Confira os dados antes de registrar.";
+    }
+
     console.log(
       "Rastreio:",
-      campoRastreio
-        ? campoRastreio.value
-        : ""
+      campoRastreio ? campoRastreio.value : ""
     );
 
     console.log(
       "Transportadora:",
-      campoTransportadora
-        ? campoTransportadora.value
-        : ""
+      campoTransportadora ? campoTransportadora.value : ""
     );
 
-    if(status){
-
-      status.innerText =
-        "✅ Etiqueta lida. Confira os dados antes de registrar.";
-
-    }
+    console.log(
+      "Bloco:",
+      campoBloco ? campoBloco.value : ""
+    );
 
     alert(
       "Etiqueta lida! Confira nome, apartamento, bloco, transportadora e código de rastreio antes de registrar."
@@ -1200,14 +1178,10 @@ async function lerEtiqueta(){
 
   }catch(erro){
 
-    console.error(
-      "Erro no OCR:",
-      erro
-    );
+    console.error("Erro no OCR:",erro);
 
     if(status){
-      status.innerText =
-        "⚠️ Erro na leitura. Confira os dados manualmente.";
+      status.innerText = "❌ Não foi possível ler automaticamente a etiqueta.";
     }
 
     alert(
@@ -1215,10 +1189,6 @@ async function lerEtiqueta(){
     );
   }
 }
-
-/* =========================
-   NAVEGAÇÃO
-   ========================= */
 
 function showPage(id,btn){
 
