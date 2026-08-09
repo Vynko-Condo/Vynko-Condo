@@ -747,6 +747,23 @@ Salvar configurações
 <label>Código de rastreio</label>
 <input id="eRastreio" placeholder="Opcional">
 </div>
+  
+<div class="form-group">
+ <label>Foto da encomenda</label>
+
+ <input
+  type="file"
+  id="eFoto"
+  accept="image/*"
+  capture="environment"
+  >
+
+  <small>
+    Tire uma foto da etiqueta da encomenda.
+  </small>
+
+  <div id="previewFoto" style="margin-top:10px;"></div>
+</div>
 
 <div class="form-actions">
 
@@ -1382,7 +1399,37 @@ atualizarTudo();
 
 }
 );
+/* FOTO DA ENCOMENDA - PREVIA */
+document.addEventListener("DOMContentLoaded", function(){
 
+  const campoFoto = document.getElementById("eFoto");
+  const previewFoto = document.getElementById("previewFoto");
+
+  if(campoFoto && previewFoto){
+
+    campoFoto.addEventListener("change", function(){
+
+      previewFoto.innerHTML = "";
+
+      const arquivo = this.files[0];
+
+      if(!arquivo) return;
+
+      const imagem = document.createElement("img");
+
+      imagem.src = URL.createObjectURL(arquivo);
+      imagem.style.maxWidth = "100%";
+      imagem.style.maxHeight = "250px";
+      imagem.style.borderRadius = "10px";
+      imagem.style.marginTop = "10px";
+
+      previewFoto.appendChild(imagem);
+
+    });
+
+  }
+
+});
 </script>
 
 </body>
