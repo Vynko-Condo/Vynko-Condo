@@ -18,9 +18,7 @@ body{
   color:#263238;
 }
 
-.app{
-  min-height:100vh;
-}
+.app{min-height:100vh;}
 
 header{
   background:#0b2528;
@@ -34,14 +32,8 @@ header{
   z-index:10;
 }
 
-.logo{
-  font-size:23px;
-  font-weight:bold;
-}
-
-.logo span{
-  color:#20bfa9;
-}
+.logo{font-size:23px;font-weight:bold;}
+.logo span{color:#20bfa9;}
 
 .portaria{
   background:#20bfa9;
@@ -51,10 +43,7 @@ header{
   font-weight:bold;
 }
 
-.layout{
-  display:flex;
-  min-height:calc(100vh - 64px);
-}
+.layout{display:flex;min-height:calc(100vh - 64px);}
 
 .sidebar{
   width:230px;
@@ -63,11 +52,7 @@ header{
   padding:18px 12px;
 }
 
-.menu{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
+.menu{display:flex;flex-direction:column;gap:7px;}
 
 .menu button{
   border:0;
@@ -92,23 +77,11 @@ header{
   max-width:1400px;
 }
 
-.page{
-  display:none;
-}
+.page{display:none;}
+.page.active{display:block;}
 
-.page.active{
-  display:block;
-}
-
-h1{
-  margin-bottom:6px;
-  font-size:26px;
-}
-
-.subtitle{
-  color:#718096;
-  margin-bottom:22px;
-}
+h1{margin-bottom:6px;font-size:26px;}
+.subtitle{color:#718096;margin-bottom:22px;}
 
 .cards{
   display:grid;
@@ -124,21 +97,9 @@ h1{
   box-shadow:0 3px 12px rgba(0,0,0,.07);
 }
 
-.card-title{
-  color:#718096;
-  font-size:13px;
-  margin-bottom:10px;
-}
-
-.card-number{
-  font-size:30px;
-  font-weight:bold;
-}
-
-.card-icon{
-  font-size:25px;
-  margin-bottom:12px;
-}
+.card-title{color:#718096;font-size:13px;margin-bottom:10px;}
+.card-number{font-size:30px;font-weight:bold;}
+.card-icon{font-size:25px;margin-bottom:12px;}
 
 .panel{
   background:white;
@@ -156,9 +117,7 @@ h1{
   margin-bottom:18px;
 }
 
-.panel-header h2{
-  font-size:18px;
-}
+.panel-header h2{font-size:18px;}
 
 button.primary{
   background:#0e8f83;
@@ -170,9 +129,7 @@ button.primary{
   font-weight:bold;
 }
 
-button.primary:hover{
-  background:#08766d;
-}
+button.primary:hover{background:#08766d;}
 
 button.secondary{
   background:#e8eeee;
@@ -191,11 +148,7 @@ button.secondary{
   margin-bottom:15px;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
+table{width:100%;border-collapse:collapse;}
 th,td{
   padding:13px 10px;
   border-bottom:1px solid #edf0f1;
@@ -203,10 +156,7 @@ th,td{
   font-size:13px;
 }
 
-th{
-  color:#66777a;
-  background:#f7f9f9;
-}
+th{color:#66777a;background:#f7f9f9;}
 
 .status{
   display:inline-block;
@@ -216,26 +166,11 @@ th{
   font-weight:bold;
 }
 
-.status.pending{
-  background:#fff3cd;
-  color:#856404;
-}
+.status.pending{background:#fff3cd;color:#856404;}
+.status.done{background:#d1fae5;color:#065f46;}
+.status.cancel{background:#fee2e2;color:#991b1b;}
 
-.status.done{
-  background:#d1fae5;
-  color:#065f46;
-}
-
-.status.cancel{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.empty{
-  padding:35px;
-  text-align:center;
-  color:#89969a;
-}
+.empty{padding:35px;text-align:center;color:#89969a;}
 
 .modal{
   display:none;
@@ -248,9 +183,7 @@ th{
   padding:20px;
 }
 
-.modal.show{
-  display:flex;
-}
+.modal.show{display:flex;}
 
 .modal-box{
   background:white;
@@ -262,13 +195,9 @@ th{
   overflow:auto;
 }
 
-.modal-box h2{
-  margin-bottom:20px;
-}
+.modal-box h2{margin-bottom:20px;}
 
-.form-group{
-  margin-bottom:15px;
-}
+.form-group{margin-bottom:15px;}
 
 .form-group label{
   display:block;
@@ -323,14 +252,8 @@ th{
   text-align:left;
 }
 
-.quick button:hover{
-  border-color:#0e8f83;
-}
-
-.quick-icon{
-  font-size:25px;
-  margin-bottom:10px;
-}
+.quick button:hover{border-color:#0e8f83;}
+.quick-icon{font-size:25px;margin-bottom:10px;}
 
 .report-grid{
   display:grid;
@@ -350,54 +273,28 @@ th{
   margin-top:8px;
 }
 
+.leitura-status{
+  margin-top:10px;
+  font-size:13px;
+  color:#0e776e;
+  font-weight:bold;
+}
+
 @media(max-width:850px){
-  .sidebar{
-    width:75px;
-  }
-
-  .menu button{
-    font-size:0;
-    text-align:center;
-  }
-
-  .menu button::first-letter{
-    font-size:22px;
-  }
-
-  .cards{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .quick{
-    grid-template-columns:1fr;
-  }
-
-  .report-grid{
-    grid-template-columns:1fr;
-  }
+  .sidebar{width:75px;}
+  .menu button{font-size:0;text-align:center;}
+  .menu button::first-letter{font-size:22px;}
+  .cards{grid-template-columns:repeat(2,1fr);}
+  .quick{grid-template-columns:1fr;}
+  .report-grid{grid-template-columns:1fr;}
 }
 
 @media(max-width:600px){
-  .main{
-    padding:15px;
-  }
-
-  .cards{
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-
-  .card{
-    padding:15px;
-  }
-
-  table{
-    min-width:650px;
-  }
-
-  .table-scroll{
-    overflow-x:auto;
-  }
+  .main{padding:15px;}
+  .cards{grid-template-columns:1fr 1fr;gap:10px;}
+  .card{padding:15px;}
+  table{min-width:650px;}
+  .table-scroll{overflow-x:auto;}
 }
 </style>
 </head>
@@ -414,38 +311,19 @@ th{
 <div class="layout">
 
 <aside class="sidebar">
-  <nav class="menu">
+<nav class="menu">
 
-    <button class="active" onclick="showPage('dashboard',this)">
-      🏠 Dashboard
-    </button>
+<button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
+<button onclick="showPage('encomendas',this)">📦 Encomendas</button>
+<button onclick="showPage('moradores',this)">👥 Moradores</button>
+<button onclick="showPage('retirada',this)">🔐 Retirada com senha</button>
+<button onclick="showPage('relatorios',this)">📊 Relatórios</button>
+<button onclick="showPage('configuracoes',this)">⚙️ Configurações</button>
 
-    <button onclick="showPage('encomendas',this)">
-      📦 Encomendas
-    </button>
-
-    <button onclick="showPage('moradores',this)">
-      👥 Moradores
-    </button>
-
-    <button onclick="showPage('retirada',this)">
-      🔐 Retirada com senha
-    </button>
-
-    <button onclick="showPage('relatorios',this)">
-      📊 Relatórios
-    </button>
-
-    <button onclick="showPage('configuracoes',this)">
-      ⚙️ Configurações
-    </button>
-
-  </nav>
+</nav>
 </aside>
 
 <main class="main">
-
-<!-- DASHBOARD -->
 
 <section id="dashboard" class="page active">
 
@@ -481,10 +359,7 @@ th{
 </div>
 
 <div class="panel">
-
-<div class="panel-header">
-<h2>Ações rápidas</h2>
-</div>
+<div class="panel-header"><h2>Ações rápidas</h2></div>
 
 <div class="quick">
 
@@ -517,9 +392,6 @@ th{
 
 </section>
 
-
-<!-- ENCOMENDAS -->
-
 <section id="encomendas" class="page">
 
 <div class="panel-header">
@@ -528,9 +400,7 @@ th{
 <p class="subtitle">Controle de todas as encomendas recebidas.</p>
 </div>
 
-<button class="primary" onclick="abrirModalEncomenda()">
-+ Nova encomenda
-</button>
+<button class="primary" onclick="abrirModalEncomenda()">+ Nova encomenda</button>
 </div>
 
 <div class="panel">
@@ -555,18 +425,12 @@ oninput="renderEncomendas()"
 <th>Senha</th>
 </tr>
 </thead>
-
 <tbody id="tabelaEncomendas"></tbody>
-
 </table>
 </div>
 
 </div>
-
 </section>
-
-
-<!-- MORADORES -->
 
 <section id="moradores" class="page">
 
@@ -576,9 +440,7 @@ oninput="renderEncomendas()"
 <p class="subtitle">Cadastro dos moradores do condomínio.</p>
 </div>
 
-<button class="primary" onclick="abrirModalMorador()">
-+ Novo morador
-</button>
+<button class="primary" onclick="abrirModalMorador()">+ Novo morador</button>
 </div>
 
 <div class="panel">
@@ -591,7 +453,6 @@ oninput="renderMoradores()"
 >
 
 <div class="table-scroll">
-
 <table>
 <thead>
 <tr>
@@ -601,19 +462,12 @@ oninput="renderMoradores()"
 <th>WhatsApp</th>
 </tr>
 </thead>
-
 <tbody id="tabelaMoradores"></tbody>
-
 </table>
-
 </div>
 
 </div>
-
 </section>
-
-
-<!-- RETIRADA -->
 
 <section id="retirada" class="page">
 
@@ -635,18 +489,11 @@ style="font-size:25px;text-align:center;letter-spacing:8px;"
 
 </div>
 
-<button class="primary" onclick="buscarSenha()">
-🔎 Consultar encomenda
-</button>
-
+<button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button>
 <div id="resultadoRetirada"></div>
 
 </div>
-
 </section>
-
-
-<!-- RELATÓRIOS -->
 
 <section id="relatorios" class="page">
 
@@ -671,11 +518,7 @@ Encomendas retiradas
 </div>
 
 </div>
-
 </section>
-
-
-<!-- CONFIGURAÇÕES -->
 
 <section id="configuracoes" class="page">
 
@@ -694,18 +537,14 @@ Encomendas retiradas
 <input value="Vynko Condomínio">
 </div>
 
-<button class="primary" onclick="salvarConfiguracoes()">
-Salvar configurações
-</button>
+<button class="primary" onclick="salvarConfiguracoes()">Salvar configurações</button>
 
 </div>
-
 </section>
 
 </main>
 </div>
 </div>
-
 
 <!-- MODAL ENCOMENDA -->
 
@@ -747,39 +586,34 @@ Salvar configurações
 <label>Código de rastreio</label>
 <input id="eRastreio" placeholder="Opcional">
 </div>
-  
+
 <div class="form-group">
- <label>Foto da encomenda</label>
+<label>Foto da encomenda</label>
 
- <input
-  type="file"
-  id="eFoto"
-  accept="image/*"
-  capture="environment"
-  >
+<input
+type="file"
+id="eFoto"
+accept="image/*"
+capture="environment"
+>
 
-  <small>
-    Tire uma foto da etiqueta da encomenda.
-  </small>
+<small>Tire uma foto da etiqueta da encomenda.</small>
 
-  <div id="previewFoto" style="margin-top:10px;"></div>
+<div id="previewFoto" style="margin-top:10px;"></div>
+<div id="leituraStatus" class="leitura-status"></div>
+
 </div>
 
 <div class="form-actions">
 
-<button class="secondary" onclick="fecharModal('modalEncomenda')">
-Cancelar
-</button>
+<button class="secondary" onclick="fecharModal('modalEncomenda')">Cancelar</button>
 
-<button class="primary" onclick="salvarEncomenda()">
-Registrar
-</button>
+<button class="primary" onclick="salvarEncomenda()">Registrar</button>
 
 </div>
 
 </div>
 </div>
-
 
 <!-- MODAL MORADOR -->
 
@@ -811,19 +645,14 @@ Registrar
 
 <div class="form-actions">
 
-<button class="secondary" onclick="fecharModal('modalMorador')">
-Cancelar
-</button>
+<button class="secondary" onclick="fecharModal('modalMorador')">Cancelar</button>
 
-<button class="primary" onclick="salvarMorador()">
-Cadastrar
-</button>
+<button class="primary" onclick="salvarMorador()">Cadastrar</button>
 
 </div>
 
 </div>
 </div>
-
 
 <script>
 
@@ -833,21 +662,30 @@ JSON.parse(localStorage.getItem("vynko_encomendas")) || [];
 let moradores =
 JSON.parse(localStorage.getItem("vynko_moradores")) || [];
 
-/* OCR DA ETIQUETA DA ENCOMENDA */
+/* =========================
+   OCR
+   ========================= */
 
 let ocrWorker = null;
 
-async function carregarOCR() {
-  if (ocrWorker) return ocrWorker;
+async function carregarOCR(){
 
-  if (typeof Tesseract === "undefined") {
+  if(ocrWorker) return ocrWorker;
+
+  if(typeof Tesseract === "undefined"){
+
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";
-    
-    await new Promise((resolve, reject) => {
+
+    script.src =
+      "https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";
+
+    await new Promise((resolve,reject)=>{
+
       script.onload = resolve;
       script.onerror = reject;
+
       document.head.appendChild(script);
+
     });
   }
 
@@ -856,278 +694,300 @@ async function carregarOCR() {
   return ocrWorker;
 }
 
-async function lerEtiqueta() {
+/* =========================
+   NORMALIZA TEXTO
+   ========================= */
 
-  const campoFoto = document.getElementById("eFoto");
+function normalizarTexto(texto){
 
-  if (!campoFoto || !campoFoto.files || !campoFoto.files[0]) {
+  return String(texto || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toUpperCase();
+}
+
+/* =========================
+   DETECTA TRANSPORTADORA
+   ========================= */
+
+function detectarTransportadora(texto,rastreio){
+
+  const t = normalizarTexto(texto);
+  const r = normalizarTexto(rastreio);
+
+  /*
+   * A ordem é importante.
+   * Primeiro verificamos marcas claramente escritas na etiqueta.
+   */
+
+  if(
+    t.includes("AMAZON") ||
+    t.includes("AMAZON LOGISTICS") ||
+    /\bTBA[A-Z0-9]+\b/.test(r) ||
+    /\bTBA[A-Z0-9]+\b/.test(t)
+  ){
+    return "Amazon";
+  }
+
+  if(
+    t.includes("MERCADO LIVRE") ||
+    t.includes("MERCADOLIVRE") ||
+    t.includes("MELI") ||
+    /\bML[A-Z0-9]+\b/.test(r)
+  ){
+    return "Mercado Livre";
+  }
+
+  if(
+    t.includes("CORREIOS") ||
+    t.includes("SEDEX") ||
+    t.includes("PAC") ||
+    /\b[A-Z]{2}\d{9}BR\b/.test(r)
+  ){
+    return "Correios";
+  }
+
+  if(t.includes("JADLOG")){
+    return "Jadlog";
+  }
+
+  if(t.includes("LOGGI")){
+    return "Loggi";
+  }
+
+  if(
+    t.includes("SHOPEE") ||
+    t.includes("SPX") ||
+    /\bSPX[A-Z0-9]+\b/.test(r)
+  ){
+    return "Shopee";
+  }
+
+  return "";
+}
+
+/* =========================
+   EXTRAI RASTREIO
+   ========================= */
+
+function extrairRastreio(texto){
+
+  const t = normalizarTexto(texto);
+
+  /*
+   * Padrões mais específicos primeiro.
+   * Isso evita que um número qualquer da etiqueta
+   * seja escolhido antes do código real.
+   */
+
+  const padroes = [
+
+    /\bTBA[A-Z0-9]{8,25}\b/g,
+
+    /\b[A-Z]{2}\d{9}BR\b/g,
+
+    /\bSPX[A-Z0-9]{8,25}\b/g,
+
+    /\bML[A-Z0-9]{8,25}\b/g,
+
+    /\b[A-Z]{2,5}\d{8,18}\b/g,
+
+    /\b\d{10,20}\b/g,
+
+    /\b[A-Z0-9]{10,25}\b/g
+
+  ];
+
+  for(const padrao of padroes){
+
+    const encontrados = t.match(padrao);
+
+    if(encontrados && encontrados.length){
+
+      /*
+       * Retira pontuação e escolhe o candidato
+       * mais longo, que normalmente é o rastreio.
+       */
+
+      const candidatos = encontrados
+        .map(x => x.replace(/[^A-Z0-9]/g,""))
+        .filter(x => x.length >= 8);
+
+      if(candidatos.length){
+
+        candidatos.sort((a,b)=>b.length-a.length);
+
+        return candidatos[0];
+      }
+    }
+  }
+
+  return "";
+}
+
+/* =========================
+   LER ETIQUETA
+   ========================= */
+
+async function lerEtiqueta(){
+
+  const campoFoto =
+    document.getElementById("eFoto");
+
+  if(
+    !campoFoto ||
+    !campoFoto.files ||
+    !campoFoto.files[0]
+  ){
     return;
   }
 
-  const arquivo = campoFoto.files[0];
+  const arquivo =
+    campoFoto.files[0];
 
-  try {
+  const status =
+    document.getElementById("leituraStatus");
 
-    const campoNome = document.getElementById("eNome");
-    const campoApto = document.getElementById("eApto");
-    const campoBloco = document.getElementById("eBloco");
-    const campoRastreio = document.getElementById("eRastreio");
+  try{
 
-    const worker = await carregarOCR();
+    if(status){
+      status.innerText = "🔎 Lendo etiqueta...";
+    }
 
-    const resultado = await worker.recognize(arquivo);
+    const campoNome =
+      document.getElementById("eNome");
 
-    const texto = resultado.data.text || "";
+    const campoApto =
+      document.getElementById("eApto");
+
+    const campoBloco =
+      document.getElementById("eBloco");
+
+    const campoRastreio =
+      document.getElementById("eRastreio");
+
+    const campoTransportadora =
+      document.getElementById("eTransportadora");
+
+    const worker =
+      await carregarOCR();
+
+    const resultado =
+      await worker.recognize(arquivo);
+
+    const texto =
+      (resultado.data.text || "").trim();
 
     console.log("TEXTO LIDO DA ETIQUETA:");
     console.log(texto);
 
-    /* Tenta localizar o código de rastreio */
-    const rastreios = texto.match(
-      /\b[A-Z]{2,5}\d{8,15}\b/gi
-    );
+    if(!texto){
 
-    if (rastreios && rastreios.length > 0 && campoRastreio) {
-      campoRastreio.value = rastreios[0];
-    }
-
-    /* Tenta localizar apartamento */
-    const aptos = texto.match(
-      /\b(?:apto|apartamento|ap\.?)\s*[:\-]?\s*(\d{2,5})\b/gi
-    );
-
-    if (aptos && aptos.length > 0 && campoApto) {
-      const numero = aptos[0].match(/\d{2,5}/);
-
-      if (numero) {
-        campoApto.value = numero[0];
-      }
-    }
-
-    /* Tenta localizar bloco */
-    const blocos = texto.match(
-      /\b(?:bloco|bl\.?)\s*[:\-]?\s*([A-Z0-9]+)\b/gi
-    );
-
-    if (blocos && blocos.length > 0 && campoBloco) {
-      const bloco = blocos[0].match(/[A-Z0-9]+$/i);
-
-      if (bloco) {
-        campoBloco.value = bloco[0];
-      }
-    }
-
-    /* Procura o nome entre os moradores cadastrados */
-    if (campoNome && moradores.length > 0) {
-
-      const textoNormalizado = texto
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-
-      let encontrado = null;
-
-      for (const morador of moradores) {
-
-        const nomeMorador = String(
-          morador.nome || morador.name || ""
-        );
-
-        if (!nomeMorador) continue;
-
-        const nomeNormalizado = nomeMorador
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "");
-
-        const partes = nomeNormalizado
-          .split(/\s+/)
-          .filter(p => p.length >= 3);
-
-        const acertos = partes.filter(
-          parte => textoNormalizado.includes(parte)
-        );
-
-        if (
-          acertos.length >= 2 ||
-          (partes.length === 1 && acertos.length === 1)
-        ) {
-          encontrado = morador;
-          break;
-        }
+      if(status){
+        status.innerText =
+          "⚠️ Não foi possível ler o texto da etiqueta.";
       }
 
-      if (encontrado) {
+      alert(
+        "Não foi possível identificar o texto da etiqueta."
+      );
 
-        campoNome.value =
-          encontrado.nome ||
-          encontrado.name ||
-          "";
-
-        if (
-          !campoApto.value &&
-          (encontrado.apto || encontrado.apartamento)
-        ) {
-          campoApto.value =
-            encontrado.apto ||
-            encontrado.apartamento ||
-            "";
-        }
-
-        if (
-          !campoBloco.value &&
-          encontrado.bloco
-        ) {
-          campoBloco.value = encontrado.bloco;
-        }
-      }
-    }
-async function lerEtiqueta() {
-  const campoFoto = document.getElementById("eFoto");
-
-  if (!campoFoto || !campoFoto.files || !campoFoto.files[0]) {
-    return;
-  }
-
-  const arquivo = campoFoto.files[0];
-
-  try {
-    const campoNome = document.getElementById("eNome");
-    const campoApto = document.getElementById("eApto");
-    const campoBloco = document.getElementById("eBloco");
-    const campoRastreio = document.getElementById("eRastreio");
-    const campoTransportadora = document.getElementById("eTransportadora");
-
-    const worker = await carregarOCR();
-
-    const resultado = await worker.recognize(arquivo);
-    const texto = (resultado.data.text || "").trim();
-
-    console.log("TEXTO LIDO DA ETIQUETA:");
-    console.log(texto);
-
-    if (!texto) {
-      alert("Não foi possível identificar o texto da etiqueta.");
       return;
     }
 
     /* =========================
-       CÓDIGO DE RASTREIO
+       RASTREIO
        ========================= */
 
-    const linhas = texto
-      .split(/\r?\n/)
-      .map(l => l.trim())
-      .filter(Boolean);
+    const rastreio =
+      extrairRastreio(texto);
 
-    let rastreio = "";
-
-    const padroesRastreio = [
-      /\b[A-Z]{2}\d{8,15}\b/gi,
-      /\b[A-Z]{2,5}\d{6,18}\b/gi,
-      /\b\d{10,20}\b/g,
-      /\b[A-Z0-9]{10,25}\b/gi
-    ];
-
-    for (const padrao of padroesRastreio) {
-      const encontrados = texto.match(padrao);
-
-      if (encontrados && encontrados.length) {
-        rastreio = encontrados
-          .map(x => x.trim())
-          .sort((a, b) => b.length - a.length)[0];
-
-        if (rastreio) break;
-      }
-    }
-
-    if (rastreio && campoRastreio) {
-      campoRastreio.value = rastreio;
+    if(
+      rastreio &&
+      campoRastreio
+    ){
+      campoRastreio.value =
+        rastreio;
     }
 
     /* =========================
        TRANSPORTADORA
        ========================= */
 
-    if (campoTransportadora) {
-      const textoNormalizado = texto
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
+    const transportadora =
+      detectarTransportadora(
+        texto,
+        rastreio
+      );
 
-      let transportadora = "";
+    if(
+      transportadora &&
+      campoTransportadora
+    ){
 
-      if (
-        textoNormalizado.includes("AMAZON") ||
-        textoNormalizado.includes("AMAZON LOGISTICS") ||
-        textoNormalizado.includes("AMZ")
-      ) {
-        transportadora = "Amazon";
+      campoTransportadora.value =
+        transportadora;
 
-      } else if (
-        textoNormalizado.includes("MERCADO LIVRE") ||
-        textoNormalizado.includes("MERCADOLIVRE") ||
-        textoNormalizado.includes("MELI")
-      ) {
-        transportadora = "Mercado Livre";
-
-      } else if (
-        textoNormalizado.includes("CORREIOS") ||
-        textoNormalizado.includes("SEDEX") ||
-        textoNormalizado.includes("PAC")
-      ) {
-        transportadora = "Correios";
-
-      } else if (
-        textoNormalizado.includes("JADLOG")
-      ) {
-        transportadora = "Jadlog";
-
-      } else if (
-        textoNormalizado.includes("LOGGI")
-      ) {
-        transportadora = "Loggi";
-
-      } else if (
-        textoNormalizado.includes("SHOPEE")
-      ) {
-        transportadora = "Shopee";
-
-      } else {
-        transportadora = "Outra";
-      }
-
-      campoTransportadora.value = transportadora;
     }
 
     /* =========================
        APARTAMENTO
        ========================= */
 
-    const aptos = texto.match(
-      /\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi
-    );
+    const aptos =
+      texto.match(
+        /\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi
+      );
 
-    if (aptos && aptos.length && campoApto) {
-      const numero = aptos[0].match(/\d{1,5}/);
+    if(
+      aptos &&
+      aptos.length &&
+      campoApto
+    ){
 
-      if (numero) {
-        campoApto.value = numero[0];
+      const numero =
+        aptos[0].match(/\d{1,5}/);
+
+      if(numero){
+        campoApto.value =
+          numero[0];
       }
     }
 
-    /* Caso não encontre "APTO", procura número de 3 ou 4 dígitos */
-    if (campoApto && !campoApto.value) {
-      const numeros = texto.match(/\b\d{3,4}\b/g);
+    /*
+     * Se não encontrou "APTO",
+     * tenta encontrar um número de 3 ou 4 dígitos.
+     */
 
-      if (numeros && numeros.length) {
-        const numeroApto = numeros.find(n => {
-          const nInt = parseInt(n, 10);
-          return nInt >= 101 && nInt <= 9999;
-        });
+    if(
+      campoApto &&
+      !campoApto.value
+    ){
 
-        if (numeroApto) {
-          campoApto.value = numeroApto;
+      const numeros =
+        texto.match(/\b\d{3,4}\b/g);
+
+      if(
+        numeros &&
+        numeros.length
+      ){
+
+        const numeroApto =
+          numeros.find(n=>{
+
+            const nInt =
+              parseInt(n,10);
+
+            return (
+              nInt >= 101 &&
+              nInt <= 9999
+            );
+
+          });
+
+        if(numeroApto){
+          campoApto.value =
+            numeroApto;
         }
       }
     }
@@ -1136,686 +996,1149 @@ async function lerEtiqueta() {
        BLOCO
        ========================= */
 
-    const blocos = texto.match(
-      /\b(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z])\b/gi
-    );
-
-    if (blocos && blocos.length && campoBloco) {
-      const bloco = blocos[0].match(
-        /(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z])/i
+    const blocos =
+      texto.match(
+        /\b(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z0-9]+)\b/gi
       );
 
-      if (bloco) {
-        campoBloco.value = bloco[1].toUpperCase();
+    if(
+      blocos &&
+      blocos.length &&
+      campoBloco
+    ){
+
+      const bloco =
+        blocos[0].match(
+          /(?:BLOCO|BL|TORRE)[\s.:#-]*([A-Z0-9]+)/i
+        );
+
+      if(bloco){
+
+        campoBloco.value =
+          bloco[1].toUpperCase();
+
       }
     }
 
     /* =========================
-       IDENTIFICA MORADOR
+       MORADOR
        ========================= */
 
     const moradoresCadastrados =
-      JSON.parse(localStorage.getItem("vynko_moradores")) || [];
+      JSON.parse(
+        localStorage.getItem("vynko_moradores")
+      ) || [];
 
-    if (moradoresCadastrados.length && campoNome) {
+    if(
+      moradoresCadastrados.length &&
+      campoNome
+    ){
 
-      const textoBusca = texto
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toUpperCase();
+      const textoBusca =
+        normalizarTexto(texto);
 
       let encontrado = null;
 
-      /* Primeiro tenta pelo apartamento */
-      if (campoApto && campoApto.value) {
-        encontrado = moradoresCadastrados.find(m => {
-          return String(m.apto || "").trim() ===
-            String(campoApto.value).trim();
-        });
+      /*
+       * Primeiro tenta pelo apartamento.
+       */
+
+      if(
+        campoApto &&
+        campoApto.value
+      ){
+
+        encontrado =
+          moradoresCadastrados.find(m=>{
+
+            const aptoMorador =
+              String(
+                m.apto ||
+                m.apartamento ||
+                ""
+              ).trim();
+
+            return (
+              aptoMorador ===
+              String(
+                campoApto.value
+              ).trim()
+            );
+
+          });
       }
 
-      /* Depois tenta pelo nome */
-      if (!encontrado) {
-        encontrado = moradoresCadastrados.find(m => {
-          const nomeMorador = String(m.nome || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toUpperCase();
+      /*
+       * Depois tenta pelo nome completo.
+       */
 
-          return nomeMorador &&
-            textoBusca.includes(nomeMorador);
-        });
+      if(!encontrado){
+
+        encontrado =
+          moradoresCadastrados.find(m=>{
+
+            const nomeMorador =
+              normalizarTexto(
+                m.nome ||
+                m.name ||
+                ""
+              );
+
+            return (
+              nomeMorador &&
+              textoBusca.includes(
+                nomeMorador
+              )
+            );
+
+          });
       }
 
-      if (encontrado) {
-        campoNome.value = encontrado.nome || "";
+      /*
+       * Por último tenta comparar partes
+       * do nome, útil quando o OCR erra
+       * uma parte pequena da etiqueta.
+       */
 
-        if (campoApto && encontrado.apto) {
-          campoApto.value = encontrado.apto;
+      if(!encontrado){
+
+        encontrado =
+          moradoresCadastrados.find(m=>{
+
+            const nomeMorador =
+              normalizarTexto(
+                m.nome ||
+                m.name ||
+                ""
+              );
+
+            if(!nomeMorador) return false;
+
+            const partes =
+              nomeMorador
+                .split(/\s+/)
+                .filter(
+                  p=>p.length >= 3
+                );
+
+            const acertos =
+              partes.filter(
+                parte =>
+                  textoBusca.includes(
+                    parte
+                  )
+              );
+
+            return (
+              acertos.length >= 2 ||
+              (
+                partes.length === 1 &&
+                acertos.length === 1
+              )
+            );
+
+          });
+      }
+
+      if(encontrado){
+
+        campoNome.value =
+          encontrado.nome ||
+          encontrado.name ||
+          "";
+
+        if(
+          campoApto &&
+          (
+            encontrado.apto ||
+            encontrado.apartamento
+          )
+        ){
+
+          campoApto.value =
+            encontrado.apto ||
+            encontrado.apartamento;
+
         }
 
-        if (campoBloco && encontrado.bloco) {
-          campoBloco.value = encontrado.bloco;
+        if(
+          campoBloco &&
+          encontrado.bloco
+        ){
+
+          campoBloco.value =
+            encontrado.bloco;
+
         }
       }
     }
 
-    console.log("Rastreio:", campoRastreio ? campoRastreio.value : "");
+    console.log(
+      "Rastreio:",
+      campoRastreio
+        ? campoRastreio.value
+        : ""
+    );
+
     console.log(
       "Transportadora:",
-      campoTransportadora ? campoTransportadora.value : ""
+      campoTransportadora
+        ? campoTransportadora.value
+        : ""
     );
+
+    if(status){
+
+      status.innerText =
+        "✅ Etiqueta lida. Confira os dados antes de registrar.";
+
+    }
 
     alert(
       "Etiqueta lida! Confira nome, apartamento, bloco, transportadora e código de rastreio antes de registrar."
     );
 
-  } catch (erro) {
+  }catch(erro){
 
-    console.error("Erro no OCR:", erro);
+    console.error(
+      "Erro no OCR:",
+      erro
+    );
+
+    if(status){
+      status.innerText =
+        "⚠️ Erro na leitura. Confira os dados manualmente.";
+    }
 
     alert(
       "Não foi possível ler automaticamente a etiqueta. Confira os dados manualmente."
     );
   }
 }
-/* NAVEGAÇÃO */
+
+/* =========================
+   NAVEGAÇÃO
+   ========================= */
 
 function showPage(id,btn){
 
-document.querySelectorAll(".page")
-.forEach(p=>p.classList.remove("active"));
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      p=>p.classList.remove("active")
+    );
 
-document.getElementById(id)
-.classList.add("active");
+  const pagina =
+    document.getElementById(id);
 
-document.querySelectorAll(".menu button")
-.forEach(b=>b.classList.remove("active"));
+  if(pagina){
+    pagina.classList.add("active");
+  }
 
-if(btn) btn.classList.add("active");
+  document
+    .querySelectorAll(".menu button")
+    .forEach(
+      b=>b.classList.remove("active")
+    );
 
-atualizarTudo();
+  if(btn){
+    btn.classList.add("active");
+  }
+
+  atualizarTudo();
 }
 
-
-/* MODAIS */
+/* =========================
+   MODAIS
+   ========================= */
 
 function abrirModalEncomenda(){
-document.getElementById("modalEncomenda")
-.classList.add("show");
+
+  document
+    .getElementById("modalEncomenda")
+    .classList.add("show");
+
 }
 
 function abrirModalMorador(){
-document.getElementById("modalMorador")
-.classList.add("show");
+
+  document
+    .getElementById("modalMorador")
+    .classList.add("show");
+
 }
 
 function fecharModal(id){
-document.getElementById(id)
-.classList.remove("show");
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.remove("show");
+  }
+
 }
 
-
-/* SENHA */
+/* =========================
+   SENHA
+   ========================= */
 
 function gerarSenha(){
 
-let senha="";
+  let senha = "";
 
-do{
+  do{
 
-senha=Math.floor(1000+Math.random()*9000)
-.toString();
+    senha =
+      Math.floor(
+        1000 +
+        Math.random()*9000
+      ).toString();
 
-}while(
-encomendas.some(e=>e.senha===senha && e.status==="Aguardando")
-);
+  }while(
+    encomendas.some(
+      e =>
+        e.senha === senha &&
+        e.status === "Aguardando"
+    )
+  );
 
-return senha;
+  return senha;
 }
 
-
-/* ENCOMENDA */
+/* =========================
+   ENCOMENDA
+   ========================= */
 
 function salvarEncomenda(){
 
-let nome=document.getElementById("eNome").value.trim();
+  const nome =
+    document
+      .getElementById("eNome")
+      .value.trim();
 
-let apto=document.getElementById("eApto").value.trim();
+  const apto =
+    document
+      .getElementById("eApto")
+      .value.trim();
 
-let bloco=document.getElementById("eBloco").value.trim();
+  const bloco =
+    document
+      .getElementById("eBloco")
+      .value.trim();
 
-let transportadora=
-document.getElementById("eTransportadora").value;
+  const transportadora =
+    document
+      .getElementById("eTransportadora")
+      .value;
 
-let rastreio=
-document.getElementById("eRastreio").value.trim();
+  const rastreio =
+    document
+      .getElementById("eRastreio")
+      .value.trim();
 
-if(!nome || !apto){
+  if(!nome || !apto){
 
-alert("Informe pelo menos o nome e o apartamento.");
+    alert(
+      "Informe pelo menos o nome e o apartamento."
+    );
 
-return;
+    return;
+  }
+
+  const agora =
+    new Date();
+
+  const encomenda = {
+
+    id:Date.now(),
+
+    data:
+      agora.toLocaleDateString(
+        "pt-BR"
+      ),
+
+    hora:
+      agora.toLocaleTimeString(
+        "pt-BR",
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      ),
+
+    nome:nome,
+
+    apto:apto,
+
+    bloco:bloco,
+
+    transportadora:
+      transportadora,
+
+    rastreio:
+      rastreio,
+
+    senha:
+      gerarSenha(),
+
+    status:
+      "Aguardando",
+
+    retirada:null
+
+  };
+
+  encomendas.unshift(
+    encomenda
+  );
+
+  localStorage.setItem(
+    "vynko_encomendas",
+    JSON.stringify(encomendas)
+  );
+
+  document.getElementById("eNome").value="";
+  document.getElementById("eApto").value="";
+  document.getElementById("eBloco").value="";
+  document.getElementById("eRastreio").value="";
+
+  const foto =
+    document.getElementById("eFoto");
+
+  if(foto){
+    foto.value="";
+  }
+
+  const preview =
+    document.getElementById("previewFoto");
+
+  if(preview){
+    preview.innerHTML="";
+  }
+
+  const status =
+    document.getElementById("leituraStatus");
+
+  if(status){
+    status.innerText="";
+  }
+
+  /*
+   * Volta a transportadora para Amazon
+   * quando um novo cadastro é aberto.
+   */
+
+  const select =
+    document.getElementById(
+      "eTransportadora"
+    );
+
+  if(select){
+    select.value="Amazon";
+  }
+
+  fecharModal(
+    "modalEncomenda"
+  );
+
+  alert(
+    "Encomenda registrada!\n\nSenha de retirada: "+
+    encomenda.senha
+  );
+
+  atualizarTudo();
 }
 
-let agora=new Date();
-
-let encomenda={
-
-id:Date.now(),
-
-data:agora.toLocaleDateString("pt-BR"),
-
-hora:agora.toLocaleTimeString("pt-BR",{
-hour:"2-digit",
-minute:"2-digit"
-}),
-
-nome:nome,
-
-apto:apto,
-
-bloco:bloco,
-
-transportadora:transportadora,
-
-rastreio:rastreio,
-
-senha:gerarSenha(),
-
-status:"Aguardando",
-
-retirada:null
-
-};
-
-encomendas.unshift(encomenda);
-
-localStorage.setItem(
-"vynko_encomendas",
-JSON.stringify(encomendas)
-);
-
-document.getElementById("eNome").value="";
-document.getElementById("eApto").value="";
-document.getElementById("eBloco").value="";
-document.getElementById("eRastreio").value="";
-
-fecharModal("modalEncomenda");
-
-alert(
-"Encomenda registrada!\n\nSenha de retirada: "+
-encomenda.senha
-);
-
-atualizarTudo();
-
-}
-
-
-/* MORADOR */
+/* =========================
+   MORADOR
+   ========================= */
 
 function salvarMorador(){
 
-let nome=document.getElementById("mNome").value.trim();
+  const nome =
+    document
+      .getElementById("mNome")
+      .value.trim();
 
-let apto=document.getElementById("mApto").value.trim();
+  const apto =
+    document
+      .getElementById("mApto")
+      .value.trim();
 
-let bloco=document.getElementById("mBloco").value.trim();
+  const bloco =
+    document
+      .getElementById("mBloco")
+      .value.trim();
 
-let whatsapp=document.getElementById("mWhatsApp").value.trim();
+  const whatsapp =
+    document
+      .getElementById("mWhatsApp")
+      .value.trim();
 
-if(!nome || !apto){
+  if(!nome || !apto){
 
-alert("Informe o nome e o apartamento.");
+    alert(
+      "Informe o nome e o apartamento."
+    );
 
-return;
+    return;
+  }
+
+  moradores.push({
+
+    id:Date.now(),
+
+    nome:nome,
+
+    apto:apto,
+
+    bloco:bloco,
+
+    whatsapp:whatsapp
+
+  });
+
+  localStorage.setItem(
+    "vynko_moradores",
+    JSON.stringify(moradores)
+  );
+
+  document.getElementById("mNome").value="";
+  document.getElementById("mApto").value="";
+  document.getElementById("mBloco").value="";
+  document.getElementById("mWhatsApp").value="";
+
+  fecharModal(
+    "modalMorador"
+  );
+
+  alert(
+    "Morador cadastrado com sucesso!"
+  );
+
+  atualizarTudo();
 }
 
-moradores.push({
-
-id:Date.now(),
-
-nome:nome,
-
-apto:apto,
-
-bloco:bloco,
-
-whatsapp:whatsapp
-
-});
-
-localStorage.setItem(
-"vynko_moradores",
-JSON.stringify(moradores)
-);
-
-document.getElementById("mNome").value="";
-document.getElementById("mApto").value="";
-document.getElementById("mBloco").value="";
-document.getElementById("mWhatsApp").value="";
-
-fecharModal("modalMorador");
-
-alert("Morador cadastrado com sucesso!");
-
-atualizarTudo();
-
-}
-
-
-/* TABELA ENCOMENDAS */
+/* =========================
+   TABELA ENCOMENDAS
+   ========================= */
 
 function renderEncomendas(){
 
-let busca=
-(document.getElementById("buscaEncomenda")?.value || "")
-.toLowerCase();
+  const busca =
+    (
+      document
+        .getElementById("buscaEncomenda")
+        ?.value ||
+      ""
+    ).toLowerCase();
 
-let lista=encomendas.filter(e=>
+  const lista =
+    encomendas.filter(e=>
 
-e.nome.toLowerCase().includes(busca) ||
+      String(e.nome || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-e.apto.toLowerCase().includes(busca) ||
+      String(e.apto || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-e.bloco.toLowerCase().includes(busca) ||
+      String(e.bloco || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-e.transportadora.toLowerCase().includes(busca) ||
+      String(e.transportadora || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-e.rastreio.toLowerCase().includes(busca)
+      String(e.rastreio || "")
+        .toLowerCase()
+        .includes(busca)
 
-);
+    );
 
-let tbody=document.getElementById("tabelaEncomendas");
+  const tbody =
+    document.getElementById(
+      "tabelaEncomendas"
+    );
 
-if(!lista.length){
+  if(!tbody) return;
 
-tbody.innerHTML=
-`<tr><td colspan="7" class="empty">
-Nenhuma encomenda encontrada.
-</td></tr>`;
+  if(!lista.length){
 
-return;
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="7" class="empty">
+          Nenhuma encomenda encontrada.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML =
+    lista.map(e=>`
+
+      <tr>
+
+      <td>
+        ${e.data}<br>${e.hora}
+      </td>
+
+      <td>
+        <strong>${e.nome}</strong>
+      </td>
+
+      <td>${e.apto}</td>
+
+      <td>${e.bloco || "-"}</td>
+
+      <td>${e.transportadora || "-"}</td>
+
+      <td>
+        <span class="status ${
+          e.status==="Aguardando"
+            ? "pending"
+            : "done"
+        }">
+          ${e.status}
+        </span>
+      </td>
+
+      <td>
+        <strong>
+          ${
+            e.status==="Aguardando"
+              ? e.senha
+              : "—"
+          }
+        </strong>
+      </td>
+
+      </tr>
+
+    `).join("");
 }
 
-tbody.innerHTML=lista.map(e=>`
-
-<tr>
-
-<td>${e.data}<br>${e.hora}</td>
-
-<td><strong>${e.nome}</strong></td>
-
-<td>${e.apto}</td>
-
-<td>${e.bloco || "-"}</td>
-
-<td>${e.transportadora}</td>
-
-<td>
-<span class="status ${
-e.status==="Aguardando" ? "pending":"done"
-}">
-${e.status}
-</span>
-</td>
-
-<td>
-<strong>${e.status==="Aguardando" ? e.senha:"—"}</strong>
-</td>
-
-</tr>
-
-`).join("");
-
-}
-
-
-/* TABELA MORADORES */
+/* =========================
+   TABELA MORADORES
+   ========================= */
 
 function renderMoradores(){
 
-let busca=
-(document.getElementById("buscaMorador")?.value || "")
-.toLowerCase();
+  const busca =
+    (
+      document
+        .getElementById("buscaMorador")
+        ?.value ||
+      ""
+    ).toLowerCase();
 
-let lista=moradores.filter(m=>
+  const lista =
+    moradores.filter(m=>
 
-m.nome.toLowerCase().includes(busca) ||
+      String(m.nome || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-m.apto.toLowerCase().includes(busca) ||
+      String(m.apto || "")
+        .toLowerCase()
+        .includes(busca) ||
 
-m.bloco.toLowerCase().includes(busca)
+      String(m.bloco || "")
+        .toLowerCase()
+        .includes(busca)
 
-);
+    );
 
-let tbody=document.getElementById("tabelaMoradores");
+  const tbody =
+    document.getElementById(
+      "tabelaMoradores"
+    );
 
-if(!lista.length){
+  if(!tbody) return;
 
-tbody.innerHTML=
-`<tr><td colspan="4" class="empty">
-Nenhum morador cadastrado.
-</td></tr>`;
+  if(!lista.length){
 
-return;
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="4" class="empty">
+          Nenhum morador cadastrado.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML =
+    lista.map(m=>`
+
+      <tr>
+
+      <td>
+        <strong>${m.nome}</strong>
+      </td>
+
+      <td>${m.apto}</td>
+
+      <td>${m.bloco || "-"}</td>
+
+      <td>${m.whatsapp || "-"}</td>
+
+      </tr>
+
+    `).join("");
 }
 
-tbody.innerHTML=lista.map(m=>`
-
-<tr>
-
-<td><strong>${m.nome}</strong></td>
-
-<td>${m.apto}</td>
-
-<td>${m.bloco || "-"}</td>
-
-<td>${m.whatsapp || "-"}</td>
-
-</tr>
-
-`).join("");
-
-}
-
-
-/* RETIRADA */
+/* =========================
+   RETIRADA
+   ========================= */
 
 function buscarSenha(){
 
-let senha=
-document.getElementById("senhaRetirada")
-.value.trim();
+  const senha =
+    document
+      .getElementById("senhaRetirada")
+      .value.trim();
 
-let resultado=
-document.getElementById("resultadoRetirada");
+  const resultado =
+    document.getElementById(
+      "resultadoRetirada"
+    );
 
-if(senha.length!==4){
+  if(senha.length !== 4){
 
-resultado.innerHTML=
-`<div class="empty">
-Digite uma senha de 4 números.
-</div>`;
+    resultado.innerHTML =
+      `<div class="empty">
+        Digite uma senha de 4 números.
+      </div>`;
 
-return;
+    return;
+  }
+
+  const encomenda =
+    encomendas.find(
+      e =>
+        e.senha === senha &&
+        e.status === "Aguardando"
+    );
+
+  if(!encomenda){
+
+    resultado.innerHTML =
+      `<div class="empty">
+        ❌ Nenhuma encomenda aguardando retirada
+        encontrada para esta senha.
+      </div>`;
+
+    return;
+  }
+
+  resultado.innerHTML = `
+
+    <div class="password-box">
+
+    <p>Encomenda encontrada</p>
+
+    <h2>${encomenda.nome}</h2>
+
+    <p>
+      Apartamento ${encomenda.apto}
+      ${
+        encomenda.bloco
+          ? " • Bloco "+encomenda.bloco
+          : ""
+      }
+    </p>
+
+    <div class="password">
+      ${encomenda.senha}
+    </div>
+
+    <button
+      class="primary"
+      onclick="confirmarRetirada(${encomenda.id})"
+    >
+      ✅ Confirmar retirada
+    </button>
+
+    </div>
+
+  `;
 }
-
-let encomenda=
-encomendas.find(e=>
-e.senha===senha &&
-e.status==="Aguardando"
-);
-
-if(!encomenda){
-
-resultado.innerHTML=
-`<div class="empty">
-❌ Nenhuma encomenda aguardando retirada
-encontrada para esta senha.
-</div>`;
-
-return;
-}
-
-resultado.innerHTML=`
-
-<div class="password-box">
-
-<p>Encomenda encontrada</p>
-
-<h2>${encomenda.nome}</h2>
-
-<p>
-Apartamento ${encomenda.apto}
-${encomenda.bloco ? " • Bloco "+encomenda.bloco:""}
-</p>
-
-<div class="password">
-${encomenda.senha}
-</div>
-
-<button
-class="primary"
-onclick="confirmarRetirada(${encomenda.id})"
->
-✅ Confirmar retirada
-</button>
-
-</div>
-
-`;
-
-}
-
 
 function confirmarRetirada(id){
 
-let encomenda=
-encomendas.find(e=>e.id===id);
+  const encomenda =
+    encomendas.find(
+      e=>e.id===id
+    );
 
-if(!encomenda) return;
+  if(!encomenda) return;
 
-encomenda.status="Retirada";
+  encomenda.status =
+    "Retirada";
 
-let agora=new Date();
+  const agora =
+    new Date();
 
-encomenda.retirada=
-agora.toLocaleDateString("pt-BR")+" "+
-agora.toLocaleTimeString("pt-BR",{
-hour:"2-digit",
-minute:"2-digit"
-});
+  encomenda.retirada =
+    agora.toLocaleDateString(
+      "pt-BR"
+    )+
+    " "+
+    agora.toLocaleTimeString(
+      "pt-BR",
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
 
-localStorage.setItem(
-"vynko_encomendas",
-JSON.stringify(encomendas)
-);
+  localStorage.setItem(
+    "vynko_encomendas",
+    JSON.stringify(encomendas)
+  );
 
-document.getElementById("senhaRetirada").value="";
+  document
+    .getElementById(
+      "senhaRetirada"
+    )
+    .value="";
 
-document.getElementById("resultadoRetirada").innerHTML=
-`<div class="empty">
-✅ Encomenda retirada com sucesso!
-</div>`;
+  document
+    .getElementById(
+      "resultadoRetirada"
+    )
+    .innerHTML =
+      `<div class="empty">
+        ✅ Encomenda retirada com sucesso!
+      </div>`;
 
-atualizarTudo();
-
+  atualizarTudo();
 }
 
-
-/* DASHBOARD */
+/* =========================
+   DASHBOARD
+   ========================= */
 
 function atualizarDashboard(){
 
-document.getElementById("totalEncomendas")
-.innerText=encomendas.length;
+  const total =
+    document.getElementById(
+      "totalEncomendas"
+    );
 
-document.getElementById("aguardando")
-.innerText=
-encomendas.filter(e=>e.status==="Aguardando").length;
+  if(total){
+    total.innerText =
+      encomendas.length;
+  }
 
-let hoje=new Date().toLocaleDateString("pt-BR");
+  const aguardando =
+    document.getElementById(
+      "aguardando"
+    );
 
-document.getElementById("retiradasHoje")
-.innerText=
-encomendas.filter(e=>
-e.status==="Retirada" &&
-e.retirada &&
-e.retirada.startsWith(hoje)
-).length;
+  if(aguardando){
+    aguardando.innerText =
+      encomendas.filter(
+        e=>e.status==="Aguardando"
+      ).length;
+  }
 
-document.getElementById("totalMoradores")
-.innerText=moradores.length;
+  const hoje =
+    new Date()
+      .toLocaleDateString(
+        "pt-BR"
+      );
 
-let ultimas=
-encomendas.slice(0,5);
+  const retiradasHoje =
+    document.getElementById(
+      "retiradasHoje"
+    );
 
-let div=
-document.getElementById("ultimasEncomendas");
+  if(retiradasHoje){
 
-if(!ultimas.length){
+    retiradasHoje.innerText =
+      encomendas.filter(
+        e=>
+          e.status==="Retirada" &&
+          e.retirada &&
+          e.retirada.startsWith(hoje)
+      ).length;
+  }
 
-div.innerHTML=
-`<div class="empty">
-Nenhuma encomenda cadastrada.
-</div>`;
+  const totalMoradores =
+    document.getElementById(
+      "totalMoradores"
+    );
 
-return;
+  if(totalMoradores){
+    totalMoradores.innerText =
+      moradores.length;
+  }
+
+  const ultimas =
+    encomendas.slice(0,5);
+
+  const div =
+    document.getElementById(
+      "ultimasEncomendas"
+    );
+
+  if(!div) return;
+
+  if(!ultimas.length){
+
+    div.innerHTML =
+      `<div class="empty">
+        Nenhuma encomenda cadastrada.
+      </div>`;
+
+    return;
+  }
+
+  div.innerHTML = `
+
+    <div class="table-scroll">
+
+    <table>
+
+    <thead>
+    <tr>
+      <th>Destinatário</th>
+      <th>Apto</th>
+      <th>Data</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    ${
+      ultimas.map(e=>`
+
+        <tr>
+
+        <td>${e.nome}</td>
+
+        <td>${e.apto}</td>
+
+        <td>${e.data}</td>
+
+        <td>
+          <span class="status ${
+            e.status==="Aguardando"
+              ? "pending"
+              : "done"
+          }">
+            ${e.status}
+          </span>
+        </td>
+
+        </tr>
+
+      `).join("")
+    }
+
+    </tbody>
+
+    </table>
+
+    </div>
+
+  `;
 }
 
-div.innerHTML=`
-
-<div class="table-scroll">
-
-<table>
-
-<thead>
-<tr>
-<th>Destinatário</th>
-<th>Apto</th>
-<th>Data</th>
-<th>Status</th>
-</tr>
-</thead>
-
-<tbody>
-
-${ultimas.map(e=>`
-
-<tr>
-
-<td>${e.nome}</td>
-
-<td>${e.apto}</td>
-
-<td>${e.data}</td>
-
-<td>
-<span class="status ${
-e.status==="Aguardando" ? "pending":"done"
-}">
-${e.status}
-</span>
-</td>
-
-</tr>
-
-`).join("")}
-
-</tbody>
-
-</table>
-
-</div>
-`;
-
-}
-
-
-/* RELATÓRIOS */
+/* =========================
+   RELATÓRIOS
+   ========================= */
 
 function atualizarRelatorios(){
 
-document.getElementById("relTotal")
-.innerText=encomendas.length;
+  const total =
+    document.getElementById(
+      "relTotal"
+    );
 
-document.getElementById("relPendentes")
-.innerText=
-encomendas.filter(e=>e.status==="Aguardando").length;
+  if(total){
+    total.innerText =
+      encomendas.length;
+  }
 
-document.getElementById("relRetiradas")
-.innerText=
-encomendas.filter(e=>e.status==="Retirada").length;
+  const pendentes =
+    document.getElementById(
+      "relPendentes"
+    );
 
+  if(pendentes){
+    pendentes.innerText =
+      encomendas.filter(
+        e=>e.status==="Aguardando"
+      ).length;
+  }
+
+  const retiradas =
+    document.getElementById(
+      "relRetiradas"
+    );
+
+  if(retiradas){
+    retiradas.innerText =
+      encomendas.filter(
+        e=>e.status==="Retirada"
+      ).length;
+  }
 }
 
-
-/* CONFIGURAÇÕES */
+/* =========================
+   CONFIGURAÇÕES
+   ========================= */
 
 function salvarConfiguracoes(){
 
-let nome=
-document.getElementById("nomeCondominio").value;
+  const nome =
+    document
+      .getElementById(
+        "nomeCondominio"
+      )
+      .value;
 
-localStorage.setItem(
-"vynko_condominio",
-nome
-);
+  localStorage.setItem(
+    "vynko_condominio",
+    nome
+  );
 
-alert("Configurações salvas.");
-
+  alert(
+    "Configurações salvas."
+  );
 }
 
-
-/* ATUALIZAÇÃO */
+/* =========================
+   ATUALIZAÇÃO
+   ========================= */
 
 function atualizarTudo(){
 
-atualizarDashboard();
+  atualizarDashboard();
 
-renderEncomendas();
+  renderEncomendas();
 
-renderMoradores();
+  renderMoradores();
 
-atualizarRelatorios();
-
+  atualizarRelatorios();
 }
 
-
-/* INICIALIZAÇÃO */
+/* =========================
+   INICIALIZAÇÃO
+   ========================= */
 
 document.addEventListener(
-"DOMContentLoaded",
-function(){
+  "DOMContentLoaded",
+  function(){
 
-let nome=
-localStorage.getItem("vynko_condominio");
+    const nome =
+      localStorage.getItem(
+        "vynko_condominio"
+      );
 
-if(nome){
+    if(nome){
 
-document.getElementById("nomeCondominio")
-.value=nome;
+      const campo =
+        document.getElementById(
+          "nomeCondominio"
+        );
 
-}
+      if(campo){
+        campo.value =
+          nome;
+      }
+    }
 
-atualizarTudo();
+    atualizarTudo();
 
-}
-);
-/* FOTO DA ENCOMENDA - PREVIA */
-document.addEventListener("DOMContentLoaded", function(){
+    /*
+     * Pré-visualização da foto
+     * + leitura automática da etiqueta.
+     */
 
-  const campoFoto = document.getElementById("eFoto");
-  const previewFoto = document.getElementById("previewFoto");
+    const campoFoto =
+      document.getElementById(
+        "eFoto"
+      );
 
-  if(campoFoto && previewFoto){
+    const previewFoto =
+      document.getElementById(
+        "previewFoto"
+      );
 
-    campoFoto.addEventListener("change", function(){
+    if(
+      campoFoto &&
+      previewFoto
+    ){
 
-      previewFoto.innerHTML = "";
+      campoFoto.addEventListener(
+        "change",
+        function(){
 
-      const arquivo = this.files[0];
+          previewFoto.innerHTML = "";
 
-      if(!arquivo) return;
+          const status =
+            document.getElementById(
+              "leituraStatus"
+            );
 
-      const imagem = document.createElement("img");
+          if(status){
+            status.innerText =
+              "📷 Foto carregada. Iniciando leitura...";
+          }
 
-      imagem.src = URL.createObjectURL(arquivo);
-      imagem.style.maxWidth = "100%";
-      imagem.style.maxHeight = "250px";
-      imagem.style.borderRadius = "10px";
-      imagem.style.marginTop = "10px";
+          const arquivo =
+            this.files[0];
 
-      previewFoto.appendChild(imagem);
-      lerEtiqueta();
+          if(!arquivo) return;
 
-    });
+          const imagem =
+            document.createElement(
+              "img"
+            );
+
+          imagem.src =
+            URL.createObjectURL(
+              arquivo
+            );
+
+          imagem.style.maxWidth =
+            "100%";
+
+          imagem.style.maxHeight =
+            "250px";
+
+          imagem.style.borderRadius =
+            "10px";
+
+          imagem.style.marginTop =
+            "10px";
+
+          previewFoto.appendChild(
+            imagem
+          );
+
+          /*
+           * Inicia OCR automaticamente.
+           */
+
+          lerEtiqueta();
+
+        }
+      );
+    }
 
   }
+);
 
-});
 </script>
 
 </body>
