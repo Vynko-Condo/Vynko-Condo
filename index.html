@@ -25,702 +25,188 @@ const supabaseClient =
 <title>Vynko Condomínio</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
-body{
-  background:#f4f6f8;
-  color:#263238;
-}
-
-.app{min-height:100vh;}
-
-header{
-  background:#0b2528;
-  color:white;
-  padding:18px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-.logo{font-size:23px;font-weight:bold;}
-.logo span{color:#20bfa9;}
-
-.portaria{
-  background:#20bfa9;
-  padding:9px 14px;
-  border-radius:20px;
-  font-size:13px;
-  font-weight:bold;
-}
-
-.layout{display:flex;min-height:calc(100vh - 64px);}
-
-.sidebar{
-  width:230px;
-  background:#071b1e;
-  color:white;
-  padding:18px 12px;
-}
-
-.menu{display:flex;flex-direction:column;gap:7px;}
-
-.menu button{
-  border:0;
-  background:transparent;
-  color:#d7e3e5;
-  padding:13px 14px;
-  text-align:left;
-  border-radius:9px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.menu button:hover,
-.menu button.active{
-  background:#0e776e;
-  color:white;
-}
-
-.main{
-  flex:1;
-  padding:25px;
-  max-width:1400px;
-}
-
-.page{display:none;}
-.page.active{display:block;}
-
-h1{margin-bottom:6px;font-size:26px;}
-.subtitle{color:#718096;margin-bottom:22px;}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:24px;
-}
-
-.card{
-  background:white;
-  border-radius:14px;
-  padding:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.07);
-}
-
-.card-title{color:#718096;font-size:13px;margin-bottom:10px;}
-.card-number{font-size:30px;font-weight:bold;}
-.card-icon{font-size:25px;margin-bottom:12px;}
-
-.panel{
-  background:white;
-  border-radius:14px;
-  padding:20px;
-  box-shadow:0 3px 12px rgba(0,0,0,.07);
-  margin-bottom:20px;
-}
-
-.panel-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.panel-header h2{font-size:18px;}
-
-button.primary{
-  background:#0e8f83;
-  color:white;
-  border:0;
-  padding:11px 16px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-button.primary:hover{background:#08766d;}
-
-button.secondary{
-  background:#e8eeee;
-  color:#263238;
-  border:0;
-  padding:10px 14px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.search{
-  width:100%;
-  padding:12px;
-  border:1px solid #d8e0e2;
-  border-radius:8px;
-  margin-bottom:15px;
-}
-
-table{width:100%;border-collapse:collapse;}
-th,td{
-  padding:13px 10px;
-  border-bottom:1px solid #edf0f1;
-  text-align:left;
-  font-size:13px;
-}
-
-th{color:#66777a;background:#f7f9f9;}
-
-.status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:bold;
-}
-
-.status.pending{background:#fff3cd;color:#856404;}
-.status.done{background:#d1fae5;color:#065f46;}
-.status.cancel{background:#fee2e2;color:#991b1b;}
-
-.empty{padding:35px;text-align:center;color:#89969a;}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  align-items:center;
-  justify-content:center;
-  z-index:50;
-  padding:20px;
-}
-
-.modal.show{display:flex;}
-
-.modal-box{
-  background:white;
-  width:100%;
-  max-width:520px;
-  border-radius:15px;
-  padding:24px;
-  max-height:90vh;
-  overflow:auto;
-}
-
-.modal-box h2{margin-bottom:20px;}
-
-.form-group{margin-bottom:15px;}
-
-.form-group label{
-  display:block;
-  font-size:13px;
-  font-weight:bold;
-  margin-bottom:6px;
-}
-
-.form-group input,
-.form-group select{
-  width:100%;
-  padding:11px;
-  border:1px solid #d5dddd;
-  border-radius:8px;
-  font-size:14px;
-}
-
-.form-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:20px;
-}
-
-.password-box{
-  text-align:center;
-  padding:20px;
-  background:#eefaf8;
-  border-radius:12px;
-  margin:15px 0;
-}
-
-.password{
-  font-size:38px;
-  font-weight:bold;
-  letter-spacing:8px;
-  color:#08766d;
-}
-
-.quick{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-}
-
-.quick button{
-  background:white;
-  border:1px solid #e0e7e8;
-  padding:20px;
-  border-radius:12px;
-  cursor:pointer;
-  text-align:left;
-}
-
-.quick button:hover{border-color:#0e8f83;}
-.quick-icon{font-size:25px;margin-bottom:10px;}
-
-.report-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-}
-
-.report-box{
-  padding:22px;
-  border-radius:12px;
-  background:#f6f9f9;
-}
-
-.report-box strong{
-  display:block;
-  font-size:28px;
-  margin-top:8px;
-}
-
-.leitura-status{
-  margin-top:10px;
-  font-size:13px;
-  color:#0e776e;
-  font-weight:bold;
-}
-
-@media(max-width:850px){
-  .sidebar{width:75px;}
-  .menu button{font-size:0;text-align:center;}
-  .menu button::first-letter{font-size:22px;}
-  .cards{grid-template-columns:repeat(2,1fr);}
-  .quick{grid-template-columns:1fr;}
-  .report-grid{grid-template-columns:1fr;}
-}
-
-@media(max-width:600px){
-  .main{padding:15px;}
-  .cards{grid-template-columns:1fr 1fr;gap:10px;}
-  .card{padding:15px;}
-  table{min-width:650px;}
-  .table-scroll{overflow-x:auto;}
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f6f8;color:#263238}.app{min-height:100vh}
+header{background:#0b2528;color:white;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo{font-size:23px;font-weight:bold}.logo span{color:#20bfa9}.portaria{background:#20bfa9;padding:9px 14px;border-radius:20px;font-size:13px;font-weight:bold}
+.layout{display:flex;min-height:calc(100vh - 64px)}.sidebar{width:230px;background:#071b1e;color:white;padding:18px 12px}
+.menu{display:flex;flex-direction:column;gap:7px}.menu button{border:0;background:transparent;color:#d7e3e5;padding:13px 14px;text-align:left;border-radius:9px;font-size:14px;cursor:pointer}
+.menu button:hover,.menu button.active{background:#0e776e;color:white}.main{flex:1;padding:25px;max-width:1400px}
+.page{display:none}.page.active{display:block}h1{margin-bottom:6px;font-size:26px}.subtitle{color:#718096;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}.card{background:white;border-radius:14px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.card-title{color:#718096;font-size:13px;margin-bottom:10px}.card-number{font-size:30px;font-weight:bold}.card-icon{font-size:25px;margin-bottom:12px}
+.panel{background:white;border-radius:14px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07);margin-bottom:20px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.panel-header h2{font-size:18px}
+button.primary{background:#0e8f83;color:white;border:0;padding:11px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
+button.primary:hover{background:#08766d}button.secondary{background:#e8eeee;color:#263238;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+.search{width:100%;padding:12px;border:1px solid #d8e0e2;border-radius:8px;margin-bottom:15px}
+table{width:100%;border-collapse:collapse}th,td{padding:13px 10px;border-bottom:1px solid #edf0f1;text-align:left;font-size:13px}
+th{color:#66777a;background:#f7f9f9}.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold}
+.status.pending{background:#fff3cd;color:#856404}.status.done{background:#d1fae5;color:#065f46}.status.cancel{background:#fee2e2;color:#991b1b}
+.empty{padding:35px;text-align:center;color:#89969a}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}.modal-box{background:white;width:100%;max-width:520px;border-radius:15px;padding:24px;max-height:90vh;overflow:auto}.modal-box h2{margin-bottom:20px}
+.form-group{margin-bottom:15px}.form-group label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
+.form-group input,.form-group select{width:100%;padding:11px;border:1px solid #d5dddd;border-radius:8px;font-size:14px}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}.password-box{text-align:center;padding:20px;background:#eefaf8;border-radius:12px;margin:15px 0}
+.password{font-size:38px;font-weight:bold;letter-spacing:8px;color:#08766d}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.quick button{background:white;border:1px solid #e0e7e8;padding:20px;border-radius:12px;cursor:pointer;text-align:left}.quick button:hover{border-color:#0e8f83}
+.quick-icon{font-size:25px;margin-bottom:10px}.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.report-box{padding:22px;border-radius:12px;background:#f6f9f9}
+.report-box strong{display:block;font-size:28px;margin-top:8px}.leitura-status{margin-top:10px;font-size:13px;color:#0e776e;font-weight:bold}
+@media(max-width:850px){.sidebar{width:75px}.menu button{font-size:0;text-align:center}.menu button::first-letter{font-size:22px}.cards{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:15px}.cards{grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}table{min-width:650px}.table-scroll{overflow-x:auto}}
 </style>
 </head>
 
 <body>
-
 <div class="app">
-
 <header>
   <div class="logo">Vynko <span>Condomínio</span></div>
   <div class="portaria">👤 Portaria</div>
 </header>
 
 <div class="layout">
-
 <aside class="sidebar">
 <nav class="menu">
-
 <button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
 <button onclick="showPage('encomendas',this)">📦 Encomendas</button>
 <button onclick="showPage('moradores',this)">👥 Moradores</button>
 <button onclick="showPage('retirada',this)">🔐 Retirada com senha</button>
 <button onclick="showPage('relatorios',this)">📊 Relatórios</button>
 <button onclick="showPage('configuracoes',this)">⚙️ Configurações</button>
-
 </nav>
 </aside>
 
 <main class="main">
 
 <section id="dashboard" class="page active">
-
-<h1>Dashboard</h1>
-<p class="subtitle">Visão geral das encomendas do condomínio.</p>
-
+<h1>Dashboard</h1><p class="subtitle">Visão geral das encomendas do condomínio.</p>
 <div class="cards">
-
-<div class="card">
-<div class="card-icon">📦</div>
-<div class="card-title">Encomendas recebidas</div>
-<div class="card-number" id="totalEncomendas">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">⏳</div>
-<div class="card-title">Aguardando retirada</div>
-<div class="card-number" id="aguardando">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">✅</div>
-<div class="card-title">Retiradas hoje</div>
-<div class="card-number" id="retiradasHoje">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">👥</div>
-<div class="card-title">Moradores cadastrados</div>
-<div class="card-number" id="totalMoradores">0</div>
-</div>
-
+<div class="card"><div class="card-icon">📦</div><div class="card-title">Encomendas recebidas</div><div class="card-number" id="totalEncomendas">0</div></div>
+<div class="card"><div class="card-icon">⏳</div><div class="card-title">Aguardando retirada</div><div class="card-number" id="aguardando">0</div></div>
+<div class="card"><div class="card-icon">✅</div><div class="card-title">Retiradas hoje</div><div class="card-number" id="retiradasHoje">0</div></div>
+<div class="card"><div class="card-icon">👥</div><div class="card-title">Moradores cadastrados</div><div class="card-number" id="totalMoradores">0</div></div>
 </div>
 
 <div class="panel">
 <div class="panel-header"><h2>Ações rápidas</h2></div>
-
 <div class="quick">
-
-<button onclick="abrirModalEncomenda()">
-<div class="quick-icon">📦</div>
-<strong>Registrar encomenda</strong>
-<p>Cadastre uma nova encomenda recebida.</p>
-</button>
-
-<button onclick="showPage('retirada')">
-<div class="quick-icon">🔐</div>
-<strong>Retirar encomenda</strong>
-<p>Informe a senha de retirada.</p>
-</button>
-
-<button onclick="showPage('moradores')">
-<div class="quick-icon">👤</div>
-<strong>Moradores</strong>
-<p>Consultar moradores cadastrados.</p>
-</button>
-
+<button onclick="abrirModalEncomenda()"><div class="quick-icon">📦</div><strong>Registrar encomenda</strong><p>Cadastre uma nova encomenda recebida.</p></button>
+<button onclick="showPage('retirada')"><div class="quick-icon">🔐</div><strong>Retirar encomenda</strong><p>Informe a senha de retirada.</p></button>
+<button onclick="showPage('moradores')"><div class="quick-icon">👤</div><strong>Moradores</strong><p>Consultar moradores cadastrados.</p></button>
 </div>
 </div>
 
-<div class="panel">
-<h2>Últimas encomendas</h2>
-<br>
-<div id="ultimasEncomendas"></div>
-</div>
-
+<div class="panel"><h2>Últimas encomendas</h2><br><div id="ultimasEncomendas"></div></div>
 </section>
 
 <section id="encomendas" class="page">
-
-<div class="panel-header">
-<div>
-<h1>Encomendas</h1>
-<p class="subtitle">Controle de todas as encomendas recebidas.</p>
-</div>
-
-<button class="primary" onclick="abrirModalEncomenda()">+ Nova encomenda</button>
-</div>
-
+<div class="panel-header"><div><h1>Encomendas</h1><p class="subtitle">Controle de todas as encomendas recebidas.</p></div>
+<button class="primary" onclick="abrirModalEncomenda()">+ Nova encomenda</button></div>
 <div class="panel">
-
-<input
-class="search"
-id="buscaEncomenda"
-placeholder="🔎 Buscar por morador, apartamento, bloco ou código..."
-oninput="renderEncomendas()"
->
-
-<div class="table-scroll">
-<table>
-<thead>
-<tr>
-<th>Data</th>
-<th>Destinatário</th>
-<th>Apto</th>
-<th>Bloco</th>
-<th>Transportadora</th>
-<th>Status</th>
-<th>Senha</th>
-<th>Encomenda</th>
-<th>WhatsApp</th>
-</tr>
-</thead>
-<tbody id="tabelaEncomendas"></tbody>
-</table>
-</div>
-
+<input class="search" id="buscaEncomenda" placeholder="🔎 Buscar por morador, apartamento, bloco ou código..." oninput="renderEncomendas()">
+<div class="table-scroll"><table><thead><tr><th>Data</th><th>Destinatário</th><th>Apto</th><th>Bloco</th><th>Transportadora</th><th>Status</th><th>Senha</th><th>Encomenda</th><th>WhatsApp</th></tr></thead>
+<tbody id="tabelaEncomendas"></tbody></table></div>
 </div>
 </section>
 
 <section id="moradores" class="page">
-
-<div class="panel-header">
-<div>
-<h1>Moradores</h1>
-<p class="subtitle">Cadastro dos moradores do condomínio.</p>
-</div>
-
-<button class="primary" onclick="abrirModalMorador()">+ Novo morador</button>
-</div>
-
+<div class="panel-header"><div><h1>Moradores</h1><p class="subtitle">Cadastro dos moradores do condomínio.</p></div>
+<button class="primary" onclick="abrirModalMorador()">+ Novo morador</button></div>
 <div class="panel">
-
-<input
-class="search"
-id="buscaMorador"
-placeholder="🔎 Buscar morador, apartamento ou bloco..."
-oninput="renderMoradores()"
->
-
-<div class="table-scroll">
-<table>
-<thead>
-<tr>
-<th>Nome</th>
-<th>Apartamento</th>
-<th>Bloco</th>
-<th>WhatsApp</th>
-</tr>
-</thead>
-<tbody id="tabelaMoradores"></tbody>
-</table>
-</div>
-
+<input class="search" id="buscaMorador" placeholder="🔎 Buscar morador, apartamento ou bloco..." oninput="renderMoradores()">
+<div class="table-scroll"><table><thead><tr><th>Nome</th><th>Apartamento</th><th>Bloco</th><th>WhatsApp</th></tr></thead><tbody id="tabelaMoradores"></tbody></table></div>
 </div>
 </section>
 
 <section id="retirada" class="page">
-
-<h1>Retirada com senha</h1>
-<p class="subtitle">Digite a senha informada pelo morador.</p>
-
+<h1>Retirada com senha</h1><p class="subtitle">Digite a senha informada pelo morador.</p>
 <div class="panel">
-
-<div class="form-group">
-<label>Senha de retirada</label>
-
-<input
-id="senhaRetirada"
-maxlength="4"
-inputmode="numeric"
-placeholder="Digite os 4 números"
-style="font-size:25px;text-align:center;letter-spacing:8px;"
->
-
-</div>
-
-<button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button>
-<div id="resultadoRetirada"></div>
-
+<div class="form-group"><label>Senha de retirada</label>
+<input id="senhaRetirada" maxlength="4" inputmode="numeric" placeholder="Digite os 4 números" style="font-size:25px;text-align:center;letter-spacing:8px;"></div>
+<button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button><div id="resultadoRetirada"></div>
 </div>
 </section>
 
 <section id="relatorios" class="page">
-
-<h1>Relatórios</h1>
-<p class="subtitle">Resumo da movimentação de encomendas.</p>
-
+<h1>Relatórios</h1><p class="subtitle">Resumo da movimentação de encomendas.</p>
 <div class="report-grid">
-
-<div class="report-box">
-Encomendas recebidas
-<strong id="relTotal">0</strong>
-</div>
-
-<div class="report-box">
-Aguardando retirada
-<strong id="relPendentes">0</strong>
-</div>
-
-<div class="report-box">
-Encomendas retiradas
-<strong id="relRetiradas">0</strong>
-</div>
-
+<div class="report-box">Encomendas recebidas<strong id="relTotal">0</strong></div>
+<div class="report-box">Aguardando retirada<strong id="relPendentes">0</strong></div>
+<div class="report-box">Encomendas retiradas<strong id="relRetiradas">0</strong></div>
 </div>
 </section>
 
 <section id="configuracoes" class="page">
-
-<h1>Configurações</h1>
-<p class="subtitle">Configurações do sistema Vynko Condomínio.</p>
-
+<h1>Configurações</h1><p class="subtitle">Configurações do sistema Vynko Condomínio.</p>
 <div class="panel">
-
-<div class="form-group">
-<label>Nome do condomínio</label>
-<input id="nomeCondominio" value="Grand Raya">
-</div>
-
-<div class="form-group">
-<label>Nome do sistema</label>
-<input value="Vynko Condomínio">
-</div>
-
+<div class="form-group"><label>Nome do condomínio</label><input id="nomeCondominio" value="Grand Raya"></div>
+<div class="form-group"><label>Nome do sistema</label><input value="Vynko Condomínio"></div>
 <button class="primary" onclick="salvarConfiguracoes()">Salvar configurações</button>
-
 </div>
 </section>
 
-</main>
-</div>
-</div>
+</main></div></div>
 
-<!-- MODAL ENCOMENDA -->
-
-<div class="modal" id="modalEncomenda">
-
-<div class="modal-box">
-
+<div class="modal" id="modalEncomenda"><div class="modal-box">
 <h2>📦 Registrar encomenda</h2>
+<div class="form-group"><label>Nome do destinatário</label><input id="eNome" placeholder="Nome do morador"></div>
+<div class="form-group"><label>Apartamento</label><input id="eApto" placeholder="Ex.: 1702"></div>
+<div class="form-group"><label>Bloco</label><input id="eBloco" placeholder="Ex.: BOTANIQUE"></div>
+<div class="form-group"><label>Transportadora</label><select id="eTransportadora"><option>Amazon</option><option>Mercado Livre</option><option>Correios</option><option>Jadlog</option><option>Loggi</option><option>Shopee</option><option>Outra</option></select></div>
+<div class="form-group"><label>Código de rastreio</label><input id="eRastreio" placeholder="Opcional"></div>
+<div class="form-group"><label>Foto da encomenda</label><input type="file" id="eFoto" accept="image/*" capture="environment"><small>Tire uma foto da etiqueta da encomenda.</small><div id="previewFoto" style="margin-top:10px;"></div><div id="leituraStatus" class="leitura-status"></div></div>
+<div class="form-actions"><button class="secondary" onclick="fecharModal('modalEncomenda')">Cancelar</button><button class="primary" onclick="salvarEncomenda()">Registrar</button></div>
+</div></div>
 
-<div class="form-group">
-<label>Nome do destinatário</label>
-<input id="eNome" placeholder="Nome do morador">
-</div>
-
-<div class="form-group">
-<label>Apartamento</label>
-<input id="eApto" placeholder="Ex.: 1702">
-</div>
-
-<div class="form-group">
-<label>Bloco</label>
-<input id="eBloco" placeholder="Ex.: A">
-</div>
-
-<div class="form-group">
-<label>Transportadora</label>
-<select id="eTransportadora">
-<option>Amazon</option>
-<option>Mercado Livre</option>
-<option>Correios</option>
-<option>Jadlog</option>
-<option>Loggi</option>
-<option>Shopee</option>
-<option>Outra</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Código de rastreio</label>
-<input id="eRastreio" placeholder="Opcional">
-</div>
-
-<div class="form-group">
-<label>Foto da encomenda</label>
-
-<input
-type="file"
-id="eFoto"
-accept="image/*"
-capture="environment"
->
-
-<small>Tire uma foto da etiqueta da encomenda.</small>
-
-<div id="previewFoto" style="margin-top:10px;"></div>
-<div id="leituraStatus" class="leitura-status"></div>
-
-</div>
-
-<div class="form-actions">
-
-<button class="secondary" onclick="fecharModal('modalEncomenda')">Cancelar</button>
-
-<button class="primary" onclick="salvarEncomenda()">Registrar</button>
-
-</div>
-
-</div>
-</div>
-
-<!-- MODAL MORADOR -->
-
-<div class="modal" id="modalMorador">
-
-<div class="modal-box">
-
+<div class="modal" id="modalMorador"><div class="modal-box">
 <h2>👤 Novo morador</h2>
-
-<div class="form-group">
-<label>Nome completo</label>
-<input id="mNome">
-</div>
-
-<div class="form-group">
-<label>Apartamento</label>
-<input id="mApto">
-</div>
-
-<div class="form-group">
-<label>Bloco</label>
-<input id="mBloco">
-</div>
-
-<div class="form-group">
-<label>WhatsApp</label>
-<input id="mWhatsApp" placeholder="(00) 00000-0000">
-</div>
-
-<div class="form-actions">
-
-<button class="secondary" onclick="fecharModal('modalMorador')">Cancelar</button>
-
-<button class="primary" onclick="salvarMorador()">Cadastrar</button>
-
-</div>
-
-</div>
-</div>
+<div class="form-group"><label>Nome completo</label><input id="mNome"></div>
+<div class="form-group"><label>Apartamento</label><input id="mApto"></div>
+<div class="form-group"><label>Bloco</label><input id="mBloco"></div>
+<div class="form-group"><label>WhatsApp</label><input id="mWhatsApp" placeholder="(00) 00000-0000"></div>
+<div class="form-actions"><button class="secondary" onclick="fecharModal('modalMorador')">Cancelar</button><button class="primary" onclick="salvarMorador()">Cadastrar</button></div>
+</div></div>
 
 <script>
+/* =========================================================
+   VYNKO - DADOS
+   Agora o Supabase é a fonte principal.
+   localStorage continua apenas como cache/offline.
+   ========================================================= */
 
-let encomendas =
-JSON.parse(localStorage.getItem("vynko_encomendas")) || [];
-
-let moradores =
-JSON.parse(localStorage.getItem("vynko_moradores")) || [];
-
-/* =========================
-   OCR
-   ========================= */
-
+let encomendas = JSON.parse(localStorage.getItem("vynko_encomendas")) || [];
+let moradores = JSON.parse(localStorage.getItem("vynko_moradores")) || [];
 let ocrWorker = null;
 
-async function carregarOCR(){
-
-  if(ocrWorker) return ocrWorker;
-
-  if(typeof Tesseract === "undefined"){
-
-    const script = document.createElement("script");
-
-    script.src =
-      "https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";
-
-    await new Promise((resolve,reject)=>{
-
-      script.onload = resolve;
-      script.onerror = reject;
-
-      document.head.appendChild(script);
-
-    });
-  }
-
-  ocrWorker = await Tesseract.createWorker("por");
-
-  return ocrWorker;
-}
+/* =========================
+   CONFIGURAÇÃO DO BANCO
+   ========================= */
+const TABELA_ENCOMENDAS = "encomendas";
+const TABELA_MORADORES = "moradores";
 
 /* =========================
-   NORMALIZA TEXTO
+   UTILITÁRIOS
    ========================= */
 
-function normalizarTexto(texto){
+function escaparHTML(valor){
+  return String(valor ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
+function dataHoraAtual(){
+  const agora = new Date();
+  return {
+    data: agora.toLocaleDateString("pt-BR"),
+    hora: agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
+    iso: agora.toISOString()
+  };
+}
+
+function normalizarTexto(texto){
   return String(texto || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g,"")
@@ -728,1086 +214,467 @@ function normalizarTexto(texto){
 }
 
 /* =========================
-   DETECTA TRANSPORTADORA
+   SUPABASE - ENCOMENDAS
    ========================= */
 
-function detectarTransportadora(texto,rastreio){
+async function inserirEncomendaSupabase(encomenda){
+  const registro = {
+    id: Number(encomenda.id),
+    created_at: encomenda.created_at || new Date().toISOString(),
+    nome: encomenda.nome,
+    apto: encomenda.apto,
+    bloco: encomenda.bloco || null,
+    transportadora: encomenda.transportadora || null,
+    rastreio: encomenda.rastreio || null,
+    senha: encomenda.senha,
+    status: encomenda.status,
+    retirada_em: encomenda.retirada_em || null,
+    foto_url: encomenda.foto_url || null,
+    codigo_publico: encomenda.codigoPublico
+  };
 
-  const t = normalizarTexto(texto);
-  const r = normalizarTexto(rastreio);
+  const { data, error } = await supabaseClient
+    .from(TABELA_ENCOMENDAS)
+    .upsert(registro, {onConflict:"id"})
+    .select()
+    .single();
 
-  /*
-   * A ordem é importante.
-   * Primeiro verificamos marcas claramente escritas na etiqueta.
-   */
-
-  if(
-    t.includes("AMAZON") ||
-    t.includes("AMAZON LOGISTICS") ||
-    /\bTBA[A-Z0-9]+\b/.test(r) ||
-    /\bTBA[A-Z0-9]+\b/.test(t)
-  ){
-    return "Amazon";
+  if(error){
+    console.error("Erro Supabase ao salvar encomenda:", error);
+    throw error;
   }
 
-  if(
-    t.includes("MERCADO LIVRE") ||
-    t.includes("MERCADOLIVRE") ||
-    t.includes("MELI") ||
-    /\bML[A-Z0-9]+\b/.test(r)
-  ){
-    return "Mercado Livre";
+  return data;
+}
+
+async function atualizarEncomendaSupabase(id, campos){
+  const { data, error } = await supabaseClient
+    .from(TABELA_ENCOMENDAS)
+    .update(campos)
+    .eq("id", Number(id))
+    .select()
+    .single();
+
+  if(error){
+    console.error("Erro Supabase ao atualizar encomenda:", error);
+    throw error;
   }
 
-  if(
-    t.includes("CORREIOS") ||
-    t.includes("SEDEX") ||
-    t.includes("PAC") ||
-    /\b[A-Z]{2}\d{9}BR\b/.test(r)
-  ){
-    return "Correios";
-  }
+  return data;
+}
 
-  if(t.includes("JADLOG")){
-    return "Jadlog";
-  }
+async function carregarEncomendasOnline(){
+  if(!navigator.onLine) return;
 
-  if(t.includes("LOGGI")){
-    return "Loggi";
-  }
+  try{
+    const { data, error } = await supabaseClient
+      .from(TABELA_ENCOMENDAS)
+      .select("*")
+      .order("created_at",{ascending:false});
 
-  if(
-    t.includes("SHOPEE") ||
-    t.includes("SPX") ||
-    /\bSPX[A-Z0-9]+\b/.test(r)
-  ){
-    return "Shopee";
-  }
+    if(error) throw error;
 
-  return "";
+    encomendas = (data || []).map(e => ({
+      id: e.id,
+      codigoPublico: e.codigo_publico || ("EN-"+e.id),
+      created_at: e.created_at,
+      data: e.created_at ? new Date(e.created_at).toLocaleDateString("pt-BR") : "",
+      hora: e.created_at ? new Date(e.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : "",
+      nome: e.nome || "",
+      apto: e.apto || "",
+      bloco: e.bloco || "",
+      transportadora: e.transportadora || "",
+      rastreio: e.rastreio || "",
+      senha: e.senha || "",
+      status: e.status || "Aguardando",
+      retirada_em: e.retirada_em || null,
+      retirada: e.retirada_em ? new Date(e.retirada_em).toLocaleDateString("pt-BR")+" "+new Date(e.retirada_em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : null,
+      foto_url: e.foto_url || "",
+      foto: e.foto_url || ""
+    }));
+
+    localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
+    atualizarTudo();
+  }catch(erro){
+    console.warn("Não foi possível carregar encomendas do Supabase:",erro);
+  }
 }
 
 /* =========================
-   EXTRAI RASTREIO
+   SUPABASE - MORADORES
    ========================= */
 
+async function inserirMoradorSupabase(morador){
+  const registro = {
+    id: Number(morador.id),
+    created_at: morador.created_at || new Date().toISOString(),
+    nome: morador.nome,
+    apto: morador.apto,
+    bloco: morador.bloco || null,
+    whatsapp: morador.whatsapp || null
+  };
+
+  const { data, error } = await supabaseClient
+    .from(TABELA_MORADORES)
+    .upsert(registro,{onConflict:"id"})
+    .select()
+    .single();
+
+  if(error){
+    console.error("Erro Supabase ao salvar morador:",error);
+    throw error;
+  }
+
+  return data;
+}
+
+async function carregarMoradoresOnline(){
+  if(!navigator.onLine) return;
+
+  try{
+    const { data, error } = await supabaseClient
+      .from(TABELA_MORADORES)
+      .select("*")
+      .order("nome",{ascending:true});
+
+    if(error) throw error;
+
+    moradores = (data || []).map(m => ({
+      id:m.id,
+      created_at:m.created_at,
+      nome:m.nome || "",
+      apto:m.apto || "",
+      bloco:m.bloco || "",
+      whatsapp:m.whatsapp || ""
+    }));
+
+    localStorage.setItem("vynko_moradores",JSON.stringify(moradores));
+    atualizarTudo();
+  }catch(erro){
+    console.warn("Não foi possível carregar moradores do Supabase:",erro);
+  }
+}
+
+/* =========================
+   OCR
+   ========================= */
+
+async function carregarOCR(){
+  if(ocrWorker) return ocrWorker;
+  if(typeof Tesseract === "undefined"){
+    const script=document.createElement("script");
+    script.src="https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";
+    await new Promise((resolve,reject)=>{
+      script.onload=resolve;
+      script.onerror=reject;
+      document.head.appendChild(script);
+    });
+  }
+  ocrWorker=await Tesseract.createWorker("por");
+  return ocrWorker;
+}
+
+function detectarTransportadora(texto,rastreio){
+  const t=normalizarTexto(texto);
+  const r=normalizarTexto(rastreio);
+  if(t.includes("AMAZON")||t.includes("AMAZON LOGISTICS")||/\bTBA[A-Z0-9]+\b/.test(r)||/\bTBA[A-Z0-9]+\b/.test(t)) return "Amazon";
+  if(t.includes("MERCADO LIVRE")||t.includes("MERCADOLIVRE")||t.includes("MELI")||/\bML[A-Z0-9]+\b/.test(r)) return "Mercado Livre";
+  if(t.includes("CORREIOS")||t.includes("SEDEX")||t.includes("PAC")||/\b[A-Z]{2}\d{9}BR\b/.test(r)) return "Correios";
+  if(t.includes("JADLOG")) return "Jadlog";
+  if(t.includes("LOGGI")) return "Loggi";
+  if(t.includes("SHOPEE")||t.includes("SPX")||/\bSPX[A-Z0-9]+\b/.test(r)) return "Shopee";
+  return "";
+}
+
 function extrairRastreio(texto){
-
-  const t = normalizarTexto(texto);
-
-  /*
-   * Padrões mais específicos primeiro.
-   * Isso evita que um número qualquer da etiqueta
-   * seja escolhido antes do código real.
-   */
-
-  const padroes = [
-
+  const t=normalizarTexto(texto);
+  const padroes=[
     /\bTBA[A-Z0-9]{8,25}\b/g,
-
     /\b[A-Z]{2}\d{9}BR\b/g,
-
     /\bSPX[A-Z0-9]{8,25}\b/g,
-
     /\bML[A-Z0-9]{8,25}\b/g,
-
     /\b[A-Z]{2,5}\d{8,18}\b/g,
-
     /\b\d{10,20}\b/g,
-
     /\b[A-Z0-9]{10,25}\b/g
-
   ];
-
-  for(const padrao of padroes){
-
-    const encontrados = t.match(padrao);
-
-    if(encontrados && encontrados.length){
-
-      /*
-       * Retira pontuação e escolhe o candidato
-       * mais longo, que normalmente é o rastreio.
-       */
-
-      const candidatos = encontrados
-        .map(x => x.replace(/[^A-Z0-9]/g,""))
-        .filter(x => x.length >= 8);
-
+  for(const p of padroes){
+    const achados=t.match(p);
+    if(achados&&achados.length){
+      const candidatos=achados.map(x=>x.replace(/[^A-Z0-9]/g,"")).filter(x=>x.length>=8);
       if(candidatos.length){
-
         candidatos.sort((a,b)=>b.length-a.length);
-
         return candidatos[0];
       }
     }
   }
-
   return "";
 }
 
-/* =========================
-   LER ETIQUETA
-   ========================= */
-
 async function lerEtiqueta(){
+  const campoFoto=document.getElementById("eFoto");
+  if(!campoFoto?.files?.[0]) return;
 
-  const campoFoto = document.getElementById("eFoto");
-
-  if(!campoFoto || !campoFoto.files || !campoFoto.files[0]){
-    return;
-  }
-
-  const arquivo = campoFoto.files[0];
-
-  const status = document.getElementById("leituraStatus");
+  const arquivo=campoFoto.files[0];
+  const status=document.getElementById("leituraStatus");
 
   try{
+    if(status) status.innerText="🔎 Lendo etiqueta...";
+    const campoNome=document.getElementById("eNome");
+    const campoApto=document.getElementById("eApto");
+    const campoBloco=document.getElementById("eBloco");
+    const campoRastreio=document.getElementById("eRastreio");
+    const campoTransportadora=document.getElementById("eTransportadora");
 
-    if(status){
-      status.innerText = "🔎 Lendo etiqueta...";
-    }
-
-    const campoNome = document.getElementById("eNome");
-    const campoApto = document.getElementById("eApto");
-    const campoBloco = document.getElementById("eBloco");
-    const campoRastreio = document.getElementById("eRastreio");
-    const campoTransportadora = document.getElementById("eTransportadora");
-
-    const worker = await carregarOCR();
-    const resultado = await worker.recognize(arquivo);
-    const texto = (resultado.data.text || "").trim();
-
-    console.log("TEXTO LIDO DA ETIQUETA:");
-    console.log(texto);
+    const worker=await carregarOCR();
+    const resultado=await worker.recognize(arquivo);
+    const texto=(resultado.data.text||"").trim();
 
     if(!texto){
-      if(status) status.innerText = "❌ Não foi possível ler a etiqueta.";
-      alert("Não foi possível identificar o texto da etiqueta.");
+      if(status) status.innerText="❌ Não foi possível ler a etiqueta.";
       return;
     }
 
-    const textoNormalizado = texto
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g,"")
-      .toUpperCase();
+    const textoNormalizado=normalizarTexto(texto);
+    const rastreio=extrairRastreio(texto);
+    if(rastreio&&campoRastreio) campoRastreio.value=rastreio;
 
-    /* =========================
-       CÓDIGO DE RASTREIO
-       ========================= */
+    const transportadora=detectarTransportadora(texto,rastreio);
+    if(transportadora&&campoTransportadora) campoTransportadora.value=transportadora;
 
-    let rastreio = "";
+    const aptos=textoNormalizado.match(/\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi);
+    if(aptos&&campoApto&&!campoApto.value){
+      const numero=aptos[0].match(/\d{1,5}/);
+      if(numero) campoApto.value=numero[0];
+    }
 
-    const padroesRastreio = [
-      /\b[A-Z]{2}\d{8,15}BR\b/gi,
-      /\b[A-Z]{2}\d{8,18}\b/gi,
-      /\b[A-Z]{2,5}\d{6,18}\b/gi,
-      /\b\d{10,20}\b/g,
-      /\b[A-Z0-9]{10,25}\b/gi
-    ];
-
-    for(const padrao of padroesRastreio){
-
-      const encontrados = texto.match(padrao);
-
-      if(encontrados && encontrados.length){
-
-        rastreio = encontrados
-          .map(x => x.trim())
-          .sort((a,b) => b.length - a.length)[0];
-
-        if(rastreio) break;
+    if(campoApto&&!campoApto.value){
+      const numeros=textoNormalizado.match(/\b\d{3,4}\b/g);
+      if(numeros){
+        const n=numeros.find(x=>+x>=101&&+x<=9999);
+        if(n) campoApto.value=n;
       }
     }
 
-    if(rastreio && campoRastreio){
-      campoRastreio.value = rastreio;
+    let bloco="";
+    if(/\bNATURE\b/.test(textoNormalizado)) bloco="NATURE";
+    else if(/\bBOTANIQUE\b/.test(textoNormalizado)) bloco="BOTANIQUE";
+    else if(/\bJARDIN\b/.test(textoNormalizado)) bloco="JARDIN";
+
+    if(!bloco){
+      const b=textoNormalizado.match(/\b(?:BLOCO|BL|TORRE)[\s.:#-]*([123])\b/);
+      if(b) bloco={"1":"NATURE","2":"BOTANIQUE","3":"JARDIN"}[b[1]]||"";
+    }
+    if(bloco&&campoBloco) campoBloco.value=bloco;
+
+    const encontrado=moradores.find(m=>{
+      const ma=String(m.apto||"").trim()===String(campoApto?.value||"").trim();
+      const mb=!campoBloco?.value || normalizarTexto(m.bloco)===normalizarTexto(campoBloco.value);
+      return ma&&mb;
+    });
+
+    if(encontrado&&campoNome){
+      campoNome.value=encontrado.nome||"";
     }
 
-    /* =========================
-       TRANSPORTADORA
-       ========================= */
-
-    if(campoTransportadora){
-
-      let transportadora = "";
-
-      if(
-        textoNormalizado.includes("AMAZON") ||
-        textoNormalizado.includes("AMAZON LOGISTICS") ||
-        textoNormalizado.includes("AMZ") ||
-        (rastreio && /^TBA/i.test(rastreio))
-      ){
-        transportadora = "Amazon";
-
-      }else if(
-        textoNormalizado.includes("MERCADO LIVRE") ||
-        textoNormalizado.includes("MERCADOLIVRE") ||
-        textoNormalizado.includes("MELI")
-      ){
-        transportadora = "Mercado Livre";
-
-      }else if(
-        textoNormalizado.includes("CORREIOS") ||
-        textoNormalizado.includes("SEDEX") ||
-        textoNormalizado.includes("PAC") ||
-        (rastreio && /^[A-Z]{2}\d{9}BR$/i.test(rastreio))
-      ){
-        transportadora = "Correios";
-
-      }else if(textoNormalizado.includes("JADLOG")){
-        transportadora = "Jadlog";
-
-      }else if(textoNormalizado.includes("LOGGI")){
-        transportadora = "Loggi";
-
-      }else if(textoNormalizado.includes("SHOPEE")){
-        transportadora = "Shopee";
-
-      }else{
-        transportadora = "Outra";
-      }
-
-      campoTransportadora.value = transportadora;
-    }
-
-    /* =========================
-       APARTAMENTO
-       ========================= */
-
-    const aptos = textoNormalizado.match(
-      /\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/gi
-    );
-
-    if(aptos && aptos.length && campoApto){
-
-      const numero = aptos[0].match(/\d{1,5}/);
-
-      if(numero){
-        campoApto.value = numero[0];
-      }
-    }
-
-    /* Se não encontrou "APTO", procura número de 3 ou 4 dígitos. */
-    if(campoApto && !campoApto.value){
-
-      const numeros = textoNormalizado.match(/\b\d{3,4}\b/g);
-
-      if(numeros && numeros.length){
-
-        const numeroApto = numeros.find(n => {
-          const nInt = parseInt(n,10);
-          return nInt >= 101 && nInt <= 9999;
-        });
-
-        if(numeroApto){
-          campoApto.value = numeroApto;
-        }
-      }
-    }
-
-    /* =========================
-       BLOCO / TORRE
-       1 = NATURE
-       2 = BOTANIQUE
-       3 = JARDIN
-       ========================= */
-
-    const mapaBlocos = {
-      "1":"NATURE",
-      "2":"BOTANIQUE",
-      "3":"JARDIN"
-    };
-
-    let blocoDetectado = "";
-
-    // Primeiro: nomes oficiais dos blocos.
-    if(/\bNATURE\b/i.test(textoNormalizado)){
-      blocoDetectado = "NATURE";
-
-    }else if(/\bBOTANIQUE\b/i.test(textoNormalizado)){
-      blocoDetectado = "BOTANIQUE";
-
-    }else if(/\bJARDIN\b/i.test(textoNormalizado)){
-      blocoDetectado = "JARDIN";
-    }
-
-    // Segundo: "Bloco 1", "Bloco 2", "Bloco 3".
-    if(!blocoDetectado){
-
-      const blocoNumerico = textoNormalizado.match(
-        /\b(?:BLOCO|BL|TORRE)[\s.:#-]*([123])\b/i
-      );
-
-      if(blocoNumerico){
-        blocoDetectado = mapaBlocos[blocoNumerico[1]];
-      }
-    }
-
-    // Terceiro: algumas etiquetas trazem somente 1, 2 ou 3
-    // em uma linha própria.
-    if(!blocoDetectado){
-
-      const linhas = textoNormalizado
-        .split(/\r?\n/)
-        .map(l => l.trim())
-        .filter(Boolean);
-
-      const linhaBloco = linhas.find(l => /^[123]$/.test(l));
-
-      if(linhaBloco){
-        blocoDetectado = mapaBlocos[linhaBloco];
-      }
-    }
-
-    if(blocoDetectado && campoBloco){
-      campoBloco.value = blocoDetectado;
-    }
-
-    /* =========================
-       IDENTIFICA MORADOR
-       ========================= */
-
-    const moradoresCadastrados =
-      JSON.parse(localStorage.getItem("vynko_moradores")) || [];
-
-    if(moradoresCadastrados.length && campoNome){
-
-      let encontrado = null;
-
-      // Primeiro tenta apartamento + bloco.
-      if(campoApto && campoApto.value){
-
-        const aptoBusca = String(campoApto.value).trim();
-
-        encontrado = moradoresCadastrados.find(m => {
-
-          const mesmoApto =
-            String(m.apto || m.apartamento || "").trim() === aptoBusca;
-
-          if(!mesmoApto) return false;
-
-          if(!campoBloco.value) return true;
-
-          const blocoMorador = String(m.bloco || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g,"")
-            .toUpperCase()
-            .trim();
-
-          return blocoMorador === campoBloco.value.toUpperCase().trim();
-        });
-
-        // Se não houver correspondência pelo bloco,
-        // ainda tenta pelo apartamento.
-        if(!encontrado){
-
-          encontrado = moradoresCadastrados.find(m =>
-            String(m.apto || m.apartamento || "").trim() === aptoBusca
-          );
-        }
-      }
-
-      // Depois tenta pelo nome completo.
-      if(!encontrado){
-
-        encontrado = moradoresCadastrados.find(m => {
-
-          const nomeMorador = String(m.nome || m.name || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g,"")
-            .toUpperCase()
-            .trim();
-
-          return nomeMorador &&
-            textoNormalizado.includes(nomeMorador);
-        });
-      }
-
-      // Por fim, tenta por partes do nome.
-      if(!encontrado){
-
-        encontrado = moradoresCadastrados.find(m => {
-
-          const nomeMorador = String(m.nome || m.name || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g,"")
-            .toUpperCase();
-
-          const partes = nomeMorador
-            .split(/\s+/)
-            .filter(p => p.length >= 3);
-
-          if(partes.length < 2) return false;
-
-          const acertos = partes.filter(parte =>
-            textoNormalizado.includes(parte)
-          );
-
-          return acertos.length >= 2;
-        });
-      }
-
-      if(encontrado){
-
-        campoNome.value =
-          encontrado.nome ||
-          encontrado.name ||
-          "";
-
-        if(
-          campoApto &&
-          encontrado.apto &&
-          !campoApto.value
-        ){
-          campoApto.value = encontrado.apto;
-        }
-
-        // Não sobrescreve um bloco que foi lido corretamente da etiqueta.
-        if(
-          campoBloco &&
-          encontrado.bloco &&
-          !campoBloco.value
-        ){
-          campoBloco.value = encontrado.bloco;
-        }
-      }
-    }
-
-    if(status){
-      status.innerText = "✅ Etiqueta lida. Confira os dados antes de registrar.";
-    }
-
-    console.log(
-      "Rastreio:",
-      campoRastreio ? campoRastreio.value : ""
-    );
-
-    console.log(
-      "Transportadora:",
-      campoTransportadora ? campoTransportadora.value : ""
-    );
-
-    console.log(
-      "Bloco:",
-      campoBloco ? campoBloco.value : ""
-    );
-
-    alert(
-      "Etiqueta lida! Confira nome, apartamento, bloco, transportadora e código de rastreio antes de registrar."
-    );
-
+    if(status) status.innerText="✅ Etiqueta lida. Confira os dados antes de registrar.";
   }catch(erro){
-
     console.error("Erro no OCR:",erro);
-
-    if(status){
-      status.innerText = "❌ Não foi possível ler automaticamente a etiqueta.";
-    }
-
-    alert(
-      "Não foi possível ler automaticamente a etiqueta. Confira os dados manualmente."
-    );
+    if(status) status.innerText="❌ Não foi possível ler automaticamente a etiqueta.";
   }
 }
 
+/* =========================
+   NAVEGAÇÃO / MODAIS
+   ========================= */
+
 function showPage(id,btn){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(
-      p=>p.classList.remove("active")
-    );
-
-  const pagina =
-    document.getElementById(id);
-
-  if(pagina){
-    pagina.classList.add("active");
-  }
-
-  document
-    .querySelectorAll(".menu button")
-    .forEach(
-      b=>b.classList.remove("active")
-    );
-
-  if(btn){
-    btn.classList.add("active");
-  }
-
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
+  document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
   atualizarTudo();
 }
 
-/* =========================
-   MODAIS
-   ========================= */
-
-function abrirModalEncomenda(){
-
-  document
-    .getElementById("modalEncomenda")
-    .classList.add("show");
-
-}
-
-function abrirModalMorador(){
-
-  document
-    .getElementById("modalMorador")
-    .classList.add("show");
-
-}
-
-function fecharModal(id){
-
-  const modal =
-    document.getElementById(id);
-
-  if(modal){
-    modal.classList.remove("show");
-  }
-
-}
-
-/* =========================
-   SENHA
-   ========================= */
+function abrirModalEncomenda(){document.getElementById("modalEncomenda").classList.add("show")}
+function abrirModalMorador(){document.getElementById("modalMorador").classList.add("show")}
+function fecharModal(id){document.getElementById(id)?.classList.remove("show")}
 
 function gerarSenha(){
-
-  let senha = "";
-
+  let senha="";
   do{
-
-    senha =
-      Math.floor(
-        1000 +
-        Math.random()*9000
-      ).toString();
-
-  }while(
-    encomendas.some(
-      e =>
-        e.senha === senha &&
-        e.status === "Aguardando"
-    )
-  );
-
+    senha=Math.floor(1000+Math.random()*9000).toString();
+  }while(encomendas.some(e=>e.senha===senha&&e.status==="Aguardando"));
   return senha;
 }
 
 /* =========================
-   ENCOMENDA
+   SALVAR ENCOMENDA
    ========================= */
 
+async function salvarEncomenda(){
+  const nome=document.getElementById("eNome").value.trim();
+  const apto=document.getElementById("eApto").value.trim();
+  const bloco=document.getElementById("eBloco").value.trim();
+  const transportadora=document.getElementById("eTransportadora").value;
+  const rastreio=document.getElementById("eRastreio").value.trim();
+  const arquivoFoto=document.getElementById("eFoto")?.files?.[0]||null;
 
-/* =========================
-   SALVAR ENCOMENDA NO SUPABASE
-   ========================= */
-
-async function salvarEncomendaOnline(encomenda){
-
-  try{
-
-    const registro = {
-      id: encomenda.id,
-      nome: encomenda.nome,
-      apto: encomenda.apto,
-      bloco: encomenda.bloco,
-      transportadora: encomenda.transportadora,
-      rastreio: encomenda.rastreio,
-      senha: encomenda.senha,
-      status: encomenda.status,
-      foto_url: encomenda.foto || null
-    };
-
-    const { error } =
-      await supabaseClient
-        .from("encomendas")
-        .upsert(
-          registro,
-          { onConflict: "id" }
-        );
-
-    if(error){
-      console.error(
-        "Erro ao salvar encomenda no Supabase:",
-        error
-      );
-
-      return false;
-    }
-
-    return true;
-
-  }catch(erro){
-
-    console.error(
-      "Erro de conexão com Supabase:",
-      erro
-    );
-
-    return false;
-  }
-}
-
-function salvarEncomenda(){
-
-  const nome =
-    document
-      .getElementById("eNome")
-      .value.trim();
-
-  const apto =
-    document
-      .getElementById("eApto")
-      .value.trim();
-
-  const bloco =
-    document
-      .getElementById("eBloco")
-      .value.trim();
-
-  const transportadora =
-    document
-      .getElementById("eTransportadora")
-      .value;
-
-  const rastreio =
-    document
-      .getElementById("eRastreio")
-      .value.trim();
-
-  const arquivoFoto =
-    document.getElementById("eFoto");
-
-  if(!nome || !apto){
-
-    alert(
-      "Informe pelo menos o nome e o apartamento."
-    );
-
+  if(!nome||!apto){
+    alert("Informe pelo menos o nome e o apartamento.");
     return;
   }
 
-  const agora =
-    new Date();
+  const agora=dataHoraAtual();
+  const id=Date.now();
 
-  const fotoArquivo =
-    arquivoFoto &&
-    arquivoFoto.files &&
-    arquivoFoto.files[0]
-      ? arquivoFoto.files[0]
-      : null;
-
-  const salvarDadosEncomenda = (fotoDataUrl) => {
-
-    const encomenda = {
-
-    id:Date.now(),
-
-    codigoPublico:
-      "EN-" +
-      Date.now() +
-      "-" +
-      Math.random()
-        .toString(36)
-        .substring(2,8)
-        .toUpperCase(),
-
-    data:
-      agora.toLocaleDateString(
-        "pt-BR"
-      ),
-
-    hora:
-      agora.toLocaleTimeString(
-        "pt-BR",
-        {
-          hour:"2-digit",
-          minute:"2-digit"
-        }
-      ),
-
-    nome:nome,
-
-    apto:apto,
-
-    bloco:bloco,
-
-    transportadora:
-      transportadora,
-
-    rastreio:
-      rastreio,
-
-    senha:
-      gerarSenha(),
-
-    status:
-      "Aguardando",
-
+  const encomenda={
+    id,
+    codigoPublico:"EN-"+id+"-"+Math.random().toString(36).substring(2,8).toUpperCase(),
+    created_at:agora.iso,
+    data:agora.data,
+    hora:agora.hora,
+    nome,apto,bloco,transportadora,rastreio,
+    senha:gerarSenha(),
+    status:"Aguardando",
     retirada:null,
-
-    foto:
-      fotoDataUrl || ""
-
-    };
-
-    encomendas.unshift(
-      encomenda
-    );
-
-  localStorage.setItem(
-    "vynko_encomendas",
-    JSON.stringify(encomendas)
-  );
-
-  document.getElementById("eNome").value="";
-  document.getElementById("eApto").value="";
-  document.getElementById("eBloco").value="";
-  document.getElementById("eRastreio").value="";
-
-  const foto =
-    document.getElementById("eFoto");
-
-  if(foto){
-    foto.value="";
-  }
-
-  const preview =
-    document.getElementById("previewFoto");
-
-  if(preview){
-    preview.innerHTML="";
-  }
-
-  const status =
-    document.getElementById("leituraStatus");
-
-  if(status){
-    status.innerText="";
-  }
-
-  /*
-   * Volta a transportadora para Amazon
-   * quando um novo cadastro é aberto.
-   */
-
-  const select =
-    document.getElementById(
-      "eTransportadora"
-    );
-
-  if(select){
-    select.value="Amazon";
-  }
-
-  fecharModal(
-    "modalEncomenda"
-  );
-
-  alert(
-    "Encomenda registrada!\n\nSenha de retirada: "+
-    encomenda.senha
-  );
-
-  atualizarTudo();
+    retirada_em:null,
+    foto:"",
+    foto_url:""
   };
 
-  if(fotoArquivo){
+  /* Foto continua local por enquanto. */
+  if(arquivoFoto){
+    try{
+      encomenda.foto=await arquivoParaDataURL(arquivoFoto);
+    }catch(e){
+      console.warn("Foto não pôde ser lida:",e);
+    }
+  }
 
-    const leitor =
-      new FileReader();
+  const botao=document.querySelector("#modalEncomenda button.primary");
+  if(botao){botao.disabled=true;botao.innerText="Salvando...";}
 
-    leitor.onload = function(){
-      salvarDadosEncomenda(
-        leitor.result || ""
-      );
-    };
+  try{
+    await inserirEncomendaSupabase(encomenda);
 
-    leitor.onerror = function(){
-      salvarDadosEncomenda("");
-    };
+    encomendas.unshift(encomenda);
+    localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
 
-    leitor.readAsDataURL(
-      fotoArquivo
-    );
+    limparFormularioEncomenda();
+    fecharModal("modalEncomenda");
 
-  }else{
-
-    salvarDadosEncomenda("");
-
+    alert("Encomenda registrada!\n\nSenha de retirada: "+encomenda.senha);
+    atualizarTudo();
+  }catch(erro){
+    console.error(erro);
+    alert("Não foi possível salvar no Supabase.\n\nVerifique se a tabela e as colunas foram criadas e se as políticas RLS permitem inserir.");
+  }finally{
+    if(botao){botao.disabled=false;botao.innerText="Registrar";}
   }
 }
 
+function arquivoParaDataURL(arquivo){
+  return new Promise((resolve,reject)=>{
+    const leitor=new FileReader();
+    leitor.onload=()=>resolve(leitor.result||"");
+    leitor.onerror=reject;
+    leitor.readAsDataURL(arquivo);
+  });
+}
+
+function limparFormularioEncomenda(){
+  ["eNome","eApto","eBloco","eRastreio"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value="";
+  });
+  const foto=document.getElementById("eFoto"); if(foto) foto.value="";
+  const preview=document.getElementById("previewFoto"); if(preview) preview.innerHTML="";
+  const status=document.getElementById("leituraStatus"); if(status) status.innerText="";
+  const select=document.getElementById("eTransportadora"); if(select) select.value="Amazon";
+}
+
 /* =========================
-   MORADOR
+   MORADORES
    ========================= */
 
-function salvarMorador(){
+async function salvarMorador(){
+  const nome=document.getElementById("mNome").value.trim();
+  const apto=document.getElementById("mApto").value.trim();
+  const bloco=document.getElementById("mBloco").value.trim();
+  const whatsapp=document.getElementById("mWhatsApp").value.trim();
 
-  const nome =
-    document
-      .getElementById("mNome")
-      .value.trim();
-
-  const apto =
-    document
-      .getElementById("mApto")
-      .value.trim();
-
-  const bloco =
-    document
-      .getElementById("mBloco")
-      .value.trim();
-
-  const whatsapp =
-    document
-      .getElementById("mWhatsApp")
-      .value.trim();
-
-  if(!nome || !apto){
-
-    alert(
-      "Informe o nome e o apartamento."
-    );
-
+  if(!nome||!apto){
+    alert("Informe o nome e o apartamento.");
     return;
   }
 
-  moradores.push({
+  const morador={id:Date.now(),created_at:new Date().toISOString(),nome,apto,bloco,whatsapp};
+  const botao=document.querySelector("#modalMorador button.primary");
+  if(botao){botao.disabled=true;botao.innerText="Salvando...";}
 
-    id:Date.now(),
+  try{
+    await inserirMoradorSupabase(morador);
+    moradores.push(morador);
+    localStorage.setItem("vynko_moradores",JSON.stringify(moradores));
 
-    nome:nome,
-
-    apto:apto,
-
-    bloco:bloco,
-
-    whatsapp:whatsapp
-
-  });
-
-  localStorage.setItem(
-    "vynko_moradores",
-    JSON.stringify(moradores)
-  );
-
-  document.getElementById("mNome").value="";
-  document.getElementById("mApto").value="";
-  document.getElementById("mBloco").value="";
-  document.getElementById("mWhatsApp").value="";
-
-  fecharModal(
-    "modalMorador"
-  );
-
-  alert(
-    "Morador cadastrado com sucesso!"
-  );
-
-  atualizarTudo();
+    ["mNome","mApto","mBloco","mWhatsApp"].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.value="";
+    });
+    fecharModal("modalMorador");
+    alert("Morador cadastrado com sucesso!");
+    atualizarTudo();
+  }catch(erro){
+    console.error(erro);
+    alert("Não foi possível salvar o morador no Supabase.\n\nVerifique a tabela moradores e as políticas RLS.");
+  }finally{
+    if(botao){botao.disabled=false;botao.innerText="Cadastrar";}
+  }
 }
 
 /* =========================
-   TABELA ENCOMENDAS
+   TABELAS
    ========================= */
 
 function renderEncomendas(){
-
-  const busca =
-    (
-      document
-        .getElementById("buscaEncomenda")
-        ?.value ||
-      ""
-    ).toLowerCase();
-
-  const lista =
-    encomendas.filter(e=>
-
-      String(e.nome || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(e.apto || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(e.bloco || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(e.transportadora || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(e.rastreio || "")
-        .toLowerCase()
-        .includes(busca)
-
-    );
-
-  const tbody =
-    document.getElementById(
-      "tabelaEncomendas"
-    );
-
-  if(!tbody) return;
-
+  const busca=(document.getElementById("buscaEncomenda")?.value||"").toLowerCase();
+  const lista=encomendas.filter(e=>
+    [e.nome,e.apto,e.bloco,e.transportadora,e.rastreio,e.senha].some(v=>String(v||"").toLowerCase().includes(busca))
+  );
+  const tbody=document.getElementById("tabelaEncomendas");
+  if(!tbody)return;
   if(!lista.length){
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="9" class="empty">
-          Nenhuma encomenda encontrada.
-        </td>
-      </tr>`;
-
+    tbody.innerHTML='<tr><td colspan="9" class="empty">Nenhuma encomenda encontrada.</td></tr>';
     return;
   }
-
-  tbody.innerHTML =
-    lista.map(e=>`
-
-      <tr>
-
-      <td>
-        ${e.data}<br>${e.hora}
-      </td>
-
-      <td>
-        <strong>${e.nome}</strong>
-      </td>
-
-      <td>${e.apto}</td>
-
-      <td>${e.bloco || "-"}</td>
-
-      <td>${e.transportadora || "-"}</td>
-
-      <td>
-        <span class="status ${
-          e.status==="Aguardando"
-            ? "pending"
-            : "done"
-        }">
-          ${e.status}
-        </span>
-      </td>
-
-      <td>
-        <strong>
-          ${
-            e.status==="Aguardando"
-              ? e.senha
-              : "—"
-          }
-        </strong>
-      </td>
-
-      <td>
-        ${
-          e.codigoPublico
-            ? `<button
-                 class="secondary"
-                 onclick="verEncomenda('${e.codigoPublico}')"
-               >
-                 👁️ Ver
-               </button>`
-            : "—"
-        }
-      </td>
-
-      <td>
-        ${
-          e.codigoPublico
-            ? `<button
-                 class="secondary"
-                 onclick="enviarWhatsApp('${e.codigoPublico}')"
-               >
-                 📲 WhatsApp
-               </button>`
-            : "—"
-        }
-      </td>
-
-      </tr>
-
-    `).join("");
+  tbody.innerHTML=lista.map(e=>`
+    <tr>
+      <td>${escaparHTML(e.data)}<br>${escaparHTML(e.hora)}</td>
+      <td><strong>${escaparHTML(e.nome)}</strong></td>
+      <td>${escaparHTML(e.apto)}</td>
+      <td>${escaparHTML(e.bloco||"-")}</td>
+      <td>${escaparHTML(e.transportadora||"-")}</td>
+      <td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${escaparHTML(e.status)}</span></td>
+      <td><strong>${e.status==="Aguardando"?escaparHTML(e.senha):"—"}</strong></td>
+      <td><button class="secondary" onclick="verEncomenda('${String(e.codigoPublico).replace(/'/g,"\\'")}')">👁️ Ver</button></td>
+      <td><button class="secondary" onclick="enviarWhatsApp('${String(e.codigoPublico).replace(/'/g,"\\'")}')">📲 WhatsApp</button></td>
+    </tr>`).join("");
 }
 
-/* =========================
-   TABELA MORADORES
-   ========================= */
-
 function renderMoradores(){
-
-  const busca =
-    (
-      document
-        .getElementById("buscaMorador")
-        ?.value ||
-      ""
-    ).toLowerCase();
-
-  const lista =
-    moradores.filter(m=>
-
-      String(m.nome || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(m.apto || "")
-        .toLowerCase()
-        .includes(busca) ||
-
-      String(m.bloco || "")
-        .toLowerCase()
-        .includes(busca)
-
-    );
-
-  const tbody =
-    document.getElementById(
-      "tabelaMoradores"
-    );
-
-  if(!tbody) return;
-
+  const busca=(document.getElementById("buscaMorador")?.value||"").toLowerCase();
+  const lista=moradores.filter(m=>[m.nome,m.apto,m.bloco,m.whatsapp].some(v=>String(v||"").toLowerCase().includes(busca)));
+  const tbody=document.getElementById("tabelaMoradores");
+  if(!tbody)return;
   if(!lista.length){
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="4" class="empty">
-          Nenhum morador cadastrado.
-        </td>
-      </tr>`;
-
+    tbody.innerHTML='<tr><td colspan="4" class="empty">Nenhum morador cadastrado.</td></tr>';
     return;
   }
-
-  tbody.innerHTML =
-    lista.map(m=>`
-
-      <tr>
-
-      <td>
-        <strong>${m.nome}</strong>
-      </td>
-
-      <td>${m.apto}</td>
-
-      <td>${m.bloco || "-"}</td>
-
-      <td>${m.whatsapp || "-"}</td>
-
-      </tr>
-
-    `).join("");
+  tbody.innerHTML=lista.map(m=>`
+    <tr>
+      <td><strong>${escaparHTML(m.nome)}</strong></td>
+      <td>${escaparHTML(m.apto)}</td>
+      <td>${escaparHTML(m.bloco||"-")}</td>
+      <td>${escaparHTML(m.whatsapp||"-")}</td>
+    </tr>`).join("");
 }
 
 /* =========================
@@ -1815,865 +682,237 @@ function renderMoradores(){
    ========================= */
 
 function normalizarTelefoneWhatsApp(numero){
-
-  let telefone =
-    String(numero || "")
-      .replace(/\D/g,"");
-
-  if(!telefone){
-    return "";
-  }
-
-  // Se já estiver com código do Brasil.
-  if(telefone.startsWith("55")){
-    return telefone;
-  }
-
-  // Telefones brasileiros normalmente têm 10 ou 11 dígitos.
-  if(telefone.length === 10 || telefone.length === 11){
-    return "55" + telefone;
-  }
-
+  let telefone=String(numero||"").replace(/\D/g,"");
+  if(!telefone)return "";
+  if(telefone.startsWith("55"))return telefone;
+  if(telefone.length===10||telefone.length===11)return "55"+telefone;
   return telefone;
 }
 
 function encontrarMoradorDaEncomenda(encomenda){
-
-  if(!encomenda){
-    return null;
-  }
-
-  const aptoEncomenda =
-    String(encomenda.apto || "")
-      .trim()
-      .toLowerCase();
-
-  const blocoEncomenda =
-    String(encomenda.bloco || "")
-      .trim()
-      .toLowerCase();
-
-  // Primeiro tenta apartamento + bloco.
-  let morador =
-    moradores.find(m => {
-
-      const apto =
-        String(m.apto || m.apartamento || "")
-          .trim()
-          .toLowerCase();
-
-      const bloco =
-        String(m.bloco || "")
-          .trim()
-          .toLowerCase();
-
-      return apto === aptoEncomenda &&
-             bloco === blocoEncomenda;
-    });
-
-  // Se não encontrou, tenta somente pelo apartamento.
-  if(!morador){
-
-    morador =
-      moradores.find(m => {
-
-        const apto =
-          String(m.apto || m.apartamento || "")
-            .trim()
-            .toLowerCase();
-
-        return apto === aptoEncomenda;
-      });
-  }
-
-  // Por último, tenta pelo nome.
-  if(!morador){
-
-    const nomeEncomenda =
-      String(encomenda.nome || "")
-        .trim()
-        .toLowerCase();
-
-    morador =
-      moradores.find(m => {
-
-        const nome =
-          String(m.nome || "")
-            .trim()
-            .toLowerCase();
-
-        return nome &&
-               nome === nomeEncomenda;
-      });
-  }
-
-  return morador || null;
+  if(!encomenda)return null;
+  const a=String(encomenda.apto||"").trim().toLowerCase();
+  const b=String(encomenda.bloco||"").trim().toLowerCase();
+  let m=moradores.find(x=>String(x.apto||"").trim().toLowerCase()===a&&String(x.bloco||"").trim().toLowerCase()===b);
+  if(!m)m=moradores.find(x=>String(x.apto||"").trim().toLowerCase()===a);
+  if(!m)m=moradores.find(x=>String(x.nome||"").trim().toLowerCase()===String(encomenda.nome||"").trim().toLowerCase());
+  return m||null;
 }
 
 function gerarMensagemWhatsApp(encomenda){
+  const unidade=`${encomenda.apto||""}${encomenda.bloco?" - "+encomenda.bloco:""}`;
+  let mensagem=`📦 *Sua encomenda chegou!*
 
-  const unidade =
-    `${encomenda.apto || ""}` +
-    `${encomenda.bloco ? " - " + encomenda.bloco : ""}`;
-
-  let mensagem =
-`📦 *Sua encomenda chegou!*
-
-Olá, ${encomenda.nome || "morador"}!
+Olá, ${encomenda.nome||"morador"}!
 
 Sua encomenda chegou à portaria do *Grand Raya* e está disponível para retirada.
 
 🏢 *Unidade:* ${unidade}
-🚚 *Transportadora:* ${encomenda.transportadora || "-"}
-📦 *Código de rastreio:* ${encomenda.rastreio || "-"}
-📅 *Recebida em:* ${encomenda.data || ""} ${encomenda.hora || ""}`;
-
-  if(encomenda.status === "Aguardando"){
-    mensagem +=
-`\n🔐 *Senha de retirada:* ${encomenda.senha || "-"}`;
-  }
-
-  mensagem +=
-`\n\nApresente a senha na portaria para retirar sua encomenda.`;
-
+🚚 *Transportadora:* ${encomenda.transportadora||"-"}
+📦 *Código de rastreio:* ${encomenda.rastreio||"-"}
+📅 *Recebida em:* ${encomenda.data||""} ${encomenda.hora||""}`;
+  if(encomenda.status==="Aguardando") mensagem+=`\n🔐 *Senha de retirada:* ${encomenda.senha||"-"}`;
+  mensagem+=`\n\nApresente a senha na portaria para retirar sua encomenda.`;
   return mensagem;
 }
 
 function enviarWhatsApp(codigo){
-
-  const encomenda =
-    encomendas.find(
-      e => e.codigoPublico === codigo
-    );
-
-  if(!encomenda){
-    alert("Encomenda não encontrada.");
-    return;
-  }
-
-  const morador =
-    encontrarMoradorDaEncomenda(encomenda);
-
-  if(!morador){
-
-    alert(
-      "Não encontrei um morador cadastrado para esta encomenda.\n\n" +
-      "Confira o apartamento e o bloco no cadastro de moradores."
-    );
-
-    return;
-  }
-
-  const numero =
-    normalizarTelefoneWhatsApp(
-      morador.whatsapp
-    );
-
-  if(!numero){
-
-    alert(
-      "Este morador ainda não possui um WhatsApp cadastrado.\n\n" +
-      "Cadastre o número em Moradores e tente novamente."
-    );
-
-    return;
-  }
-
-  const mensagem =
-    gerarMensagemWhatsApp(
-      encomenda
-    );
-
-  const url =
-    "https://wa.me/" +
-    numero +
-    "?text=" +
-    encodeURIComponent(mensagem);
-
-  window.open(
-    url,
-    "_blank"
-  );
+  const encomenda=encomendas.find(e=>e.codigoPublico===codigo);
+  if(!encomenda){alert("Encomenda não encontrada.");return;}
+  const morador=encontrarMoradorDaEncomenda(encomenda);
+  if(!morador){alert("Não encontrei um morador cadastrado para esta encomenda.");return;}
+  const numero=normalizarTelefoneWhatsApp(morador.whatsapp);
+  if(!numero){alert("Este morador ainda não possui um WhatsApp cadastrado.");return;}
+  const url="https://wa.me/"+numero+"?text="+encodeURIComponent(gerarMensagemWhatsApp(encomenda));
+  window.open(url,"_blank");
 }
 
 /* =========================
-   VISUALIZAÇÃO DA ENCOMENDA
+   VISUALIZAÇÃO
    ========================= */
 
 function verEncomenda(codigo){
+  const encomenda=encomendas.find(e=>e.codigoPublico===codigo);
+  if(!encomenda){alert("Encomenda não encontrada.");return;}
 
-  const encomenda =
-    encomendas.find(
-      e => e.codigoPublico === codigo
-    );
+  const fotoHtml=encomenda.foto?`<img src="${encomenda.foto}" alt="Foto da encomenda" style="width:100%;max-height:320px;object-fit:contain;border-radius:10px;margin:10px 0;">`:`<div class="empty">📷 Esta encomenda não possui foto salva.</div>`;
 
-  if(!encomenda){
-    alert("Encomenda não encontrada.");
-    return;
-  }
-
-  const fotoHtml =
-    encomenda.foto
-      ? `<img
-           src="${encomenda.foto}"
-           alt="Foto da encomenda"
-           style="
-             width:100%;
-             max-height:320px;
-             object-fit:contain;
-             border-radius:10px;
-             margin:10px 0;
-           "
-         >`
-      : `<div class="empty">
-           📷 Esta encomenda não possui foto salva.
-         </div>`;
-
-  const conteudo = `
-
+  document.body.insertAdjacentHTML("beforeend",`
     <div class="modal show" id="modalVisualizarEncomenda">
-
       <div class="modal-box">
-
         <h2>📦 Encomenda</h2>
-
         ${fotoHtml}
-
         <div class="panel" style="box-shadow:none;padding:10px 0;">
-
-          <p><strong>Destinatário:</strong> ${encomenda.nome}</p>
-
-          <p>
-            <strong>Unidade:</strong>
-            ${encomenda.apto}
-            ${encomenda.bloco
-              ? " • " + encomenda.bloco
-              : ""}
-          </p>
-
-          <p>
-            <strong>Transportadora:</strong>
-            ${encomenda.transportadora || "-"}
-          </p>
-
-          <p>
-            <strong>Rastreio:</strong>
-            ${encomenda.rastreio || "-"}
-          </p>
-
-          <p>
-            <strong>Recebida em:</strong>
-            ${encomenda.data} ${encomenda.hora}
-          </p>
-
-          <p>
-            <strong>Status:</strong>
-            ${encomenda.status}
-          </p>
-
-          ${
-            encomenda.status === "Aguardando"
-              ? `<p>
-                   <strong>Senha:</strong>
-                   ${encomenda.senha}
-                 </p>`
-              : ""
-          }
-
+          <p><strong>Destinatário:</strong> ${escaparHTML(encomenda.nome)}</p>
+          <p><strong>Unidade:</strong> ${escaparHTML(encomenda.apto)}${encomenda.bloco?" • "+escaparHTML(encomenda.bloco):""}</p>
+          <p><strong>Transportadora:</strong> ${escaparHTML(encomenda.transportadora||"-")}</p>
+          <p><strong>Rastreio:</strong> ${escaparHTML(encomenda.rastreio||"-")}</p>
+          <p><strong>Recebida em:</strong> ${escaparHTML(encomenda.data)} ${escaparHTML(encomenda.hora)}</p>
+          <p><strong>Status:</strong> ${escaparHTML(encomenda.status)}</p>
+          ${encomenda.status==="Aguardando"?`<p><strong>Senha:</strong> ${escaparHTML(encomenda.senha)}</p>`:""}
         </div>
-
         <div class="form-actions">
-
-          <button
-            class="primary"
-            onclick="enviarWhatsApp('${encomenda.codigoPublico}')"
-          >
-            📲 WhatsApp
-          </button>
-
-          <button
-            class="secondary"
-            onclick="fecharModal('modalVisualizarEncomenda')"
-          >
-            Fechar
-          </button>
-
+          <button class="primary" onclick="enviarWhatsApp('${String(encomenda.codigoPublico).replace(/'/g,"\\'")}')">📲 WhatsApp</button>
+          <button class="secondary" onclick="fecharModal('modalVisualizarEncomenda')">Fechar</button>
         </div>
-
       </div>
-
-    </div>
-
-  `;
-
-  document.body.insertAdjacentHTML(
-    "beforeend",
-    conteudo
-  );
+    </div>`);
 }
 
 /* =========================
    RETIRADA
    ========================= */
 
-function buscarSenha(){
+async function buscarSenha(){
+  const senha=document.getElementById("senhaRetirada").value.trim();
+  const resultado=document.getElementById("resultadoRetirada");
 
-  const senha =
-    document
-      .getElementById("senhaRetirada")
-      .value.trim();
-
-  const resultado =
-    document.getElementById(
-      "resultadoRetirada"
-    );
-
-  if(senha.length !== 4){
-
-    resultado.innerHTML =
-      `<div class="empty">
-        Digite uma senha de 4 números.
-      </div>`;
-
+  if(senha.length!==4){
+    resultado.innerHTML='<div class="empty">Digite uma senha de 4 números.</div>';
     return;
   }
 
-  const encomenda =
-    encomendas.find(
-      e =>
-        e.senha === senha &&
-        e.status === "Aguardando"
-    );
+  /* Busca primeiro no banco para garantir que a portaria tenha o dado mais atual. */
+  if(navigator.onLine){
+    try{
+      const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("*").eq("senha",senha).eq("status","Aguardando").maybeSingle();
+      if(!error&&data){
+        const convertido={
+          id:data.id,
+          codigoPublico:data.codigo_publico||("EN-"+data.id),
+          created_at:data.created_at,
+          data:new Date(data.created_at).toLocaleDateString("pt-BR"),
+          hora:new Date(data.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
+          nome:data.nome||"",apto:data.apto||"",bloco:data.bloco||"",
+          transportadora:data.transportadora||"",rastreio:data.rastreio||"",
+          senha:data.senha||"",status:data.status||"Aguardando",
+          retirada_em:data.retirada_em||null,foto_url:data.foto_url||"",foto:data.foto_url||""
+        };
+        const idx=encomendas.findIndex(e=>String(e.id)===String(convertido.id));
+        if(idx>=0) encomendas[idx]=convertido; else encomendas.unshift(convertido);
+        localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
+      }
+    }catch(e){
+      console.warn("Consulta online da senha falhou; usando cache local.",e);
+    }
+  }
+
+  const encomenda=encomendas.find(e=>String(e.senha)===senha&&e.status==="Aguardando");
 
   if(!encomenda){
-
-    resultado.innerHTML =
-      `<div class="empty">
-        ❌ Nenhuma encomenda aguardando retirada
-        encontrada para esta senha.
-      </div>`;
-
+    resultado.innerHTML='<div class="empty">❌ Nenhuma encomenda aguardando retirada encontrada para esta senha.</div>';
     return;
   }
 
-  resultado.innerHTML = `
-
+  resultado.innerHTML=`
     <div class="password-box">
-
-    <p>Encomenda encontrada</p>
-
-    <h2>${encomenda.nome}</h2>
-
-    <p>
-      Apartamento ${encomenda.apto}
-      ${
-        encomenda.bloco
-          ? " • Bloco "+encomenda.bloco
-          : ""
-      }
-    </p>
-
-    <div class="password">
-      ${encomenda.senha}
-    </div>
-
-    <button
-      class="primary"
-      onclick="confirmarRetirada(${encomenda.id})"
-    >
-      ✅ Confirmar retirada
-    </button>
-
-    </div>
-
-  `;
+      <p>Encomenda encontrada</p>
+      <h2>${escaparHTML(encomenda.nome)}</h2>
+      <p>Apartamento ${escaparHTML(encomenda.apto)}${encomenda.bloco?" • Bloco "+escaparHTML(encomenda.bloco):""}</p>
+      <div class="password">${escaparHTML(encomenda.senha)}</div>
+      <button class="primary" onclick="confirmarRetirada(${Number(encomenda.id)})">✅ Confirmar retirada</button>
+    </div>`;
 }
 
-function confirmarRetirada(id){
+async function confirmarRetirada(id){
+  const encomenda=encomendas.find(e=>String(e.id)===String(id));
+  if(!encomenda)return;
 
-  const encomenda =
-    encomendas.find(
-      e=>e.id===id
-    );
+  const agora=new Date().toISOString();
 
-  if(!encomenda) return;
+  try{
+    await atualizarEncomendaSupabase(id,{status:"Retirada",retirada_em:agora});
+  }catch(erro){
+    alert("Não foi possível confirmar a retirada no banco.\n\nA encomenda NÃO foi baixada.");
+    return;
+  }
 
-  encomenda.status =
-    "Retirada";
+  encomenda.status="Retirada";
+  encomenda.retirada_em=agora;
+  encomenda.retirada=new Date(agora).toLocaleDateString("pt-BR")+" "+new Date(agora).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
 
-  const agora =
-    new Date();
-
-  encomenda.retirada =
-    agora.toLocaleDateString(
-      "pt-BR"
-    )+
-    " "+
-    agora.toLocaleTimeString(
-      "pt-BR",
-      {
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
-
-  localStorage.setItem(
-    "vynko_encomendas",
-    JSON.stringify(encomendas)
-  );
-
-  document
-    .getElementById(
-      "senhaRetirada"
-    )
-    .value="";
-
-  document
-    .getElementById(
-      "resultadoRetirada"
-    )
-    .innerHTML =
-      `<div class="empty">
-        ✅ Encomenda retirada com sucesso!
-      </div>`;
-
+  localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
+  document.getElementById("senhaRetirada").value="";
+  document.getElementById("resultadoRetirada").innerHTML='<div class="empty">✅ Encomenda retirada com sucesso!</div>';
   atualizarTudo();
 }
 
 /* =========================
-   DASHBOARD
+   DASHBOARD / RELATÓRIOS
    ========================= */
 
 function atualizarDashboard(){
+  const total=document.getElementById("totalEncomendas"); if(total) total.innerText=encomendas.length;
+  const aguardando=document.getElementById("aguardando"); if(aguardando) aguardando.innerText=encomendas.filter(e=>e.status==="Aguardando").length;
+  const hoje=new Date().toLocaleDateString("pt-BR");
+  const retiradasHoje=document.getElementById("retiradasHoje");
+  if(retiradasHoje) retiradasHoje.innerText=encomendas.filter(e=>e.status==="Retirada"&&e.retirada&&e.retirada.startsWith(hoje)).length;
+  const totalMoradores=document.getElementById("totalMoradores"); if(totalMoradores) totalMoradores.innerText=moradores.length;
 
-  const total =
-    document.getElementById(
-      "totalEncomendas"
-    );
-
-  if(total){
-    total.innerText =
-      encomendas.length;
-  }
-
-  const aguardando =
-    document.getElementById(
-      "aguardando"
-    );
-
-  if(aguardando){
-    aguardando.innerText =
-      encomendas.filter(
-        e=>e.status==="Aguardando"
-      ).length;
-  }
-
-  const hoje =
-    new Date()
-      .toLocaleDateString(
-        "pt-BR"
-      );
-
-  const retiradasHoje =
-    document.getElementById(
-      "retiradasHoje"
-    );
-
-  if(retiradasHoje){
-
-    retiradasHoje.innerText =
-      encomendas.filter(
-        e=>
-          e.status==="Retirada" &&
-          e.retirada &&
-          e.retirada.startsWith(hoje)
-      ).length;
-  }
-
-  const totalMoradores =
-    document.getElementById(
-      "totalMoradores"
-    );
-
-  if(totalMoradores){
-    totalMoradores.innerText =
-      moradores.length;
-  }
-
-  const ultimas =
-    encomendas.slice(0,5);
-
-  const div =
-    document.getElementById(
-      "ultimasEncomendas"
-    );
-
-  if(!div) return;
-
-  if(!ultimas.length){
-
-    div.innerHTML =
-      `<div class="empty">
-        Nenhuma encomenda cadastrada.
-      </div>`;
-
-    return;
-  }
-
-  div.innerHTML = `
-
-    <div class="table-scroll">
-
-    <table>
-
-    <thead>
-    <tr>
-      <th>Destinatário</th>
-      <th>Apto</th>
-      <th>Data</th>
-      <th>Status</th>
-    </tr>
-    </thead>
-
-    <tbody>
-
-    ${
-      ultimas.map(e=>`
-
-        <tr>
-
-        <td>${e.nome}</td>
-
-        <td>${e.apto}</td>
-
-        <td>${e.data}</td>
-
-        <td>
-          <span class="status ${
-            e.status==="Aguardando"
-              ? "pending"
-              : "done"
-          }">
-            ${e.status}
-          </span>
-        </td>
-
-        </tr>
-
-      `).join("")
-    }
-
-    </tbody>
-
-    </table>
-
-    </div>
-
-  `;
+  const div=document.getElementById("ultimasEncomendas");
+  if(!div)return;
+  const ultimas=encomendas.slice(0,5);
+  if(!ultimas.length){div.innerHTML='<div class="empty">Nenhuma encomenda cadastrada.</div>';return;}
+  div.innerHTML=`<div class="table-scroll"><table><thead><tr><th>Destinatário</th><th>Apto</th><th>Data</th><th>Status</th></tr></thead><tbody>
+    ${ultimas.map(e=>`<tr><td>${escaparHTML(e.nome)}</td><td>${escaparHTML(e.apto)}</td><td>${escaparHTML(e.data)}</td><td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${escaparHTML(e.status)}</span></td></tr>`).join("")}
+  </tbody></table></div>`;
 }
-
-/* =========================
-   RELATÓRIOS
-   ========================= */
 
 function atualizarRelatorios(){
-
-  const total =
-    document.getElementById(
-      "relTotal"
-    );
-
-  if(total){
-    total.innerText =
-      encomendas.length;
-  }
-
-  const pendentes =
-    document.getElementById(
-      "relPendentes"
-    );
-
-  if(pendentes){
-    pendentes.innerText =
-      encomendas.filter(
-        e=>e.status==="Aguardando"
-      ).length;
-  }
-
-  const retiradas =
-    document.getElementById(
-      "relRetiradas"
-    );
-
-  if(retiradas){
-    retiradas.innerText =
-      encomendas.filter(
-        e=>e.status==="Retirada"
-      ).length;
-  }
+  const total=document.getElementById("relTotal"); if(total) total.innerText=encomendas.length;
+  const pendentes=document.getElementById("relPendentes"); if(pendentes) pendentes.innerText=encomendas.filter(e=>e.status==="Aguardando").length;
+  const retiradas=document.getElementById("relRetiradas"); if(retiradas) retiradas.innerText=encomendas.filter(e=>e.status==="Retirada").length;
 }
-
-/* =========================
-   CONFIGURAÇÕES
-   ========================= */
 
 function salvarConfiguracoes(){
-
-  const nome =
-    document
-      .getElementById(
-        "nomeCondominio"
-      )
-      .value;
-
-  localStorage.setItem(
-    "vynko_condominio",
-    nome
-  );
-
-  alert(
-    "Configurações salvas."
-  );
+  const nome=document.getElementById("nomeCondominio").value;
+  localStorage.setItem("vynko_condominio",nome);
+  alert("Configurações salvas.");
 }
-
-/* =========================
-   ATUALIZAÇÃO
-   ========================= */
 
 function atualizarTudo(){
-
   atualizarDashboard();
-
   renderEncomendas();
-
   renderMoradores();
-
   atualizarRelatorios();
-}
-
-
-/* =========================
-   CARREGAR ENCOMENDAS ONLINE
-   ========================= */
-
-async function carregarEncomendasOnline(){
-
-  if(!navigator.onLine){
-    return;
-  }
-
-  try{
-
-    const { data, error } =
-      await supabaseClient
-        .from("encomendas")
-        .select("*")
-        .order("created_at", { ascending:false });
-
-    if(error){
-      console.warn(
-        "Supabase indisponível para leitura:",
-        error.message
-      );
-      return;
-    }
-
-    if(!Array.isArray(data)){
-      return;
-    }
-
-    /*
-     * Mantém dados locais que ainda não existem online.
-     * Os registros online passam a complementar a lista local.
-     */
-    const porId = new Map();
-
-    encomendas.forEach(e => {
-      porId.set(String(e.id), e);
-    });
-
-    data.forEach(e => {
-
-      const existente =
-        porId.get(String(e.id));
-
-      const convertido = {
-        id: e.id,
-        codigoPublico:
-          existente?.codigoPublico ||
-          ("EN-" + e.id),
-        data:
-          existente?.data ||
-          (e.created_at
-            ? new Date(e.created_at)
-                .toLocaleDateString("pt-BR")
-            : ""),
-        hora:
-          existente?.hora ||
-          (e.created_at
-            ? new Date(e.created_at)
-                .toLocaleTimeString(
-                  "pt-BR",
-                  {
-                    hour:"2-digit",
-                    minute:"2-digit"
-                  }
-                )
-            : ""),
-        nome: e.nome || "",
-        apto: e.apto || "",
-        bloco: e.bloco || "",
-        transportadora: e.transportadora || "",
-        rastreio: e.rastreio || "",
-        senha: e.senha || "",
-        status: e.status || "Aguardando",
-        retirada:
-          existente?.retirada ||
-          null,
-        foto:
-          e.foto_url ||
-          existente?.foto ||
-          ""
-      };
-
-      porId.set(
-        String(e.id),
-        convertido
-      );
-    });
-
-    encomendas =
-      Array.from(porId.values())
-        .sort((a,b) => Number(b.id) - Number(a.id));
-
-    localStorage.setItem(
-      "vynko_encomendas",
-      JSON.stringify(encomendas)
-    );
-
-    atualizarTudo();
-
-  }catch(erro){
-
-    console.warn(
-      "Não foi possível sincronizar agora:",
-      erro
-    );
-  }
 }
 
 /* =========================
    INICIALIZAÇÃO
    ========================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  function(){
+document.addEventListener("DOMContentLoaded",()=>{
+  const nome=localStorage.getItem("vynko_condominio");
+  if(nome) document.getElementById("nomeCondominio").value=nome;
 
-    const nome =
-      localStorage.getItem(
-        "vynko_condominio"
-      );
+  atualizarTudo();
 
-    if(nome){
+  carregarEncomendasOnline();
+  carregarMoradoresOnline();
 
-      const campo =
-        document.getElementById(
-          "nomeCondominio"
-        );
+  const campoFoto=document.getElementById("eFoto");
+  const previewFoto=document.getElementById("previewFoto");
 
-      if(campo){
-        campo.value =
-          nome;
-      }
-    }
+  if(campoFoto&&previewFoto){
+    campoFoto.addEventListener("change",function(){
+      previewFoto.innerHTML="";
+      const status=document.getElementById("leituraStatus");
+      if(status) status.innerText="📷 Foto carregada. Iniciando leitura...";
+      const arquivo=this.files[0];
+      if(!arquivo)return;
 
-    atualizarTudo();
+      const imagem=document.createElement("img");
+      imagem.src=URL.createObjectURL(arquivo);
+      imagem.style.maxWidth="100%";
+      imagem.style.maxHeight="250px";
+      imagem.style.borderRadius="10px";
+      imagem.style.marginTop="10px";
+      previewFoto.appendChild(imagem);
 
-    // Quando houver internet, tenta sincronizar com o banco online.
-    carregarEncomendasOnline();
-
-    /*
-     * Pré-visualização da foto
-     * + leitura automática da etiqueta.
-     */
-
-    const campoFoto =
-      document.getElementById(
-        "eFoto"
-      );
-
-    const previewFoto =
-      document.getElementById(
-        "previewFoto"
-      );
-
-    if(
-      campoFoto &&
-      previewFoto
-    ){
-
-      campoFoto.addEventListener(
-        "change",
-        function(){
-
-          previewFoto.innerHTML = "";
-
-          const status =
-            document.getElementById(
-              "leituraStatus"
-            );
-
-          if(status){
-            status.innerText =
-              "📷 Foto carregada. Iniciando leitura...";
-          }
-
-          const arquivo =
-            this.files[0];
-
-          if(!arquivo) return;
-
-          const imagem =
-            document.createElement(
-              "img"
-            );
-
-          imagem.src =
-            URL.createObjectURL(
-              arquivo
-            );
-
-          imagem.style.maxWidth =
-            "100%";
-
-          imagem.style.maxHeight =
-            "250px";
-
-          imagem.style.borderRadius =
-            "10px";
-
-          imagem.style.marginTop =
-            "10px";
-
-          previewFoto.appendChild(
-            imagem
-          );
-
-          /*
-           * Inicia OCR automaticamente.
-           */
-
-          lerEtiqueta();
-
-        }
-      );
-    }
-
+      lerEtiqueta();
+    });
   }
-);
-
+});
 </script>
-
 </body>
 </html>
