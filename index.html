@@ -1,577 +1,1389 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vynko Condomínio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vynko Condomínio</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
 
-    body {
-      background: #f4f6f8;
-      color: #263238;
-    }
+body{
+  background:#f4f6f8;
+  color:#263238;
+}
 
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
+.app{
+  min-height:100vh;
+}
 
-    /* MENU */
-    .sidebar {
-      width: 250px;
-      background: #123b35;
-      color: white;
-      padding: 25px 15px;
-    }
+header{
+  background:#0b2528;
+  color:white;
+  padding:18px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
 
-    .logo {
-      text-align: center;
-      font-size: 25px;
-      font-weight: bold;
-      margin-bottom: 35px;
-    }
+.logo{
+  font-size:23px;
+  font-weight:bold;
+}
 
-    .logo span {
-      color: #67c6a5;
-    }
+.logo span{
+  color:#20bfa9;
+}
 
-    .menu button {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: white;
-      padding: 15px;
-      margin-bottom: 6px;
-      text-align: left;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-    }
+.portaria{
+  background:#20bfa9;
+  padding:9px 14px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:bold;
+}
 
-    .menu button:hover,
-    .menu button.active {
-      background: #1e5c50;
-    }
+.layout{
+  display:flex;
+  min-height:calc(100vh - 64px);
+}
 
-    /* CONTEÚDO */
-    .content {
-      flex: 1;
-      padding: 30px;
-    }
+.sidebar{
+  width:230px;
+  background:#071b1e;
+  color:white;
+  padding:18px 12px;
+}
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
 
-    .top h1 {
-      font-size: 28px;
-    }
+.menu button{
+  border:0;
+  background:transparent;
+  color:#d7e3e5;
+  padding:13px 14px;
+  text-align:left;
+  border-radius:9px;
+  font-size:14px;
+  cursor:pointer;
+}
 
-    .user {
-      background: white;
-      padding: 10px 18px;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    }
+.menu button:hover,
+.menu button.active{
+  background:#0e776e;
+  color:white;
+}
 
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-bottom: 30px;
-    }
+.main{
+  flex:1;
+  padding:25px;
+  max-width:1400px;
+}
 
-    .card {
-      background: white;
-      padding: 22px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,.08);
-    }
+.page{
+  display:none;
+}
 
-    .card h3 {
-      font-size: 14px;
-      color: #718096;
-      margin-bottom: 10px;
-    }
+.page.active{
+  display:block;
+}
 
-    .card strong {
-      font-size: 30px;
-      color: #123b35;
-    }
+h1{
+  margin-bottom:6px;
+  font-size:26px;
+}
 
-    /* PAINEL */
-    .panel {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,.08);
-      margin-bottom: 20px;
-    }
+.subtitle{
+  color:#718096;
+  margin-bottom:22px;
+}
 
-    .panel h2 {
-      margin-bottom: 20px;
-    }
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.card{
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+}
 
-    th,
-    td {
-      padding: 13px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-    }
+.card-title{
+  color:#718096;
+  font-size:13px;
+  margin-bottom:10px;
+}
 
-    th {
-      color: #667085;
-      font-size: 13px;
-    }
+.card-number{
+  font-size:30px;
+  font-weight:bold;
+}
 
-    .status {
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 12px;
-      background: #d9f5e9;
-      color: #177245;
-    }
+.card-icon{
+  font-size:25px;
+  margin-bottom:12px;
+}
 
-    /* BOTÕES */
-    .btn {
-      background: #1f8f70;
-      color: white;
-      border: none;
-      padding: 11px 18px;
-      border-radius: 7px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.panel{
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 3px 12px rgba(0,0,0,.07);
+  margin-bottom:20px;
+}
 
-    .btn:hover {
-      background: #16775c;
-    }
+.panel-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:18px;
+}
 
-    /* TELAS */
-    .screen {
-      display: none;
-    }
+.panel-header h2{
+  font-size:18px;
+}
 
-    .screen.active {
-      display: block;
-    }
+button.primary{
+  background:#0e8f83;
+  color:white;
+  border:0;
+  padding:11px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
 
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0 15px;
-      border: 1px solid #ddd;
-      border-radius: 7px;
-    }
+button.primary:hover{
+  background:#08766d;
+}
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
+button.secondary{
+  background:#e8eeee;
+  color:#263238;
+  border:0;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    /* RESPONSIVO */
-    @media(max-width: 900px) {
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
+.search{
+  width:100%;
+  padding:12px;
+  border:1px solid #d8e0e2;
+  border-radius:8px;
+  margin-bottom:15px;
+}
 
-      .sidebar {
-        width: 210px;
-      }
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+}
 
-    @media(max-width: 650px) {
-      .app {
-        flex-direction: column;
-      }
+th,td{
+  padding:13px 10px;
+  border-bottom:1px solid #edf0f1;
+  text-align:left;
+  font-size:13px;
+}
 
-      .sidebar {
-        width: 100%;
-      }
+th{
+  color:#66777a;
+  background:#f7f9f9;
+}
 
-      .cards {
-        grid-template-columns: 1fr;
-      }
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+}
 
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.status.pending{
+  background:#fff3cd;
+  color:#856404;
+}
+
+.status.done{
+  background:#d1fae5;
+  color:#065f46;
+}
+
+.status.cancel{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:#89969a;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  padding:20px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:520px;
+  border-radius:15px;
+  padding:24px;
+  max-height:90vh;
+  overflow:auto;
+}
+
+.modal-box h2{
+  margin-bottom:20px;
+}
+
+.form-group{
+  margin-bottom:15px;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  padding:11px;
+  border:1px solid #d5dddd;
+  border-radius:8px;
+  font-size:14px;
+}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:20px;
+}
+
+.password-box{
+  text-align:center;
+  padding:20px;
+  background:#eefaf8;
+  border-radius:12px;
+  margin:15px 0;
+}
+
+.password{
+  font-size:38px;
+  font-weight:bold;
+  letter-spacing:8px;
+  color:#08766d;
+}
+
+.quick{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+}
+
+.quick button{
+  background:white;
+  border:1px solid #e0e7e8;
+  padding:20px;
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+}
+
+.quick button:hover{
+  border-color:#0e8f83;
+}
+
+.quick-icon{
+  font-size:25px;
+  margin-bottom:10px;
+}
+
+.report-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.report-box{
+  padding:22px;
+  border-radius:12px;
+  background:#f6f9f9;
+}
+
+.report-box strong{
+  display:block;
+  font-size:28px;
+  margin-top:8px;
+}
+
+@media(max-width:850px){
+  .sidebar{
+    width:75px;
+  }
+
+  .menu button{
+    font-size:0;
+    text-align:center;
+  }
+
+  .menu button::first-letter{
+    font-size:22px;
+  }
+
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .quick{
+    grid-template-columns:1fr;
+  }
+
+  .report-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:600px){
+  .main{
+    padding:15px;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  table{
+    min-width:650px;
+  }
+
+  .table-scroll{
+    overflow-x:auto;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- MENU -->
-  <aside class="sidebar">
+<header>
+  <div class="logo">Vynko <span>Condomínio</span></div>
+  <div class="portaria">👤 Portaria</div>
+</header>
 
-    <div class="logo">
-      Vynko <span>Condomínio</span>
-    </div>
+<div class="layout">
 
-    <div class="menu">
+<aside class="sidebar">
+  <nav class="menu">
 
-      <button class="active" onclick="showScreen('dashboard', this)">
-        🏠 Dashboard
-      </button>
+    <button class="active" onclick="showPage('dashboard',this)">
+      🏠 Dashboard
+    </button>
 
-      <button onclick="showScreen('encomendas', this)">
-        📦 Encomendas
-      </button>
+    <button onclick="showPage('encomendas',this)">
+      📦 Encomendas
+    </button>
 
-      <button onclick="showScreen('moradores', this)">
-        👥 Moradores
-      </button>
+    <button onclick="showPage('moradores',this)">
+      👥 Moradores
+    </button>
 
-      <button onclick="showScreen('retirada', this)">
-        🔐 Retirada com senha
-      </button>
+    <button onclick="showPage('retirada',this)">
+      🔐 Retirada com senha
+    </button>
 
-      <button onclick="showScreen('relatorios', this)">
-        📊 Relatórios
-      </button>
+    <button onclick="showPage('relatorios',this)">
+      📊 Relatórios
+    </button>
 
-      <button onclick="showScreen('configuracoes', this)">
-        ⚙️ Configurações
-      </button>
+    <button onclick="showPage('configuracoes',this)">
+      ⚙️ Configurações
+    </button>
 
-    </div>
+  </nav>
+</aside>
 
-  </aside>
+<main class="main">
 
+<!-- DASHBOARD -->
 
-  <!-- CONTEÚDO -->
-  <main class="content">
+<section id="dashboard" class="page active">
 
-    <div class="top">
-      <h1>Vynko Condomínio</h1>
-      <div class="user">
-        👤 Portaria
-      </div>
-    </div>
+<h1>Dashboard</h1>
+<p class="subtitle">Visão geral das encomendas do condomínio.</p>
+
+<div class="cards">
+
+<div class="card">
+<div class="card-icon">📦</div>
+<div class="card-title">Encomendas recebidas</div>
+<div class="card-number" id="totalEncomendas">0</div>
+</div>
+
+<div class="card">
+<div class="card-icon">⏳</div>
+<div class="card-title">Aguardando retirada</div>
+<div class="card-number" id="aguardando">0</div>
+</div>
 
+<div class="card">
+<div class="card-icon">✅</div>
+<div class="card-title">Retiradas hoje</div>
+<div class="card-number" id="retiradasHoje">0</div>
+</div>
 
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="screen active">
+<div class="card">
+<div class="card-icon">👥</div>
+<div class="card-title">Moradores cadastrados</div>
+<div class="card-number" id="totalMoradores">0</div>
+</div>
 
-      <div class="cards">
+</div>
 
-        <div class="card">
-          <h3>Encomendas recebidas</h3>
-          <strong>24</strong>
-        </div>
+<div class="panel">
 
-        <div class="card">
-          <h3>Aguardando retirada</h3>
-          <strong>18</strong>
-        </div>
+<div class="panel-header">
+<h2>Ações rápidas</h2>
+</div>
 
-        <div class="card">
-          <h3>Retiradas hoje</h3>
-          <strong>12</strong>
-        </div>
+<div class="quick">
 
-        <div class="card">
-          <h3>Moradores cadastrados</h3>
-          <strong>336</strong>
-        </div>
+<button onclick="abrirModalEncomenda()">
+<div class="quick-icon">📦</div>
+<strong>Registrar encomenda</strong>
+<p>Cadastre uma nova encomenda recebida.</p>
+</button>
 
-      </div>
+<button onclick="showPage('retirada')">
+<div class="quick-icon">🔐</div>
+<strong>Retirar encomenda</strong>
+<p>Informe a senha de retirada.</p>
+</button>
 
+<button onclick="showPage('moradores')">
+<div class="quick-icon">👤</div>
+<strong>Moradores</strong>
+<p>Consultar moradores cadastrados.</p>
+</button>
 
-      <div class="panel">
+</div>
+</div>
 
-        <h2>Últimas encomendas</h2>
+<div class="panel">
+<h2>Últimas encomendas</h2>
+<br>
+<div id="ultimasEncomendas"></div>
+</div>
 
-        <table>
+</section>
 
-          <thead>
-            <tr>
-              <th>Destinatário</th>
-              <th>Apto</th>
-              <th>Transportadora</th>
-              <th>Status</th>
-            </tr>
-          </thead>
 
-          <tbody>
+<!-- ENCOMENDAS -->
 
-            <tr>
-              <td>Maria Silva</td>
-              <td>1204</td>
-              <td>Amazon</td>
-              <td>
-                <span class="status">Aguardando</span>
-              </td>
-            </tr>
+<section id="encomendas" class="page">
 
-            <tr>
-              <td>João Santos</td>
-              <td>1802</td>
-              <td>Mercado Livre</td>
-              <td>
-                <span class="status">Aguardando</span>
-              </td>
-            </tr>
+<div class="panel-header">
+<div>
+<h1>Encomendas</h1>
+<p class="subtitle">Controle de todas as encomendas recebidas.</p>
+</div>
 
-            <tr>
-              <td>Ana Oliveira</td>
-              <td>704</td>
-              <td>Shopee</td>
-              <td>
-                <span class="status">Retirada</span>
-              </td>
-            </tr>
+<button class="primary" onclick="abrirModalEncomenda()">
++ Nova encomenda
+</button>
+</div>
 
-          </tbody>
+<div class="panel">
 
-        </table>
+<input
+class="search"
+id="buscaEncomenda"
+placeholder="🔎 Buscar por morador, apartamento, bloco ou código..."
+oninput="renderEncomendas()"
+>
 
-      </div>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Destinatário</th>
+<th>Apto</th>
+<th>Bloco</th>
+<th>Transportadora</th>
+<th>Status</th>
+<th>Senha</th>
+</tr>
+</thead>
 
-    </section>
+<tbody id="tabelaEncomendas"></tbody>
 
+</table>
+</div>
 
-    <!-- ENCOMENDAS -->
-    <section id="encomendas" class="screen">
+</div>
 
-      <div class="panel">
+</section>
 
-        <h2>📦 Encomendas</h2>
 
-        <button class="btn" onclick="alert('Cadastro de encomenda aberto!')">
-          + Nova encomenda
-        </button>
+<!-- MORADORES -->
 
-        <br><br>
+<section id="moradores" class="page">
 
-        <table>
+<div class="panel-header">
+<div>
+<h1>Moradores</h1>
+<p class="subtitle">Cadastro dos moradores do condomínio.</p>
+</div>
 
-          <thead>
-            <tr>
-              <th>Destinatário</th>
-              <th>Apto</th>
-              <th>Bloco</th>
-              <th>Rastreio</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+<button class="primary" onclick="abrirModalMorador()">
++ Novo morador
+</button>
+</div>
 
-          <tbody>
+<div class="panel">
 
-            <tr>
-              <td>Maria Silva</td>
-              <td>1204</td>
-              <td>Botanique</td>
-              <td>BR123456789</td>
-              <td>
-                <span class="status">Aguardando</span>
-              </td>
-            </tr>
+<input
+class="search"
+id="buscaMorador"
+placeholder="🔎 Buscar morador, apartamento ou bloco..."
+oninput="renderMoradores()"
+>
 
-          </tbody>
+<div class="table-scroll">
 
-        </table>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Apartamento</th>
+<th>Bloco</th>
+<th>WhatsApp</th>
+</tr>
+</thead>
 
-      </div>
+<tbody id="tabelaMoradores"></tbody>
 
-    </section>
+</table>
 
+</div>
 
-    <!-- MORADORES -->
-    <section id="moradores" class="screen">
+</div>
 
-      <div class="panel">
+</section>
 
-        <h2>👥 Moradores</h2>
 
-        <div class="form-grid">
+<!-- RETIRADA -->
 
-          <div>
-            <label>Nome</label>
-            <input type="text" placeholder="Nome do morador">
-          </div>
+<section id="retirada" class="page">
 
-          <div>
-            <label>WhatsApp</label>
-            <input type="text" placeholder="(00) 00000-0000">
-          </div>
+<h1>Retirada com senha</h1>
+<p class="subtitle">Digite a senha informada pelo morador.</p>
 
-          <div>
-            <label>Bloco</label>
-            <input type="text" placeholder="Bloco">
-          </div>
+<div class="panel">
 
-          <div>
-            <label>Apartamento</label>
-            <input type="text" placeholder="Apartamento">
-          </div>
+<div class="form-group">
+<label>Senha de retirada</label>
 
-        </div>
+<input
+id="senhaRetirada"
+maxlength="4"
+inputmode="numeric"
+placeholder="Digite os 4 números"
+style="font-size:25px;text-align:center;letter-spacing:8px;"
+>
 
-        <button class="btn">
-          Cadastrar morador
-        </button>
+</div>
 
-      </div>
+<button class="primary" onclick="buscarSenha()">
+🔎 Consultar encomenda
+</button>
 
-    </section>
+<div id="resultadoRetirada"></div>
 
+</div>
 
-    <!-- RETIRADA -->
-    <section id="retirada" class="screen">
+</section>
 
-      <div class="panel">
 
-        <h2>🔐 Retirada com senha</h2>
+<!-- RELATÓRIOS -->
 
-        <p>
-          Digite a senha informada pelo morador para localizar a encomenda.
-        </p>
+<section id="relatorios" class="page">
 
-        <br>
+<h1>Relatórios</h1>
+<p class="subtitle">Resumo da movimentação de encomendas.</p>
 
-        <input
-          type="text"
-          id="senha"
-          placeholder="Digite a senha de retirada"
-        >
+<div class="report-grid">
 
-        <button class="btn" onclick="validarSenha()">
-          Confirmar retirada
-        </button>
+<div class="report-box">
+Encomendas recebidas
+<strong id="relTotal">0</strong>
+</div>
 
-        <p id="resultado"></p>
+<div class="report-box">
+Aguardando retirada
+<strong id="relPendentes">0</strong>
+</div>
 
-      </div>
+<div class="report-box">
+Encomendas retiradas
+<strong id="relRetiradas">0</strong>
+</div>
 
-    </section>
+</div>
 
+</section>
 
-    <!-- RELATÓRIOS -->
-    <section id="relatorios" class="screen">
 
-      <div class="panel">
+<!-- CONFIGURAÇÕES -->
 
-        <h2>📊 Relatórios</h2>
+<section id="configuracoes" class="page">
 
-        <p>Relatório de encomendas recebidas</p>
-        <br>
+<h1>Configurações</h1>
+<p class="subtitle">Configurações do sistema Vynko Condomínio.</p>
 
-        <button class="btn">
-          Gerar relatório
-        </button>
+<div class="panel">
 
-      </div>
+<div class="form-group">
+<label>Nome do condomínio</label>
+<input id="nomeCondominio" value="Grand Raya">
+</div>
 
-    </section>
+<div class="form-group">
+<label>Nome do sistema</label>
+<input value="Vynko Condomínio">
+</div>
 
+<button class="primary" onclick="salvarConfiguracoes()">
+Salvar configurações
+</button>
 
-    <!-- CONFIGURAÇÕES -->
-    <section id="configuracoes" class="screen">
+</div>
 
-      <div class="panel">
+</section>
 
-        <h2>⚙️ Configurações</h2>
+</main>
+</div>
+</div>
 
-        <label>Nome do condomínio</label>
 
-        <input
-          type="text"
-          value="Grand Raya"
-        >
+<!-- MODAL ENCOMENDA -->
 
-        <label>Quantidade de blocos</label>
+<div class="modal" id="modalEncomenda">
 
-        <input
-          type="number"
-          value="3"
-        >
+<div class="modal-box">
 
-        <button class="btn">
-          Salvar configurações
-        </button>
+<h2>📦 Registrar encomenda</h2>
 
-      </div>
+<div class="form-group">
+<label>Nome do destinatário</label>
+<input id="eNome" placeholder="Nome do morador">
+</div>
 
-    </section>
+<div class="form-group">
+<label>Apartamento</label>
+<input id="eApto" placeholder="Ex.: 1702">
+</div>
 
-  </main>
+<div class="form-group">
+<label>Bloco</label>
+<input id="eBloco" placeholder="Ex.: A">
+</div>
 
+<div class="form-group">
+<label>Transportadora</label>
+<select id="eTransportadora">
+<option>Amazon</option>
+<option>Mercado Livre</option>
+<option>Correios</option>
+<option>Jadlog</option>
+<option>Loggi</option>
+<option>Shopee</option>
+<option>Outra</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Código de rastreio</label>
+<input id="eRastreio" placeholder="Opcional">
+</div>
+
+<div class="form-actions">
+
+<button class="secondary" onclick="fecharModal('modalEncomenda')">
+Cancelar
+</button>
+
+<button class="primary" onclick="salvarEncomenda()">
+Registrar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MODAL MORADOR -->
+
+<div class="modal" id="modalMorador">
+
+<div class="modal-box">
+
+<h2>👤 Novo morador</h2>
+
+<div class="form-group">
+<label>Nome completo</label>
+<input id="mNome">
+</div>
+
+<div class="form-group">
+<label>Apartamento</label>
+<input id="mApto">
+</div>
+
+<div class="form-group">
+<label>Bloco</label>
+<input id="mBloco">
+</div>
+
+<div class="form-group">
+<label>WhatsApp</label>
+<input id="mWhatsApp" placeholder="(00) 00000-0000">
+</div>
+
+<div class="form-actions">
+
+<button class="secondary" onclick="fecharModal('modalMorador')">
+Cancelar
+</button>
+
+<button class="primary" onclick="salvarMorador()">
+Cadastrar
+</button>
+
+</div>
+
+</div>
 </div>
 
 
 <script>
 
-  function showScreen(screenId, button) {
+let encomendas =
+JSON.parse(localStorage.getItem("vynko_encomendas")) || [];
 
-    document
-      .querySelectorAll('.screen')
-      .forEach(screen => {
-        screen.classList.remove('active');
-      });
-
-    document
-      .getElementById(screenId)
-      .classList.add('active');
-
-    document
-      .querySelectorAll('.menu button')
-      .forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-    button.classList.add('active');
-  }
+let moradores =
+JSON.parse(localStorage.getItem("vynko_moradores")) || [];
 
 
-  function validarSenha() {
+/* NAVEGAÇÃO */
 
-    const senha =
-      document.getElementById('senha').value;
+function showPage(id,btn){
 
-    const resultado =
-      document.getElementById('resultado');
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
 
-    if (senha === '1234') {
+document.getElementById(id)
+.classList.add("active");
 
-      resultado.innerHTML =
-        '✅ Encomenda localizada. Retirada autorizada.';
+document.querySelectorAll(".menu button")
+.forEach(b=>b.classList.remove("active"));
 
-      resultado.style.color = 'green';
+if(btn) btn.classList.add("active");
 
-    } else {
+atualizarTudo();
+}
 
-      resultado.innerHTML =
-        '❌ Senha não encontrada.';
 
-      resultado.style.color = 'red';
+/* MODAIS */
 
-    }
+function abrirModalEncomenda(){
+document.getElementById("modalEncomenda")
+.classList.add("show");
+}
 
-  }
+function abrirModalMorador(){
+document.getElementById("modalMorador")
+.classList.add("show");
+}
+
+function fecharModal(id){
+document.getElementById(id)
+.classList.remove("show");
+}
+
+
+/* SENHA */
+
+function gerarSenha(){
+
+let senha="";
+
+do{
+
+senha=Math.floor(1000+Math.random()*9000)
+.toString();
+
+}while(
+encomendas.some(e=>e.senha===senha && e.status==="Aguardando")
+);
+
+return senha;
+}
+
+
+/* ENCOMENDA */
+
+function salvarEncomenda(){
+
+let nome=document.getElementById("eNome").value.trim();
+
+let apto=document.getElementById("eApto").value.trim();
+
+let bloco=document.getElementById("eBloco").value.trim();
+
+let transportadora=
+document.getElementById("eTransportadora").value;
+
+let rastreio=
+document.getElementById("eRastreio").value.trim();
+
+if(!nome || !apto){
+
+alert("Informe pelo menos o nome e o apartamento.");
+
+return;
+}
+
+let agora=new Date();
+
+let encomenda={
+
+id:Date.now(),
+
+data:agora.toLocaleDateString("pt-BR"),
+
+hora:agora.toLocaleTimeString("pt-BR",{
+hour:"2-digit",
+minute:"2-digit"
+}),
+
+nome:nome,
+
+apto:apto,
+
+bloco:bloco,
+
+transportadora:transportadora,
+
+rastreio:rastreio,
+
+senha:gerarSenha(),
+
+status:"Aguardando",
+
+retirada:null
+
+};
+
+encomendas.unshift(encomenda);
+
+localStorage.setItem(
+"vynko_encomendas",
+JSON.stringify(encomendas)
+);
+
+document.getElementById("eNome").value="";
+document.getElementById("eApto").value="";
+document.getElementById("eBloco").value="";
+document.getElementById("eRastreio").value="";
+
+fecharModal("modalEncomenda");
+
+alert(
+"Encomenda registrada!\n\nSenha de retirada: "+
+encomenda.senha
+);
+
+atualizarTudo();
+
+}
+
+
+/* MORADOR */
+
+function salvarMorador(){
+
+let nome=document.getElementById("mNome").value.trim();
+
+let apto=document.getElementById("mApto").value.trim();
+
+let bloco=document.getElementById("mBloco").value.trim();
+
+let whatsapp=document.getElementById("mWhatsApp").value.trim();
+
+if(!nome || !apto){
+
+alert("Informe o nome e o apartamento.");
+
+return;
+}
+
+moradores.push({
+
+id:Date.now(),
+
+nome:nome,
+
+apto:apto,
+
+bloco:bloco,
+
+whatsapp:whatsapp
+
+});
+
+localStorage.setItem(
+"vynko_moradores",
+JSON.stringify(moradores)
+);
+
+document.getElementById("mNome").value="";
+document.getElementById("mApto").value="";
+document.getElementById("mBloco").value="";
+document.getElementById("mWhatsApp").value="";
+
+fecharModal("modalMorador");
+
+alert("Morador cadastrado com sucesso!");
+
+atualizarTudo();
+
+}
+
+
+/* TABELA ENCOMENDAS */
+
+function renderEncomendas(){
+
+let busca=
+(document.getElementById("buscaEncomenda")?.value || "")
+.toLowerCase();
+
+let lista=encomendas.filter(e=>
+
+e.nome.toLowerCase().includes(busca) ||
+
+e.apto.toLowerCase().includes(busca) ||
+
+e.bloco.toLowerCase().includes(busca) ||
+
+e.transportadora.toLowerCase().includes(busca) ||
+
+e.rastreio.toLowerCase().includes(busca)
+
+);
+
+let tbody=document.getElementById("tabelaEncomendas");
+
+if(!lista.length){
+
+tbody.innerHTML=
+`<tr><td colspan="7" class="empty">
+Nenhuma encomenda encontrada.
+</td></tr>`;
+
+return;
+}
+
+tbody.innerHTML=lista.map(e=>`
+
+<tr>
+
+<td>${e.data}<br>${e.hora}</td>
+
+<td><strong>${e.nome}</strong></td>
+
+<td>${e.apto}</td>
+
+<td>${e.bloco || "-"}</td>
+
+<td>${e.transportadora}</td>
+
+<td>
+<span class="status ${
+e.status==="Aguardando" ? "pending":"done"
+}">
+${e.status}
+</span>
+</td>
+
+<td>
+<strong>${e.status==="Aguardando" ? e.senha:"—"}</strong>
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* TABELA MORADORES */
+
+function renderMoradores(){
+
+let busca=
+(document.getElementById("buscaMorador")?.value || "")
+.toLowerCase();
+
+let lista=moradores.filter(m=>
+
+m.nome.toLowerCase().includes(busca) ||
+
+m.apto.toLowerCase().includes(busca) ||
+
+m.bloco.toLowerCase().includes(busca)
+
+);
+
+let tbody=document.getElementById("tabelaMoradores");
+
+if(!lista.length){
+
+tbody.innerHTML=
+`<tr><td colspan="4" class="empty">
+Nenhum morador cadastrado.
+</td></tr>`;
+
+return;
+}
+
+tbody.innerHTML=lista.map(m=>`
+
+<tr>
+
+<td><strong>${m.nome}</strong></td>
+
+<td>${m.apto}</td>
+
+<td>${m.bloco || "-"}</td>
+
+<td>${m.whatsapp || "-"}</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* RETIRADA */
+
+function buscarSenha(){
+
+let senha=
+document.getElementById("senhaRetirada")
+.value.trim();
+
+let resultado=
+document.getElementById("resultadoRetirada");
+
+if(senha.length!==4){
+
+resultado.innerHTML=
+`<div class="empty">
+Digite uma senha de 4 números.
+</div>`;
+
+return;
+}
+
+let encomenda=
+encomendas.find(e=>
+e.senha===senha &&
+e.status==="Aguardando"
+);
+
+if(!encomenda){
+
+resultado.innerHTML=
+`<div class="empty">
+❌ Nenhuma encomenda aguardando retirada
+encontrada para esta senha.
+</div>`;
+
+return;
+}
+
+resultado.innerHTML=`
+
+<div class="password-box">
+
+<p>Encomenda encontrada</p>
+
+<h2>${encomenda.nome}</h2>
+
+<p>
+Apartamento ${encomenda.apto}
+${encomenda.bloco ? " • Bloco "+encomenda.bloco:""}
+</p>
+
+<div class="password">
+${encomenda.senha}
+</div>
+
+<button
+class="primary"
+onclick="confirmarRetirada(${encomenda.id})"
+>
+✅ Confirmar retirada
+</button>
+
+</div>
+
+`;
+
+}
+
+
+function confirmarRetirada(id){
+
+let encomenda=
+encomendas.find(e=>e.id===id);
+
+if(!encomenda) return;
+
+encomenda.status="Retirada";
+
+let agora=new Date();
+
+encomenda.retirada=
+agora.toLocaleDateString("pt-BR")+" "+
+agora.toLocaleTimeString("pt-BR",{
+hour:"2-digit",
+minute:"2-digit"
+});
+
+localStorage.setItem(
+"vynko_encomendas",
+JSON.stringify(encomendas)
+);
+
+document.getElementById("senhaRetirada").value="";
+
+document.getElementById("resultadoRetirada").innerHTML=
+`<div class="empty">
+✅ Encomenda retirada com sucesso!
+</div>`;
+
+atualizarTudo();
+
+}
+
+
+/* DASHBOARD */
+
+function atualizarDashboard(){
+
+document.getElementById("totalEncomendas")
+.innerText=encomendas.length;
+
+document.getElementById("aguardando")
+.innerText=
+encomendas.filter(e=>e.status==="Aguardando").length;
+
+let hoje=new Date().toLocaleDateString("pt-BR");
+
+document.getElementById("retiradasHoje")
+.innerText=
+encomendas.filter(e=>
+e.status==="Retirada" &&
+e.retirada &&
+e.retirada.startsWith(hoje)
+).length;
+
+document.getElementById("totalMoradores")
+.innerText=moradores.length;
+
+let ultimas=
+encomendas.slice(0,5);
+
+let div=
+document.getElementById("ultimasEncomendas");
+
+if(!ultimas.length){
+
+div.innerHTML=
+`<div class="empty">
+Nenhuma encomenda cadastrada.
+</div>`;
+
+return;
+}
+
+div.innerHTML=`
+
+<div class="table-scroll">
+
+<table>
+
+<thead>
+<tr>
+<th>Destinatário</th>
+<th>Apto</th>
+<th>Data</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+${ultimas.map(e=>`
+
+<tr>
+
+<td>${e.nome}</td>
+
+<td>${e.apto}</td>
+
+<td>${e.data}</td>
+
+<td>
+<span class="status ${
+e.status==="Aguardando" ? "pending":"done"
+}">
+${e.status}
+</span>
+</td>
+
+</tr>
+
+`).join("")}
+
+</tbody>
+
+</table>
+
+</div>
+`;
+
+}
+
+
+/* RELATÓRIOS */
+
+function atualizarRelatorios(){
+
+document.getElementById("relTotal")
+.innerText=encomendas.length;
+
+document.getElementById("relPendentes")
+.innerText=
+encomendas.filter(e=>e.status==="Aguardando").length;
+
+document.getElementById("relRetiradas")
+.innerText=
+encomendas.filter(e=>e.status==="Retirada").length;
+
+}
+
+
+/* CONFIGURAÇÕES */
+
+function salvarConfiguracoes(){
+
+let nome=
+document.getElementById("nomeCondominio").value;
+
+localStorage.setItem(
+"vynko_condominio",
+nome
+);
+
+alert("Configurações salvas.");
+
+}
+
+
+/* ATUALIZAÇÃO */
+
+function atualizarTudo(){
+
+atualizarDashboard();
+
+renderEncomendas();
+
+renderMoradores();
+
+atualizarRelatorios();
+
+}
+
+
+/* INICIALIZAÇÃO */
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+let nome=
+localStorage.getItem("vynko_condominio");
+
+if(nome){
+
+document.getElementById("nomeCondominio")
+.value=nome;
+
+}
+
+atualizarTudo();
+
+}
+);
 
 </script>
 
 </body>
-  </html>
+</html>
