@@ -423,6 +423,7 @@ oninput="renderEncomendas()"
 <th>Transportadora</th>
 <th>Status</th>
 <th>Senha</th>
+<th>Encomenda</th>
 </tr>
 </thead>
 <tbody id="tabelaEncomendas"></tbody>
@@ -1307,6 +1308,9 @@ function salvarEncomenda(){
       .getElementById("eRastreio")
       .value.trim();
 
+  const arquivoFoto =
+    document.getElementById("eFoto");
+
   if(!nome || !apto){
 
     alert(
@@ -1319,9 +1323,27 @@ function salvarEncomenda(){
   const agora =
     new Date();
 
-  const encomenda = {
+  const fotoArquivo =
+    arquivoFoto &&
+    arquivoFoto.files &&
+    arquivoFoto.files[0]
+      ? arquivoFoto.files[0]
+      : null;
+
+  const salvarDadosEncomenda = (fotoDataUrl) => {
+
+    const encomenda = {
 
     id:Date.now(),
+
+    codigoPublico:
+      "EN-" +
+      Date.now() +
+      "-" +
+      Math.random()
+        .toString(36)
+        .substring(2,8)
+        .toUpperCase(),
 
     data:
       agora.toLocaleDateString(
@@ -1355,13 +1377,16 @@ function salvarEncomenda(){
     status:
       "Aguardando",
 
-    retirada:null
+    retirada:null,
 
-  };
+    foto:
+      fotoDataUrl || ""
 
-  encomendas.unshift(
-    encomenda
-  );
+    };
+
+    encomendas.unshift(
+      encomenda
+    );
 
   localStorage.setItem(
     "vynko_encomendas",
@@ -1418,6 +1443,32 @@ function salvarEncomenda(){
   );
 
   atualizarTudo();
+  };
+
+  if(fotoArquivo){
+
+    const leitor =
+      new FileReader();
+
+    leitor.onload = function(){
+      salvarDadosEncomenda(
+        leitor.result || ""
+      );
+    };
+
+    leitor.onerror = function(){
+      salvarDadosEncomenda("");
+    };
+
+    leitor.readAsDataURL(
+      fotoArquivo
+    );
+
+  }else{
+
+    salvarDadosEncomenda("");
+
+  }
 }
 
 /* =========================
@@ -1540,7 +1591,7 @@ function renderEncomendas(){
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="7" class="empty">
+        <td colspan="8" class="empty">
           Nenhuma encomenda encontrada.
         </td>
       </tr>`;
@@ -1585,6 +1636,19 @@ function renderEncomendas(){
               : "—"
           }
         </strong>
+      </td>
+
+      <td>
+        ${
+          e.codigoPublico
+            ? `<button
+                 class="secondary"
+                 onclick="verEncomenda('${e.codigoPublico}')"
+               >
+                 👁️ Ver
+               </button>`
+            : "—"
+        }
       </td>
 
       </tr>
@@ -1660,6 +1724,115 @@ function renderMoradores(){
       </tr>
 
     `).join("");
+}
+
+/* =========================
+   VISUALIZAÇÃO DA ENCOMENDA
+   ========================= */
+
+function verEncomenda(codigo){
+
+  const encomenda =
+    encomendas.find(
+      e => e.codigoPublico === codigo
+    );
+
+  if(!encomenda){
+    alert("Encomenda não encontrada.");
+    return;
+  }
+
+  const fotoHtml =
+    encomenda.foto
+      ? `<img
+           src="${encomenda.foto}"
+           alt="Foto da encomenda"
+           style="
+             width:100%;
+             max-height:320px;
+             object-fit:contain;
+             border-radius:10px;
+             margin:10px 0;
+           "
+         >`
+      : `<div class="empty">
+           📷 Esta encomenda não possui foto salva.
+         </div>`;
+
+  const conteudo = `
+
+    <div class="modal show" id="modalVisualizarEncomenda">
+
+      <div class="modal-box">
+
+        <h2>📦 Encomenda</h2>
+
+        ${fotoHtml}
+
+        <div class="panel" style="box-shadow:none;padding:10px 0;">
+
+          <p><strong>Destinatário:</strong> ${encomenda.nome}</p>
+
+          <p>
+            <strong>Unidade:</strong>
+            ${encomenda.apto}
+            ${encomenda.bloco
+              ? " • " + encomenda.bloco
+              : ""}
+          </p>
+
+          <p>
+            <strong>Transportadora:</strong>
+            ${encomenda.transportadora || "-"}
+          </p>
+
+          <p>
+            <strong>Rastreio:</strong>
+            ${encomenda.rastreio || "-"}
+          </p>
+
+          <p>
+            <strong>Recebida em:</strong>
+            ${encomenda.data} ${encomenda.hora}
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+            ${encomenda.status}
+          </p>
+
+          ${
+            encomenda.status === "Aguardando"
+              ? `<p>
+                   <strong>Senha:</strong>
+                   ${encomenda.senha}
+                 </p>`
+              : ""
+          }
+
+        </div>
+
+        <div class="form-actions">
+
+          <button
+            class="secondary"
+            onclick="fecharModal('modalVisualizarEncomenda')"
+          >
+            Fechar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    conteudo
+  );
 }
 
 /* =========================
