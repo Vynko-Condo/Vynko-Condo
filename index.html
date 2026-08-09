@@ -424,6 +424,7 @@ oninput="renderEncomendas()"
 <th>Status</th>
 <th>Senha</th>
 <th>Encomenda</th>
+<th>WhatsApp</th>
 </tr>
 </thead>
 <tbody id="tabelaEncomendas"></tbody>
@@ -1591,7 +1592,7 @@ function renderEncomendas(){
 
     tbody.innerHTML =
       `<tr>
-        <td colspan="8" class="empty">
+        <td colspan="9" class="empty">
           Nenhuma encomenda encontrada.
         </td>
       </tr>`;
@@ -1646,6 +1647,19 @@ function renderEncomendas(){
                  onclick="verEncomenda('${e.codigoPublico}')"
                >
                  👁️ Ver
+               </button>`
+            : "—"
+        }
+      </td>
+
+      <td>
+        ${
+          e.codigoPublico
+            ? `<button
+                 class="secondary"
+                 onclick="enviarWhatsApp('${e.codigoPublico}')"
+               >
+                 📲 WhatsApp
                </button>`
             : "—"
         }
@@ -1724,6 +1738,192 @@ function renderMoradores(){
       </tr>
 
     `).join("");
+}
+
+/* =========================
+   WHATSAPP
+   ========================= */
+
+function normalizarTelefoneWhatsApp(numero){
+
+  let telefone =
+    String(numero || "")
+      .replace(/\D/g,"");
+
+  if(!telefone){
+    return "";
+  }
+
+  // Se já estiver com código do Brasil.
+  if(telefone.startsWith("55")){
+    return telefone;
+  }
+
+  // Telefones brasileiros normalmente têm 10 ou 11 dígitos.
+  if(telefone.length === 10 || telefone.length === 11){
+    return "55" + telefone;
+  }
+
+  return telefone;
+}
+
+function encontrarMoradorDaEncomenda(encomenda){
+
+  if(!encomenda){
+    return null;
+  }
+
+  const aptoEncomenda =
+    String(encomenda.apto || "")
+      .trim()
+      .toLowerCase();
+
+  const blocoEncomenda =
+    String(encomenda.bloco || "")
+      .trim()
+      .toLowerCase();
+
+  // Primeiro tenta apartamento + bloco.
+  let morador =
+    moradores.find(m => {
+
+      const apto =
+        String(m.apto || m.apartamento || "")
+          .trim()
+          .toLowerCase();
+
+      const bloco =
+        String(m.bloco || "")
+          .trim()
+          .toLowerCase();
+
+      return apto === aptoEncomenda &&
+             bloco === blocoEncomenda;
+    });
+
+  // Se não encontrou, tenta somente pelo apartamento.
+  if(!morador){
+
+    morador =
+      moradores.find(m => {
+
+        const apto =
+          String(m.apto || m.apartamento || "")
+            .trim()
+            .toLowerCase();
+
+        return apto === aptoEncomenda;
+      });
+  }
+
+  // Por último, tenta pelo nome.
+  if(!morador){
+
+    const nomeEncomenda =
+      String(encomenda.nome || "")
+        .trim()
+        .toLowerCase();
+
+    morador =
+      moradores.find(m => {
+
+        const nome =
+          String(m.nome || "")
+            .trim()
+            .toLowerCase();
+
+        return nome &&
+               nome === nomeEncomenda;
+      });
+  }
+
+  return morador || null;
+}
+
+function gerarMensagemWhatsApp(encomenda){
+
+  const unidade =
+    `${encomenda.apto || ""}` +
+    `${encomenda.bloco ? " - " + encomenda.bloco : ""}`;
+
+  let mensagem =
+`📦 *Sua encomenda chegou!*
+
+Olá, ${encomenda.nome || "morador"}!
+
+Sua encomenda chegou à portaria do *Grand Raya* e está disponível para retirada.
+
+🏢 *Unidade:* ${unidade}
+🚚 *Transportadora:* ${encomenda.transportadora || "-"}
+📦 *Código de rastreio:* ${encomenda.rastreio || "-"}
+📅 *Recebida em:* ${encomenda.data || ""} ${encomenda.hora || ""}`;
+
+  if(encomenda.status === "Aguardando"){
+    mensagem +=
+`\n🔐 *Senha de retirada:* ${encomenda.senha || "-"}`;
+  }
+
+  mensagem +=
+`\n\nApresente a senha na portaria para retirar sua encomenda.`;
+
+  return mensagem;
+}
+
+function enviarWhatsApp(codigo){
+
+  const encomenda =
+    encomendas.find(
+      e => e.codigoPublico === codigo
+    );
+
+  if(!encomenda){
+    alert("Encomenda não encontrada.");
+    return;
+  }
+
+  const morador =
+    encontrarMoradorDaEncomenda(encomenda);
+
+  if(!morador){
+
+    alert(
+      "Não encontrei um morador cadastrado para esta encomenda.\n\n" +
+      "Confira o apartamento e o bloco no cadastro de moradores."
+    );
+
+    return;
+  }
+
+  const numero =
+    normalizarTelefoneWhatsApp(
+      morador.whatsapp
+    );
+
+  if(!numero){
+
+    alert(
+      "Este morador ainda não possui um WhatsApp cadastrado.\n\n" +
+      "Cadastre o número em Moradores e tente novamente."
+    );
+
+    return;
+  }
+
+  const mensagem =
+    gerarMensagemWhatsApp(
+      encomenda
+    );
+
+  const url =
+    "https://wa.me/" +
+    numero +
+    "?text=" +
+    encodeURIComponent(mensagem);
+
+  window.open(
+    url,
+    "_blank"
+  );
 }
 
 /* =========================
@@ -1813,6 +2013,13 @@ function verEncomenda(codigo){
         </div>
 
         <div class="form-actions">
+
+          <button
+            class="primary"
+            onclick="enviarWhatsApp('${encomenda.codigoPublico}')"
+          >
+            📲 WhatsApp
+          </button>
 
           <button
             class="secondary"
