@@ -38,9 +38,45 @@ th{color:#66777a;background:#f7f9f9}.status{display:inline-block;padding:5px 9px
 .confirm-text{line-height:1.6;margin-bottom:15px}
 @media(max-width:850px){.sidebar{width:75px}.menu button{font-size:0;text-align:center}.menu button::first-letter{font-size:22px}.cards{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.main{padding:15px}.cards{grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}.table-scroll{overflow-x:auto}table{min-width:900px}}
+
+/* =========================
+   PÁGINA PÚBLICA DA ENCOMENDA
+   ========================= */
+.public-page{min-height:100vh;background:#f4f6f8;padding:22px}
+.public-wrap{width:100%;max-width:620px;margin:0 auto}
+.public-card{background:#fff;border-radius:18px;padding:24px;box-shadow:0 5px 22px rgba(0,0,0,.09)}
+.public-brand{text-align:center;margin-bottom:18px}
+.public-brand .brand-name{font-size:25px;font-weight:bold;color:#0b2528}
+.public-brand .brand-name span{color:#20bfa9}
+.public-title{text-align:center;font-size:24px;margin:10px 0 6px;color:#263238}
+.public-subtitle{text-align:center;color:#718096;margin-bottom:20px}
+.public-photo{width:100%;max-height:360px;object-fit:contain;border-radius:14px;background:#f7f9f9;margin:5px 0 20px}
+.public-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.public-info-box{background:#f7f9f9;border-radius:11px;padding:13px}
+.public-info-box small{display:block;color:#718096;font-size:11px;margin-bottom:5px}
+.public-info-box strong{display:block;font-size:14px;color:#263238;word-break:break-word}
+.public-password{background:#eefaf8;border:1px solid #ccefe9;border-radius:14px;text-align:center;padding:18px;margin-top:10px}
+.public-password small{display:block;color:#0e776e;font-weight:bold;margin-bottom:6px}
+.public-password strong{font-size:38px;letter-spacing:8px;color:#08766d}
+.public-note{text-align:center;color:#718096;font-size:13px;line-height:1.5;margin-top:18px}
+.public-error{text-align:center;padding:30px 10px;color:#991b1b}
+@media(max-width:520px){.public-page{padding:12px}.public-card{padding:18px}.public-info{grid-template-columns:1fr}.public-title{font-size:21px}}
+
 </style>
 </head>
 <body>
+
+<div id="publicPage" class="public-page" style="display:none">
+  <div class="public-wrap">
+    <div class="public-card" id="publicContent">
+      <div class="public-brand">
+        <div class="brand-name">Vynko <span>Condomínio</span></div>
+      </div>
+      <div id="publicLoading" class="public-subtitle">Carregando sua encomenda...</div>
+    </div>
+  </div>
+</div>
+
 <div class="app">
 <header><div class="logo">Vynko <span>Condomínio</span></div><div class="portaria">👤 Portaria</div></header>
 <div class="layout">
@@ -319,8 +355,15 @@ function encontrarMoradorDaEncomenda(e){
   if(!m)m=moradores.find(x=>String(x.apto||"").trim().toLowerCase()===a);
   if(!m)m=moradores.find(x=>String(x.nome||"").trim().toLowerCase()===String(e.nome||"").trim().toLowerCase());return m||null;
 }
+function obterLinkPublicoEncomenda(e){
+  const base="https://vynko-condo.github.io/Vynko-Condo/";
+  return base+"#encomenda="+encodeURIComponent(e.codigoPublico||"");
+}
+
 function gerarMensagemWhatsApp(e){
-  const u=`${e.apto||""}${e.bloco?" - "+e.bloco:""}`;let m=`📦 *Sua encomenda chegou!*
+  const u=`${e.apto||""}${e.bloco?" - "+e.bloco:""}`;
+  const link=obterLinkPublicoEncomenda(e);
+  let m=`📦 *Sua encomenda chegou!*
 
 Olá, ${e.nome||"morador"}!
 
@@ -330,7 +373,9 @@ Sua encomenda chegou à portaria do *Grand Raya* e está disponível para retira
 🚚 *Transportadora:* ${e.transportadora||"-"}
 📦 *Código de rastreio:* ${e.rastreio||"-"}
 📅 *Recebida em:* ${e.data||""} ${e.hora||""}`;
-  if(e.status==="Aguardando")m+=`\n🔐 *Senha de retirada:* ${e.senha||"-"}`;return m+`\n\nApresente a senha na portaria para retirar sua encomenda.`;
+  if(e.status==="Aguardando")m+=`\n🔐 *Senha de retirada:* ${e.senha||"-"}`;
+  m+=`\n\n🔎 *Ver qual é a encomenda:*\n${link}\n\nApresente a senha na portaria para retirar sua encomenda.`;
+  return m;
 }
 function enviarWhatsApp(c){
   const e=encomendas.find(x=>x.codigoPublico===c);if(!e){alert("Encomenda não encontrada.");return}
@@ -393,8 +438,121 @@ function atualizarRelatorios(){
 function salvarConfiguracoes(){localStorage.setItem("vynko_condominio",document.getElementById("nomeCondominio").value);alert("Configurações salvas.")}
 function atualizarTudo(){atualizarDashboard();renderEncomendas();renderMoradores();atualizarRelatorios()}
 
+
+/* =========================
+   LINK PÚBLICO DA ENCOMENDA
+   ========================= */
+function obterCodigoDaURL(){
+  const hash=window.location.hash||"";
+  if(!hash.startsWith("#encomenda="))return"";
+  return decodeURIComponent(hash.substring("#encomenda=".length));
+}
+
+function mostrarPaginaPublica(){
+  const codigo=obterCodigoDaURL();
+  const publicPage=document.getElementById("publicPage");
+  const app=document.querySelector(".app");
+
+  if(!codigo){
+    if(publicPage)publicPage.style.display="none";
+    if(app)app.style.display="";
+    return false;
+  }
+
+  if(app)app.style.display="none";
+  if(publicPage)publicPage.style.display="block";
+  return true;
+}
+
+function formatarDataPublica(iso){
+  if(!iso)return"-";
+  const d=new Date(iso);
+  if(Number.isNaN(d.getTime()))return"-";
+  return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+}
+
+async function carregarEncomendaPublica(){
+  const codigo=obterCodigoDaURL();
+  if(!codigo)return;
+
+  const content=document.getElementById("publicContent");
+  if(!content)return;
+
+  content.innerHTML=`
+    <div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div>
+    <div class="public-subtitle">Carregando sua encomenda...</div>`;
+
+  try{
+    const {data,error}=await supabaseClient
+      .from(TABELA_ENCOMENDAS)
+      .select("id,created_at,nome,apto,bloco,transportadora,rastreio,senha,status,retirada_em,foto_url,codigo_publico")
+      .eq("codigo_publico",codigo)
+      .maybeSingle();
+
+    if(error)throw error;
+
+    if(!data){
+      content.innerHTML=`
+        <div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div>
+        <div class="public-error">
+          <h2>📦 Encomenda não encontrada</h2>
+          <p>O link pode estar incorreto ou esta encomenda já foi excluída.</p>
+        </div>`;
+      return;
+    }
+
+    const foto=data.foto_url
+      ? `<img class="public-photo" src="${escaparHTML(data.foto_url)}" alt="Foto da encomenda">`
+      : "";
+
+    const retirada=data.status==="Retirada";
+    const statusHtml=retirada
+      ? `<div class="public-password"><small>STATUS</small><strong style="font-size:22px;letter-spacing:0">✅ Retirada</strong></div>`
+      : `<div class="public-password"><small>🔐 SENHA DE RETIRADA</small><strong>${escaparHTML(data.senha||"-")}</strong></div>`;
+
+    content.innerHTML=`
+      <div class="public-brand">
+        <div class="brand-name">Vynko <span>Condomínio</span></div>
+      </div>
+      <h1 class="public-title">📦 Sua encomenda chegou!</h1>
+      <p class="public-subtitle">Confira os dados da encomenda recebida na portaria.</p>
+      ${foto}
+      <div class="public-info">
+        <div class="public-info-box"><small>DESTINATÁRIO</small><strong>${escaparHTML(data.nome||"-")}</strong></div>
+        <div class="public-info-box"><small>UNIDADE</small><strong>${escaparHTML(data.apto||"-")}${data.bloco?" - "+escaparHTML(data.bloco):""}</strong></div>
+        <div class="public-info-box"><small>TRANSPORTADORA</small><strong>${escaparHTML(data.transportadora||"-")}</strong></div>
+        <div class="public-info-box"><small>CÓDIGO DE RASTREIO</small><strong>${escaparHTML(data.rastreio||"-")}</strong></div>
+        <div class="public-info-box"><small>RECEBIDA EM</small><strong>${escaparHTML(formatarDataPublica(data.created_at))}</strong></div>
+        <div class="public-info-box"><small>STATUS</small><strong>${escaparHTML(data.status||"-")}</strong></div>
+      </div>
+      ${statusHtml}
+      <p class="public-note">
+        ${retirada
+          ? "Esta encomenda já foi retirada da portaria."
+          : "Apresente a senha acima na portaria para retirar sua encomenda."}
+      </p>`;
+  }catch(error){
+    console.error("Erro ao carregar encomenda pública:",error);
+    content.innerHTML=`
+      <div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div>
+      <div class="public-error">
+        <h2>⚠️ Não foi possível carregar</h2>
+        <p>Verifique sua conexão com a internet e tente abrir o link novamente.</p>
+      </div>`;
+  }
+}
+
+window.addEventListener("hashchange",()=>{
+  if(mostrarPaginaPublica())carregarEncomendaPublica();
+});
+
 /* INICIALIZAÇÃO */
 document.addEventListener("DOMContentLoaded",()=>{
+  if(mostrarPaginaPublica()){
+    carregarEncomendaPublica();
+    return;
+  }
+
   const nome=localStorage.getItem("vynko_condominio");if(nome)document.getElementById("nomeCondominio").value=nome;
   atualizarTudo();carregarEncomendasOnline();carregarMoradoresOnline();
   const campo=document.getElementById("eFoto"),preview=document.getElementById("previewFoto");
@@ -405,4 +563,4 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 </body>
-                             </html>
+</html>
