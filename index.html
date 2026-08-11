@@ -1,475 +1,297 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vynko Condomínio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f4f6f8;color:#263238}.app{min-height:100vh}
-header{background:#0b2528;color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.logo{font-size:23px;font-weight:bold}.logo span{color:#20bfa9}.portaria{background:#20bfa9;padding:9px 14px;border-radius:20px;font-size:13px;font-weight:bold}
-.layout{display:flex;min-height:calc(100vh - 64px)}.sidebar{width:230px;background:#071b1e;color:#fff;padding:18px 12px}
-.menu{display:flex;flex-direction:column;gap:7px}.menu button{border:0;background:transparent;color:#d7e3e5;padding:13px 14px;text-align:left;border-radius:9px;font-size:14px;cursor:pointer}
-.menu button:hover,.menu button.active{background:#0e776e;color:#fff}.main{flex:1;padding:25px;max-width:1400px}
-.page{display:none}.page.active{display:block}h1{margin-bottom:6px;font-size:26px}.subtitle{color:#718096;margin-bottom:22px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}.card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
-.card-title{color:#718096;font-size:13px;margin-bottom:10px}.card-number{font-size:30px;font-weight:bold}.card-icon{font-size:25px;margin-bottom:12px}
-.panel{background:#fff;border-radius:14px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07);margin-bottom:20px}
-.panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.panel-header h2{font-size:18px}
-button.primary{background:#0e8f83;color:#fff;border:0;padding:11px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
-button.primary:hover{background:#08766d}button.secondary{background:#e8eeee;color:#263238;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
-button.danger{background:#fee2e2;color:#991b1b;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:bold}
-button.danger:hover{background:#fecaca}.search{width:100%;padding:12px;border:1px solid #d8e0e2;border-radius:8px;margin-bottom:15px}
-table{width:100%;border-collapse:collapse}th,td{padding:13px 10px;border-bottom:1px solid #edf0f1;text-align:left;font-size:13px;white-space:nowrap}
-th{color:#66777a;background:#f7f9f9}.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold}
-.status.pending{background:#fff3cd;color:#856404}.status.done{background:#d1fae5;color:#065f46}
-.empty{padding:35px;text-align:center;color:#89969a}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:center;justify-content:center;z-index:50;padding:20px}
-.modal.show{display:flex}.modal-box{background:#fff;width:100%;max-width:520px;border-radius:15px;padding:24px;max-height:90vh;overflow:auto}.modal-box h2{margin-bottom:20px}
-.form-group{margin-bottom:15px}.form-group label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
-.form-group input,.form-group select{width:100%;padding:11px;border:1px solid #d5dddd;border-radius:8px;font-size:14px}
-.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}.password-box{text-align:center;padding:20px;background:#eefaf8;border-radius:12px;margin:15px 0}
-.password{font-size:38px;font-weight:bold;letter-spacing:8px;color:#08766d}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.quick button{background:#fff;border:1px solid #e0e7e8;padding:20px;border-radius:12px;cursor:pointer;text-align:left}.quick button:hover{border-color:#0e8f83}
-.quick-icon{font-size:25px;margin-bottom:10px}.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.report-box{padding:22px;border-radius:12px;background:#f6f9f9}
-.report-box strong{display:block;font-size:28px;margin-top:8px}.leitura-status{margin-top:10px;font-size:13px;color:#0e776e;font-weight:bold}
-@media(max-width:850px){.sidebar{width:75px}.menu button{font-size:0;text-align:center}.menu button::first-letter{font-size:22px}.cards{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.main{padding:15px}.cards{grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}.table-scroll{overflow-x:auto}table{min-width:900px}}
-.public-page{min-height:100vh;background:#f4f6f8;padding:22px}.public-wrap{width:100%;max-width:620px;margin:0 auto}
-.public-card{background:#fff;border-radius:18px;padding:24px;box-shadow:0 5px 22px rgba(0,0,0,.09)}.public-brand{text-align:center;margin-bottom:18px}
-.public-brand .brand-name{font-size:25px;font-weight:bold;color:#0b2528}.public-brand .brand-name span{color:#20bfa9}
-.public-title{text-align:center;font-size:24px;margin:10px 0 6px;color:#263238}.public-subtitle{text-align:center;color:#718096;margin-bottom:20px}
-.public-photo{width:100%;max-height:360px;object-fit:contain;border-radius:14px;background:#f7f9f9;margin:5px 0 20px}
-.public-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.public-info-box{background:#f7f9f9;border-radius:11px;padding:13px}
-.public-info-box small{display:block;color:#718096;font-size:11px;margin-bottom:5px}.public-info-box strong{display:block;font-size:14px;color:#263238;word-break:break-word}
-.public-password{background:#eefaf8;border:1px solid #ccefe9;border-radius:14px;text-align:center;padding:18px;margin-top:10px}
-.public-password small{display:block;color:#0e776e;font-weight:bold;margin-bottom:6px}.public-password strong{font-size:38px;letter-spacing:8px;color:#08766d}
-.public-note{text-align:center;color:#718096;font-size:13px;line-height:1.5;margin-top:18px}.public-error{text-align:center;padding:30px 10px;color:#991b1b}
-@media(max-width:520px){.public-page{padding:12px}.public-card{padding:18px}.public-info{grid-template-columns:1fr}.public-title{font-size:21px}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#263238}
+button,input,select{font:inherit}.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#071b1e,#0b2528);padding:20px}
+.loginbox{background:#fff;width:min(430px,100%);padding:30px;border-radius:18px;box-shadow:0 15px 45px #0005}
+.brand{text-align:center;font-size:29px;font-weight:700;margin-bottom:8px}.brand b{color:#20bfa9}.muted{color:#718096}
+.field{margin:14px 0}.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:11px;border:1px solid #d5dddd;border-radius:8px}
+.primary{background:#0e8f83;color:#fff;border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.secondary{background:#e8eeee;color:#263238;border:0;border-radius:8px;padding:10px 14px;cursor:pointer}.danger{background:#fee2e2;color:#991b1b;border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+.error{display:none;background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px;margin:12px 0;font-size:13px}
+header{height:64px;background:#0b2528;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px}.logo{font-size:21px;font-weight:700}.logo b{color:#20bfa9}
+.layout{display:flex;min-height:calc(100vh - 64px)}aside{width:225px;background:#071b1e;padding:15px 10px}.menu button{display:block;width:100%;border:0;background:transparent;color:#d7e3e5;text-align:left;padding:13px;border-radius:8px;margin:4px 0;cursor:pointer}.menu button:hover,.menu button.active{background:#0e776e;color:#fff}
+main{flex:1;padding:24px;max-width:1500px}.page{display:none}.page.active{display:block}h1{margin:0 0 5px}.subtitle{margin:0 0 20px;color:#718096}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.card,.panel{background:#fff;border-radius:14px;padding:20px;box-shadow:0 3px 12px #0000000d}.card .n{font-size:30px;font-weight:700}.card .t{color:#718096;font-size:13px;margin:8px 0}.panel{margin-bottom:20px}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick button{background:#fff;border:1px solid #dfe7e8;border-radius:12px;padding:18px;text-align:left;cursor:pointer}
+.search{width:100%;padding:12px;border:1px solid #d5dddd;border-radius:8px;margin-bottom:15px}.scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:12px 9px;border-bottom:1px solid #edf0f1;text-align:left;font-size:13px}th{background:#f7f9f9;color:#66777a}.status{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700}.pending{background:#fff3cd;color:#856404}.done{background:#d1fae5;color:#065f46}.empty{text-align:center;padding:30px;color:#89969a}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:30}.modal.show{display:flex}.modalbox{background:#fff;width:min(540px,100%);max-height:90vh;overflow:auto;border-radius:15px;padding:23px}.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:18px}
+.password{font-size:38px;letter-spacing:8px;text-align:center;color:#08766d;font-weight:700;margin:15px}.passwordbox{text-align:center;background:#eefaf8;border-radius:12px;padding:20px;margin-top:18px}
+.fab{position:fixed;right:20px;bottom:20px;background:#20bfa9;color:#fff;border:0;border-radius:30px;padding:13px 17px;font-weight:700;z-index:20}
+@media(max-width:850px){aside{width:70px}.menu button{font-size:0;text-align:center}.menu button:first-letter{font-size:21px}.cards{grid-template-columns:1fr 1fr}.quick{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div id="publicPage" class="public-page" style="display:none">
-<div class="public-wrap"><div class="public-card" id="publicContent">
-<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div>
-<div id="publicLoading" class="public-subtitle">Carregando sua encomenda...</div>
-</div></div></div>
-
-<div class="app">
-<header><div class="logo">Vynko <span>Condomínio</span></div><div class="portaria">👤 Portaria</div></header>
-<div class="layout">
-<aside class="sidebar"><nav class="menu">
-<button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
-<button onclick="showPage('encomendas',this)">📦 Encomendas</button>
-<button onclick="showPage('moradores',this)">👥 Moradores</button>
-<button onclick="showPage('retirada',this)">🔐 Retirada com senha</button>
-<button onclick="showPage('relatorios',this)">📊 Relatórios</button>
-<button onclick="showPage('configuracoes',this)">⚙️ Configurações</button>
-</nav></aside>
-<main class="main">
-
-<section id="dashboard" class="page active">
-<h1>Dashboard</h1><p class="subtitle">Visão geral das encomendas do condomínio.</p>
-<div class="cards">
-<div class="card"><div class="card-icon">📦</div><div class="card-title">Encomendas recebidas</div><div class="card-number" id="totalEncomendas">0</div></div>
-<div class="card"><div class="card-icon">⏳</div><div class="card-title">Aguardando retirada</div><div class="card-number" id="aguardando">0</div></div>
-<div class="card"><div class="card-icon">✅</div><div class="card-title">Retiradas hoje</div><div class="card-number" id="retiradasHoje">0</div></div>
-<div class="card"><div class="card-icon">👥</div><div class="card-title">Moradores cadastrados</div><div class="card-number" id="totalMoradores">0</div></div>
+<div id="login" class="login">
+ <div class="loginbox">
+  <div class="brand">Vynko <b>Condomínio</b></div>
+  <p class="muted" style="text-align:center">Acesso seguro ao sistema</p>
+  <div id="loginError" class="error"></div>
+  <div class="field"><label>E-mail</label><input id="email" type="email" autocomplete="username"></div>
+  <div class="field"><label>Senha</label><input id="password" type="password" autocomplete="current-password"></div>
+  <button class="primary" style="width:100%" onclick="login()">Entrar</button>
+  <button class="secondary" style="width:100%;margin-top:10px" onclick="recover()">Esqueci minha senha</button>
+ </div>
 </div>
-<div class="panel"><div class="panel-header"><h2>Ações rápidas</h2></div><div class="quick">
-<button onclick="abrirModalEncomenda()"><div class="quick-icon">📦</div><strong>Registrar encomenda</strong><p>Cadastre uma nova encomenda recebida.</p></button>
-<button onclick="showPage('retirada')"><div class="quick-icon">🔐</div><strong>Retirar encomenda</strong><p>Informe a senha de retirada.</p></button>
-<button onclick="showPage('moradores')"><div class="quick-icon">👤</div><strong>Moradores</strong><p>Consultar moradores cadastrados.</p></button>
+
+<div id="app" class="hidden">
+<header><div class="logo">Vynko <b>Condomínio</b></div><div><span id="userBadge"></span> <button class="secondary" onclick="logout()">Sair</button></div></header>
+<div class="layout">
+<aside><nav class="menu">
+<button onclick="page('dashboard',this)">🏠 Dashboard</button>
+<button id="mEncomendas" onclick="page('encomendas',this)">📦 Encomendas</button>
+<button id="mMoradores" onclick="page('moradores',this)">👥 Moradores</button>
+<button id="mRetirada" onclick="page('retirada',this)">🔐 Retirada</button>
+<button id="mRelatorios" onclick="page('relatorios',this)">📊 Relatórios</button>
+<button id="mUsuarios" onclick="page('usuarios',this)">👤 Usuários</button>
+<button id="mConfig" onclick="page('config',this)">⚙️ Configurações</button>
+<button id="mMinhas" class="hidden" onclick="page('minhas',this)">📦 Minhas encomendas</button>
+</nav></aside>
+
+<main>
+<section id="dashboard" class="page active">
+<h1>Dashboard</h1><p class="subtitle">Visão geral das encomendas.</p>
+<div class="cards">
+<div class="card"><div>📦</div><div class="t">Encomendas recebidas</div><div id="cTotal" class="n">0</div></div>
+<div class="card"><div>⏳</div><div class="t">Aguardando retirada</div><div id="cPend" class="n">0</div></div>
+<div class="card"><div>✅</div><div class="t">Retiradas hoje</div><div id="cHoje" class="n">0</div></div>
+<div class="card"><div>👥</div><div class="t">Moradores</div><div id="cMor" class="n">0</div></div>
+</div>
+<div class="panel"><div class="panelhead"><h2>Ações rápidas</h2></div><div class="quick">
+<button onclick="openEncomenda()">📦 <b>Registrar encomenda</b><br><span class="muted">Cadastrar recebimento.</span></button>
+<button onclick="page('retirada')">🔐 <b>Retirar encomenda</b><br><span class="muted">Usar senha de retirada.</span></button>
+<button onclick="page('moradores')">👥 <b>Moradores</b><br><span class="muted">Consultar cadastro.</span></button>
 </div></div>
-<div class="panel"><h2>Últimas encomendas</h2><br><div id="ultimasEncomendas"></div></div>
+<div class="panel"><h2>Últimas encomendas</h2><div id="ultimas"></div></div>
 </section>
 
 <section id="encomendas" class="page">
-<div class="panel-header"><div><h1>Encomendas</h1><p class="subtitle">Controle de todas as encomendas recebidas.</p></div><button class="primary" onclick="abrirModalEncomenda()">+ Nova encomenda</button></div>
-<div class="panel"><input class="search" id="buscaEncomenda" placeholder="🔎 Buscar por morador, apartamento, bloco ou código..." oninput="renderEncomendas()">
-<div class="table-scroll"><table><thead><tr><th>Data</th><th>Destinatário</th><th>Apto</th><th>Bloco</th><th>Transportadora</th><th>Status</th><th>Senha</th><th>Encomenda</th><th>WhatsApp</th><th>Ações</th></tr></thead><tbody id="tabelaEncomendas"></tbody></table></div></div>
+<div class="panelhead"><div><h1>Encomendas</h1><p class="subtitle">Controle de recebimentos.</p></div><button class="primary" onclick="openEncomenda()">+ Nova encomenda</button></div>
+<div class="panel"><input id="searchE" class="search" placeholder="🔎 Buscar por nome, apto, bloco, rastreio ou senha..." oninput="renderE()"><div class="scroll"><table><thead><tr><th>Data</th><th>Nome</th><th>Apto</th><th>Bloco</th><th>Transportadora</th><th>Status</th><th>Senha</th><th>Foto</th><th>WhatsApp</th><th>Ação</th></tr></thead><tbody id="tableE"></tbody></table></div></div>
 </section>
 
 <section id="moradores" class="page">
-<div class="panel-header"><div><h1>Moradores</h1><p class="subtitle">Cadastro dos moradores do condomínio.</p></div><button class="primary" onclick="abrirModalMorador()">+ Novo morador</button></div>
-<div class="panel"><input class="search" id="buscaMorador" placeholder="🔎 Buscar morador, apartamento ou bloco..." oninput="renderMoradores()">
-<div class="table-scroll"><table><thead><tr><th>Nome</th><th>Apartamento</th><th>Bloco</th><th>WhatsApp</th></tr></thead><tbody id="tabelaMoradores"></tbody></table></div></div>
+<div class="panelhead"><div><h1>Moradores</h1><p class="subtitle">Cadastro de moradores.</p></div><button class="primary" onclick="openMorador()">+ Novo morador</button></div>
+<div class="panel"><input id="searchM" class="search" placeholder="🔎 Buscar nome, apto ou bloco..." oninput="renderM"><div class="scroll"><table><thead><tr><th>Nome</th><th>Apto</th><th>Bloco</th><th>WhatsApp</th><th>Tipo</th></tr></thead><tbody id="tableM"></tbody></table></div></div>
 </section>
 
 <section id="retirada" class="page">
-<h1>Retirada com senha</h1><p class="subtitle">Digite a senha informada pelo morador.</p>
-<div class="panel"><div class="form-group"><label>Senha de retirada</label><input id="senhaRetirada" maxlength="4" inputmode="numeric" placeholder="Digite os 4 números" style="font-size:25px;text-align:center;letter-spacing:8px;"></div>
-<button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button><div id="resultadoRetirada"></div></div>
+<h1>Retirada com senha</h1><p class="subtitle">Informe os 4 dígitos recebidos pelo morador.</p>
+<div class="panel"><div class="field"><label>Senha</label><input id="senha" maxlength="4" inputmode="numeric" style="font-size:25px;text-align:center;letter-spacing:8px"></div><button class="primary" onclick="consultarSenha()">🔎 Consultar</button><div id="retorno"></div></div>
 </section>
 
 <section id="relatorios" class="page">
-<h1>Relatórios</h1><p class="subtitle">Resumo da movimentação de encomendas.</p>
-<div class="report-grid"><div class="report-box">Encomendas recebidas<strong id="relTotal">0</strong></div><div class="report-box">Aguardando retirada<strong id="relPendentes">0</strong></div><div class="report-box">Encomendas retiradas<strong id="relRetiradas">0</strong></div></div>
+<h1>Relatórios</h1><p class="subtitle">Resumo da movimentação.</p><div class="cards">
+<div class="card"><div class="t">Recebidas</div><div id="rTotal" class="n">0</div></div><div class="card"><div class="t">Aguardando</div><div id="rPend" class="n">0</div></div><div class="card"><div class="t">Retiradas</div><div id="rRet" class="n">0</div></div>
+</div></section>
+
+<section id="usuarios" class="page">
+<h1>Usuários</h1><p class="subtitle">Contas de acesso controladas pelo Supabase Auth.</p><div class="panel"><p class="muted">Os perfis Administrador, Portaria e Morador são definidos na tabela <b>perfis</b>. O acesso às áreas do sistema é filtrado conforme o perfil.</p></div>
 </section>
 
-<section id="configuracoes" class="page">
-<h1>Configurações</h1><p class="subtitle">Configurações do sistema Vynko Condomínio.</p>
-<div class="panel"><div class="form-group"><label>Nome do condomínio</label><input id="nomeCondominio" value="Grand Raya"></div>
-<div class="form-group"><label>Nome do sistema</label><input value="Vynko Condomínio"></div><button class="primary" onclick="salvarConfiguracoes()">Salvar configurações</button></div>
+<section id="config" class="page">
+<h1>Configurações</h1><p class="subtitle">Configurações básicas do condomínio.</p><div class="panel"><div class="field"><label>Condomínio</label><input id="condominio" value="Grand Raya"></div><button class="primary" onclick="saveConfig()">Salvar</button></div></section>
+
+<section id="minhas" class="page">
+<h1>Minhas encomendas</h1><p class="subtitle">Encomendas da sua unidade.</p><div class="panel"><div class="scroll"><table><thead><tr><th>Data</th><th>Nome</th><th>Unidade</th><th>Transportadora</th><th>Status</th><th>Senha</th></tr></thead><tbody id="tableMine"></tbody></table></div></div>
 </section>
 </main></div></div>
 
-<div class="modal" id="modalEncomenda"><div class="modal-box">
-<h2>📦 Registrar encomenda</h2>
-<div class="form-group"><label>Nome do destinatário</label><input id="eNome" placeholder="Nome do morador"></div>
-<div class="form-group"><label>Apartamento</label><input id="eApto" placeholder="Ex.: 1702"></div>
-<div class="form-group"><label>Bloco</label><input id="eBloco" placeholder="Ex.: BOTANIQUE"></div>
-<div class="form-group"><label>Transportadora</label><select id="eTransportadora"><option>Amazon</option><option>Mercado Livre</option><option>Correios</option><option>Jadlog</option><option>Loggi</option><option>Shopee</option><option>Outra</option></select></div>
-<div class="form-group"><label>Código de rastreio</label><input id="eRastreio" placeholder="Opcional"></div>
-<div class="form-group"><label>Foto da encomenda</label><input type="file" id="eFoto" accept="image/*" capture="environment"><small>Tire uma foto da etiqueta da encomenda.</small><div id="previewFoto" style="margin-top:10px"></div><div id="leituraStatus" class="leitura-status"></div></div>
-<div class="form-actions"><button class="secondary" onclick="fecharModal('modalEncomenda')">Cancelar</button><button class="primary" onclick="salvarEncomenda()">Registrar</button></div>
+<button class="fab" onclick="support()">💬 Suporte</button>
+
+<div id="modalE" class="modal"><div class="modalbox"><h2>📦 Registrar encomenda</h2>
+<div class="field"><label>Nome do destinatário</label><input id="eNome"></div>
+<div class="field"><label>Apartamento</label><input id="eApto"></div>
+<div class="field"><label>Bloco</label><input id="eBloco" placeholder="Ex.: BOTANIQUE"></div>
+<div class="field"><label>Transportadora</label><select id="eTrans"><option>Amazon</option><option>Mercado Livre</option><option>Correios</option><option>Jadlog</option><option>Loggi</option><option>Shopee</option><option>Outra</option></select></div>
+<div class="field"><label>Código de rastreio</label><input id="eRastreio"></div>
+<div class="field"><label>Foto da etiqueta</label><input id="eFoto" type="file" accept="image/*" capture="environment"><small id="ocrStatus" class="muted"></small><div id="fotoPreview"></div></div>
+<div class="actions"><button class="secondary" onclick="closeModal('modalE')">Cancelar</button><button id="saveE" class="primary" onclick="saveE()">Registrar</button></div>
 </div></div>
 
-<div class="modal" id="modalMorador"><div class="modal-box">
-<h2>👤 Novo morador</h2>
-<div class="form-group"><label>Nome completo</label><input id="mNome"></div><div class="form-group"><label>Apartamento</label><input id="mApto"></div>
-<div class="form-group"><label>Bloco</label><input id="mBloco" placeholder="Ex.: BOTANIQUE"></div><div class="form-group"><label>WhatsApp</label><input id="mWhatsApp" placeholder="(00) 00000-0000"></div>
-<div class="form-actions"><button class="secondary" onclick="fecharModal('modalMorador')">Cancelar</button><button class="primary" onclick="salvarMorador()">Cadastrar</button></div>
+<div id="modalM" class="modal"><div class="modalbox"><h2>👤 Novo morador</h2>
+<div class="field"><label>Nome completo</label><input id="mNome"></div><div class="field"><label>Apartamento</label><input id="mApto"></div><div class="field"><label>Bloco</label><input id="mBloco" placeholder="Ex.: BOTANIQUE"></div><div class="field"><label>WhatsApp</label><input id="mWhats"></div><div class="field"><label>Tipo</label><select id="mTipo"><option value="morador">Morador</option><option value="dependente">Dependente</option></select></div>
+<div class="actions"><button class="secondary" onclick="closeModal('modalM')">Cancelar</button><button class="primary" onclick="saveM()">Cadastrar</button></div>
 </div></div>
 
 <script>
-const SUPABASE_URL="https://dozqaznwcodjvuhsremx.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_wNjWBcOg-Y3PeFEAXJ-yLg_df8WzKob";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const TABELA_ENCOMENDAS="encomendas",TABELA_MORADORES="moradores";
-const BUCKET_FOTOS="Fotos - encomendas";
-let encomendas=JSON.parse(localStorage.getItem("vynko_encomendas"))||[];
-let moradores=JSON.parse(localStorage.getItem("vynko_moradores"))||[];
-let ocrWorker=null;
+const URL="https://dozqaznwcodjvuhsremx.supabase.co";
+const KEY="sb_publishable_wNjWBcOg-Y3PeFEAXJ-yLg_df8WzKob";
+const sb=supabase.createClient(URL,KEY);
+const EN="encomendas",MO="moradores",PF="perfis",BUCKET="Fotos - encomendas";
+let encomendas=[],moradores=[],user=null,perfil=null;
 
-function escaparHTML(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
-function normalizarTexto(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase()}
-function dataHoraAtual(){const a=new Date();return{data:a.toLocaleDateString("pt-BR"),hora:a.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),iso:a.toISOString()}}
+const $=id=>document.getElementById(id);
+const norm=s=>String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toUpperCase();
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const admin=()=>["admin","administrador"].includes(norm(perfil?.tipo).toLowerCase());
+const port=()=>norm(perfil?.tipo).toLowerCase()==="portaria";
+const mor=()=>["morador","dependente"].includes(norm(perfil?.tipo).toLowerCase());
+function showError(s){$("loginError").textContent=s;$("loginError").style.display="block"}
+function hideError(){$("loginError").style.display="none"}
 
-async function inserirEncomendaSupabase(e){
-const r={id:Number(e.id),created_at:e.created_at||new Date().toISOString(),nome:e.nome,apto:e.apto,bloco:e.bloco||null,transportadora:e.transportadora||null,rastreio:e.rastreio||null,senha:e.senha,status:e.status,retirada_em:e.retirada_em||null,foto_url:e.foto_url||null,codigo_publico:e.codigoPublico};
-const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).upsert(r,{onConflict:"id"}).select().single();
-if(error)throw error;return data;
+async function login(){
+hideError();let email=$("email").value.trim(),password=$("password").value;
+if(!email||!password)return showError("Informe e-mail e senha.");
+let {data,error}=await sb.auth.signInWithPassword({email,password});
+if(error)return showError("E-mail ou senha inválidos.");
+await loadProfile(data.user);
 }
-async function atualizarEncomendaSupabase(id,campos){
-const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).update(campos).eq("id",Number(id)).select().single();
-if(error)throw error;return data;
+async function recover(){
+let email=prompt("Digite seu e-mail para receber o link de recuperação:");
+if(!email)return;
+let {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.href});
+alert(error?"Não foi possível enviar o link.":"Link enviado. Confira seu e-mail.");
+}
+async function logout(){await sb.auth.signOut();location.reload()}
+
+async function loadProfile(u){
+user=u;
+let q=await sb.from(PF).select("*").eq("id",u.id).maybeSingle();
+if(q.error)throw q.error;
+if(!q.data){
+let meta=u.user_metadata||{};
+let novo={id:u.id,nome:meta.nome||u.email?.split("@")[0],email:u.email,tipo:meta.tipo||"morador",telefone:meta.telefone||null,apto:meta.apto||null,bloco:meta.bloco||null};
+let ins=await sb.from(PF).insert(novo).select().single();if(ins.error)throw ins.error;q.data=ins.data;
+}
+perfil=q.data;
+$("login").classList.add("hidden");$("app").classList.remove("hidden");
+$("userBadge").textContent=(perfil.nome||u.email)+" • "+(perfil.tipo||"morador");
+applyAccess();await refresh();
+}
+function applyAccess(){
+let m=["mEncomendas","mMoradores","mRetirada","mRelatorios","mUsuarios","mConfig"];
+if(mor()){m.forEach(id=>$(id).classList.add("hidden"));$("mMinhas").classList.remove("hidden");page("minhas",$("mMinhas"))}
+else{$("mEncomendas").classList.remove("hidden");$("mMoradores").classList.remove("hidden");$("mRetirada").classList.remove("hidden");$("mRelatorios").classList.toggle("hidden",!(admin()||port()));$("mUsuarios").classList.toggle("hidden",!admin());$("mConfig").classList.toggle("hidden",!admin());page("dashboard")}
+}
+function page(id,btn){
+if(mor()&&id!=="minhas"){alert("Seu perfil possui acesso somente às suas encomendas.");return}
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id)?.classList.add("active");
+document.querySelectorAll(".menu button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");
+refresh();
 }
 
-/* NOVO: ENVIO DA FOTO PARA O BUCKET DO SUPABASE */
-async function enviarFotoSupabase(arquivo,id){
-if(!arquivo)return "";
-if(arquivo.size>5*1024*1024)throw new Error("A foto deve ter no máximo 5 MB.");
-
-const extensaoOriginal=(arquivo.name.split(".").pop()||"jpg").toLowerCase();
-const extensoesPermitidas=["jpg","jpeg","png","webp","gif","heic","heif"];
-const extensao=extensoesPermitidas.includes(extensaoOriginal)?extensaoOriginal:"jpg";
-const caminho=`encomendas/${id}_${Date.now()}.${extensao}`;
-
-const {error:uploadError}=await supabaseClient.storage.from(BUCKET_FOTOS).upload(caminho,arquivo,{
-contentType:arquivo.type||"image/jpeg",
-upsert:false
-});
-if(uploadError)throw uploadError;
-
-const {data}=supabaseClient.storage.from(BUCKET_FOTOS).getPublicUrl(caminho);
-if(!data?.publicUrl)throw new Error("O Supabase não retornou a URL pública da foto.");
-return data.publicUrl;
+async function refresh(){await Promise.all([loadE(),loadM()]);renderAll()}
+async function loadE(){
+let q=await sb.from(EN).select("*").order("created_at",{ascending:false});
+if(q.error){console.warn(q.error);encomendas=[];return}
+encomendas=(q.data||[]).map(x=>({...x,id:x.id,nome:x.nome||"",apto:x.apto||"",bloco:x.bloco||"",transportadora:x.transportadora||"",status:x.status||"Aguardando",senha:x.senha||"",rastreio:x.rastreio||"",foto_url:x.foto_url||"",data:x.created_at?new Date(x.created_at).toLocaleDateString("pt-BR"):"",hora:x.created_at?new Date(x.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):""}));
 }
+async function loadM(){
+let q=await sb.from(MO).select("*").order("nome");
+if(q.error){console.warn(q.error);moradores=[];return}
+moradores=q.data||[];
+}
+function renderAll(){renderDashboard();renderE();renderM();renderMine();renderReports()}
+function renderDashboard(){
+$("cTotal").textContent=encomendas.length;$("cPend").textContent=encomendas.filter(x=>x.status==="Aguardando").length;
+let hoje=new Date().toLocaleDateString("pt-BR");$("cHoje").textContent=encomendas.filter(x=>x.status==="Retirada"&&x.retirada_em&&new Date(x.retirada_em).toLocaleDateString("pt-BR")===hoje).length;$("cMor").textContent=moradores.length;
+let a=encomendas.slice(0,5);$("ultimas").innerHTML=a.length?`<div class="scroll"><table><tr><th>Nome</th><th>Apto</th><th>Data</th><th>Status</th></tr>${a.map(x=>`<tr><td>${esc(x.nome)}</td><td>${esc(x.apto)}</td><td>${esc(x.data)}</td><td>${status(x.status)}</td></tr>`).join("")}</table></div>`:'<div class="empty">Nenhuma encomenda.</div>';
+}
+function status(s){return `<span class="status ${s==="Aguardando"?"pending":"done"}">${esc(s)}</span>`}
+function renderE(){
+let b=($("searchE")?.value||"").toLowerCase();let a=encomendas.filter(x=>[x.nome,x.apto,x.bloco,x.transportadora,x.rastreio,x.senha].some(v=>String(v||"").toLowerCase().includes(b)));
+$("tableE").innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.data)}<br>${esc(x.hora)}</td><td><b>${esc(x.nome)}</b></td><td>${esc(x.apto)}</td><td>${esc(x.bloco||"-")}</td><td>${esc(x.transportadora||"-")}</td><td>${status(x.status)}</td><td><b>${x.status==="Aguardando"?esc(x.senha):"—"}</b></td><td>${x.foto_url?`<button class="secondary" onclick="viewPhoto('${esc(x.foto_url)}')">📷</button>`:"—"}</td><td><button class="secondary" onclick="whatsapp('${x.id}')">📲</button></td><td><button class="danger" onclick="deleteE('${x.id}')">🗑️</button></td></tr>`).join(""):'<tr><td colspan="10" class="empty">Nenhuma encomenda encontrada.</td></tr>';
+}
+function renderM(){
+let b=($("searchM")?.value||"").toLowerCase();let a=moradores.filter(x=>[x.nome,x.apto,x.bloco,x.whatsapp].some(v=>String(v||"").toLowerCase().includes(b)));
+$("tableM").innerHTML=a.length?a.map(x=>`<tr><td><b>${esc(x.nome)}</b></td><td>${esc(x.apto)}</td><td>${esc(x.bloco||"-")}</td><td>${esc(x.whatsapp||"-")}</td><td>${esc(x.tipo||"morador")}</td></tr>`).join(""):'<tr><td colspan="5" class="empty">Nenhum morador encontrado.</td></tr>';
+}
+function renderMine(){
+if(!mor())return;
+let a=encomendas.filter(x=>String(x.apto||"").trim()===String(perfil.apto||"").trim()&&(!perfil.bloco||norm(x.bloco)===norm(perfil.bloco)));
+$("tableMine").innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.data)}</td><td>${esc(x.nome)}</td><td>${esc(x.apto)}${x.bloco?" - "+esc(x.bloco):""}</td><td>${esc(x.transportadora||"-")}</td><td>${status(x.status)}</td><td>${x.status==="Aguardando"?esc(x.senha):"—"}</td></tr>`).join(""):'<tr><td colspan="6" class="empty">Nenhuma encomenda para sua unidade.</td></tr>';
+}
+function renderReports(){$("rTotal").textContent=encomendas.length;$("rPend").textContent=encomendas.filter(x=>x.status==="Aguardando").length;$("rRet").textContent=encomendas.filter(x=>x.status==="Retirada").length}
 
-async function excluirEncomenda(id){
-const e=encomendas.find(x=>String(x.id)===String(id));if(!e){alert("Encomenda não encontrada.");return}
-const ok=confirm(`Excluir definitivamente esta encomenda?\n\n${e.nome||"Sem nome"}\nApto: ${e.apto||"-"}${e.bloco?" - "+e.bloco:""}\n\nEsta ação não pode ser desfeita.`);
-if(!ok)return;
+function openEncomenda(){if(!(admin()||port()))return alert("Apenas Administrador ou Portaria podem registrar encomendas.");$("modalE").classList.add("show")}
+function openMorador(){if(!(admin()||port()))return alert("Sem permissão.");$("modalM").classList.add("show")}
+function closeModal(id){$(id)?.classList.remove("show")}
+function senhaNova(){let s;do{s=String(Math.floor(1000+Math.random()*9000))}while(encomendas.some(x=>x.senha===s&&x.status==="Aguardando"));return s}
+async function uploadFoto(file,id){
+if(!file)return "";
+if(file.size>5*1024*1024)throw Error("A foto deve ter no máximo 5 MB.");
+let ext=(file.name.split(".").pop()||"jpg").toLowerCase();if(!["jpg","jpeg","png","webp"].includes(ext))ext="jpg";
+let path=`encomendas/${id}_${Date.now()}.${ext}`;
+let q=await sb.storage.from(BUCKET).upload(path,file,{contentType:file.type||"image/jpeg"});if(q.error)throw q.error;
+return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+async function saveE(){
+let nome=$("eNome").value.trim(),apto=$("eApto").value.trim(),bloco=$("eBloco").value.trim();
+if(!nome||!apto)return alert("Informe nome e apartamento.");
+let id=Date.now(),senha=senhaNova(),file=$("eFoto").files[0],url="";
+$("saveE").disabled=true;
 try{
-const {error}=await supabaseClient.from(TABELA_ENCOMENDAS).delete().eq("id",Number(id));if(error)throw error;
-encomendas=encomendas.filter(x=>String(x.id)!==String(id));
-localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
-document.getElementById("modalVisualizarEncomenda")?.remove();
-atualizarTudo();alert("Encomenda excluída com sucesso.");
-}catch(error){
-console.error(error);
-alert("Não foi possível excluir a encomenda no Supabase.\n\nSe aparecer erro de permissão/RLS, é necessário liberar DELETE na política da tabela encomendas.");
+if(file)url=await uploadFoto(file,id);
+let obj={id,nome,apto,bloco:bloco||null,transportadora:$("eTrans").value,rastreio:$("eRastreio").value.trim()||null,senha,status:"Aguardando",foto_url:url||null,codigo_publico:`EN-${id}-${Math.random().toString(36).slice(2,8).toUpperCase()}`};
+let q=await sb.from(EN).insert(obj);if(q.error)throw q.error;
+closeModal("modalE");["eNome","eApto","eBloco","eRastreio"].forEach(i=>$(i).value="");$("eFoto").value="";alert("Encomenda registrada!\n\nSenha de retirada: "+senha);await refresh();
+}catch(e){console.error(e);alert("Não foi possível salvar.\n\n"+(e.message||"Verifique as políticas RLS e o bucket de fotos."))}
+finally{$("saveE").disabled=false}
 }
+async function saveM(){
+let nome=$("mNome").value.trim(),apto=$("mApto").value.trim(),bloco=$("mBloco").value.trim();
+if(!nome||!apto)return alert("Informe nome e apartamento.");
+let obj={id:Date.now(),nome,apto,bloco:bloco||null,whatsapp:$("mWhats").value.trim()||null,tipo:$("mTipo").value};
+let q=await sb.from(MO).insert(obj);if(q.error)return alert("Não foi possível salvar.\n\n"+q.error.message);
+closeModal("modalM");["mNome","mApto","mBloco","mWhats"].forEach(i=>$(i).value="");alert("Morador cadastrado.");await refresh();
 }
+async function consultarSenha(){
+let s=$("senha").value.trim();if(!/^\\d{4}$/.test(s))return $("retorno").innerHTML='<div class="empty">Digite 4 números.</div>';
+let q=await sb.from(EN).select("*").eq("senha",s).eq("status","Aguardando").maybeSingle();
+if(q.error||!q.data)return $("retorno").innerHTML='<div class="empty">❌ Nenhuma encomenda aguardando retirada com essa senha.</div>';
+let x=q.data;$("retorno").innerHTML=`<div class="passwordbox"><h2>${esc(x.nome)}</h2><p>Apto ${esc(x.apto)}${x.bloco?" • "+esc(x.bloco):""}</p><div class="password">${esc(x.senha)}</div><button class="primary" onclick="retirar('${x.id}')">✅ Confirmar retirada</button></div>`;
+}
+async function retirar(id){
+let q=await sb.from(EN).update({status:"Retirada",retirada_em:new Date().toISOString()}).eq("id",id);if(q.error)return alert("Não foi possível registrar a retirada.\n\n"+q.error.message);
+$("senha").value="";$("retorno").innerHTML='<div class="empty">✅ Encomenda retirada com sucesso!</div>';await refresh();
+}
+async function deleteE(id){
+if(!(admin()||port()))return alert("Sem permissão.");
+if(!confirm("Excluir esta encomenda definitivamente?"))return;
+let q=await sb.from(EN).delete().eq("id",id);if(q.error)return alert("Não foi possível excluir.\n\n"+q.error.message);
+await refresh();
+}
+function whatsapp(id){
+let x=encomendas.find(e=>String(e.id)===String(id));if(!x)return;
+let m=moradores.find(a=>String(a.apto)===String(x.apto)&&(!x.bloco||norm(a.bloco)===norm(x.bloco)))||moradores.find(a=>String(a.apto)===String(x.apto));
+if(!m?.whatsapp)return alert("Não encontrei WhatsApp cadastrado para esta unidade.");
+let n=m.whatsapp.replace(/\\D/g,"");if(n.length===10||n.length===11)n="55"+n;
+let msg=`📦 *Sua encomenda chegou!*
 
-async function carregarEncomendasOnline(){
-if(!navigator.onLine)return;
-try{
-const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("*").order("created_at",{ascending:false});if(error)throw error;
-encomendas=(data||[]).map(e=>({
-id:e.id,codigoPublico:e.codigo_publico||("EN-"+e.id),created_at:e.created_at,
-data:e.created_at?new Date(e.created_at).toLocaleDateString("pt-BR"):"",
-hora:e.created_at?new Date(e.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"",
-nome:e.nome||"",apto:e.apto||"",bloco:e.bloco||"",transportadora:e.transportadora||"",rastreio:e.rastreio||"",
-senha:e.senha||"",status:e.status||"Aguardando",retirada_em:e.retirada_em||null,
-retirada:e.retirada_em?new Date(e.retirada_em).toLocaleDateString("pt-BR")+" "+new Date(e.retirada_em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):null,
-foto_url:e.foto_url||"",foto:e.foto_url||""
-}));
-localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));atualizarTudo();
-}catch(e){console.warn("Não foi possível carregar encomendas:",e)}
-}
-
-async function inserirMoradorSupabase(m){
-const r={id:Number(m.id),created_at:m.created_at||new Date().toISOString(),nome:m.nome,apto:m.apto,bloco:m.bloco||null,whatsapp:m.whatsapp||null};
-const {data,error}=await supabaseClient.from(TABELA_MORADORES).upsert(r,{onConflict:"id"}).select().single();if(error)throw error;return data;
-}
-async function carregarMoradoresOnline(){
-if(!navigator.onLine)return;
-try{
-const {data,error}=await supabaseClient.from(TABELA_MORADORES).select("*").order("nome",{ascending:true});if(error)throw error;
-moradores=(data||[]).map(m=>({id:m.id,created_at:m.created_at,nome:m.nome||"",apto:m.apto||"",bloco:m.bloco||"",whatsapp:m.whatsapp||""}));
-localStorage.setItem("vynko_moradores",JSON.stringify(moradores));atualizarTudo();
-}catch(e){console.warn("Não foi possível carregar moradores:",e)}
-}
-
-/* OCR */
-async function carregarOCR(){
-if(ocrWorker)return ocrWorker;
-if(typeof Tesseract==="undefined"){
-const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";
-await new Promise((res,rej)=>{s.onload=res;s.onerror=rej;document.head.appendChild(s)});
-}
-ocrWorker=await Tesseract.createWorker("por");return ocrWorker;
-}
-function detectarTransportadora(texto,rastreio){
-const t=normalizarTexto(texto),r=normalizarTexto(rastreio);
-if(t.includes("AMAZON")||t.includes("AMAZON LOGISTICS")||/\bTBA[A-Z0-9]+\b/.test(r)||/\bTBA[A-Z0-9]+\b/.test(t))return"Amazon";
-if(t.includes("MERCADO LIVRE")||t.includes("MERCADOLIVRE")||t.includes("MELI")||/\bML[A-Z0-9]+\b/.test(r))return"Mercado Livre";
-if(t.includes("CORREIOS")||t.includes("SEDEX")||t.includes("PAC")||/\b[A-Z]{2}\d{9}BR\b/.test(r))return"Correios";
-if(t.includes("JADLOG"))return"Jadlog";if(t.includes("LOGGI"))return"Loggi";
-if(t.includes("SHOPEE")||t.includes("SPX")||/\bSPX[A-Z0-9]+\b/.test(r))return"Shopee";return"";
-}
-function extrairRastreio(texto){
-const t=normalizarTexto(texto),pats=[/\bTBA[A-Z0-9]{8,25}\b/g,/\b[A-Z]{2}\d{9}BR\b/g,/\bSPX[A-Z0-9]{8,25}\b/g,/\bML[A-Z0-9]{8,25}\b/g,/\b[A-Z]{2,5}\d{8,18}\b/g,/\b\d{10,20}\b/g,/\b[A-Z0-9]{10,25}\b/g];
-for(const p of pats){const a=t.match(p);if(a&&a.length){const c=a.map(x=>x.replace(/[^A-Z0-9]/g,"")).filter(x=>x.length>=8);if(c.length){c.sort((a,b)=>b.length-a.length);return c[0]}}}return"";
-}
-async function lerEtiqueta(){
-const campo=document.getElementById("eFoto");if(!campo?.files?.[0])return;
-const status=document.getElementById("leituraStatus");
-try{
-if(status)status.innerText="🔎 Lendo etiqueta...";
-const nome=document.getElementById("eNome"),apto=document.getElementById("eApto"),bloco=document.getElementById("eBloco"),rast=document.getElementById("eRastreio"),trans=document.getElementById("eTransportadora");
-const r=await(await carregarOCR()).recognize(campo.files[0]),texto=(r.data.text||"").trim();
-if(!texto){status.innerText="❌ Não foi possível ler a etiqueta.";return}
-const tn=normalizarTexto(texto),rt=extrairRastreio(texto);if(rt)rast.value=rt;
-const tr=detectarTransportadora(texto,rt);if(tr)trans.value=tr;
-const ap=tn.match(/\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/i);
-if(ap&&!apto.value)apto.value=ap[1];
-if(!apto.value){const ns=tn.match(/\b\d{3,4}\b/g);if(ns){const n=ns.find(x=>+x>=101&&+x<=9999);if(n)apto.value=n}}
-let b="";if(/\bNATURE\b/.test(tn))b="NATURE";else if(/\bBOTANIQUE\b/.test(tn))b="BOTANIQUE";else if(/\bJARDIN\b/.test(tn))b="JARDIN";
-if(!b){const x=tn.match(/\b(?:BLOCO|BL|TORRE)[\s.:#-]*([123])\b/);if(x)b={"1":"NATURE","2":"BOTANIQUE","3":"JARDIN"}[x[1]]||""}
-if(b)bloco.value=b;
-const found=moradores.find(m=>String(m.apto||"").trim()===String(apto.value||"").trim()&&(!bloco.value||normalizarTexto(m.bloco)===normalizarTexto(bloco.value)));
-if(found)nome.value=found.nome||"";
-status.innerText="✅ Etiqueta lida. Confira os dados antes de registrar.";
-}catch(e){console.error(e);if(status)status.innerText="❌ Não foi possível ler automaticamente a etiqueta."}
-}
-
-/* NAVEGAÇÃO */
-function showPage(id,btn){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id)?.classList.add("active");
-document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));if(btn)btn.classList.add("active");atualizarTudo();
-}
-function abrirModalEncomenda(){document.getElementById("modalEncomenda").classList.add("show")}
-function abrirModalMorador(){document.getElementById("modalMorador").classList.add("show")}
-function fecharModal(id){document.getElementById(id)?.remove()}
-function gerarSenha(){let s="";do{s=Math.floor(1000+Math.random()*9000).toString()}while(encomendas.some(e=>e.senha===s&&e.status==="Aguardando"));return s}
-
-/* SALVAR ENCOMENDA */
-async function salvarEncomenda(){
-const nome=document.getElementById("eNome").value.trim(),apto=document.getElementById("eApto").value.trim(),bloco=document.getElementById("eBloco").value.trim(),
-transportadora=document.getElementById("eTransportadora").value,rastreio=document.getElementById("eRastreio").value.trim(),arquivo=document.getElementById("eFoto")?.files?.[0]||null;
-if(!nome||!apto){alert("Informe pelo menos o nome e o apartamento.");return}
-const agora=dataHoraAtual(),id=Date.now(),e={id,codigoPublico:"EN-"+id+"-"+Math.random().toString(36).substring(2,8).toUpperCase(),created_at:agora.iso,data:agora.data,hora:agora.hora,nome,apto,bloco,transportadora,rastreio,senha:gerarSenha(),status:"Aguardando",retirada:null,retirada_em:null,foto:"",foto_url:""};
-const botao=document.querySelector("#modalEncomenda button.primary");if(botao){botao.disabled=true;botao.innerText="Salvando..."}
-try{
-if(arquivo){
-const status=document.getElementById("leituraStatus");if(status)status.innerText="📤 Enviando foto para o Supabase...";
-e.foto_url=await enviarFotoSupabase(arquivo,id);e.foto=e.foto_url;
-}
-await inserirEncomendaSupabase(e);
-encomendas.unshift(e);localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
-limparFormularioEncomenda();fecharModal("modalEncomenda");
-alert("Encomenda registrada!\n\nSenha de retirada: "+e.senha);atualizarTudo();
-}catch(err){
-console.error(err);
-alert("Não foi possível salvar a encomenda.\n\nDetalhe: "+(err?.message||"erro desconhecido")+"\n\nVerifique as políticas RLS do bucket 'Fotos - encomendas' e da tabela 'encomendas'.");
-}finally{if(botao){botao.disabled=false;botao.innerText="Registrar"}}
-}
-function limparFormularioEncomenda(){
-["eNome","eApto","eBloco","eRastreio"].forEach(id=>{const e=document.getElementById(id);if(e)e.value=""});
-const f=document.getElementById("eFoto");if(f)f.value="";const p=document.getElementById("previewFoto");if(p)p.innerHTML="";
-const s=document.getElementById("leituraStatus");if(s)s.innerText="";const t=document.getElementById("eTransportadora");if(t)t.value="Amazon";
-}
-
-/* MORADORES */
-async function salvarMorador(){
-const nome=document.getElementById("mNome").value.trim(),apto=document.getElementById("mApto").value.trim(),bloco=document.getElementById("mBloco").value.trim(),whatsapp=document.getElementById("mWhatsApp").value.trim();
-if(!nome||!apto){alert("Informe o nome e o apartamento.");return}
-const m={id:Date.now(),created_at:new Date().toISOString(),nome,apto,bloco,whatsapp},botao=document.querySelector("#modalMorador button.primary");
-if(botao){botao.disabled=true;botao.innerText="Salvando..."}
-try{
-await inserirMoradorSupabase(m);moradores.push(m);localStorage.setItem("vynko_moradores",JSON.stringify(moradores));
-["mNome","mApto","mBloco","mWhatsApp"].forEach(id=>{const e=document.getElementById(id);if(e)e.value=""});
-fecharModal("modalMorador");alert("Morador cadastrado com sucesso!");atualizarTudo();
-}catch(err){console.error(err);alert("Não foi possível salvar o morador no Supabase.\n\nVerifique a tabela moradores e as políticas RLS.")}
-finally{if(botao){botao.disabled=false;botao.innerText="Cadastrar"}}
-}
-
-/* TABELAS */
-function renderEncomendas(){
-const busca=(document.getElementById("buscaEncomenda")?.value||"").toLowerCase();
-const lista=encomendas.filter(e=>[e.nome,e.apto,e.bloco,e.transportadora,e.rastreio,e.senha,e.codigoPublico].some(v=>String(v||"").toLowerCase().includes(busca)));
-const tbody=document.getElementById("tabelaEncomendas");if(!tbody)return;
-if(!lista.length){tbody.innerHTML='<tr><td colspan="10" class="empty">Nenhuma encomenda encontrada.</td></tr>';return}
-tbody.innerHTML=lista.map(e=>`<tr>
-<td>${escaparHTML(e.data)}<br>${escaparHTML(e.hora)}</td><td><strong>${escaparHTML(e.nome)}</strong></td><td>${escaparHTML(e.apto)}</td><td>${escaparHTML(e.bloco||"-")}</td>
-<td>${escaparHTML(e.transportadora||"-")}</td><td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${escaparHTML(e.status)}</span></td>
-<td><strong>${e.status==="Aguardando"?escaparHTML(e.senha):"—"}</strong></td>
-<td><button class="secondary" onclick="verEncomenda('${String(e.codigoPublico).replace(/'/g,"\\'")}')">👁️ Ver</button></td>
-<td><button class="secondary" onclick="enviarWhatsApp('${String(e.codigoPublico).replace(/'/g,"\\'")}')">📲 WhatsApp</button></td>
-<td><button class="danger" onclick="excluirEncomenda(${Number(e.id)})">🗑️ Excluir</button></td>
-</tr>`).join("");
-}
-function renderMoradores(){
-const b=(document.getElementById("buscaMorador")?.value||"").toLowerCase(),l=moradores.filter(m=>[m.nome,m.apto,m.bloco,m.whatsapp].some(v=>String(v||"").toLowerCase().includes(b))),t=document.getElementById("tabelaMoradores");if(!t)return;
-if(!l.length){t.innerHTML='<tr><td colspan="4" class="empty">Nenhum morador cadastrado.</td></tr>';return}
-t.innerHTML=l.map(m=>`<tr><td><strong>${escaparHTML(m.nome)}</strong></td><td>${escaparHTML(m.apto)}</td><td>${escaparHTML(m.bloco||"-")}</td><td>${escaparHTML(m.whatsapp||"-")}</td></tr>`).join("");
-}
-
-/* WHATSAPP */
-function normalizarTelefoneWhatsApp(n){let t=String(n||"").replace(/\D/g,"");if(!t)return"";if(t.startsWith("55"))return t;if(t.length===10||t.length===11)return"55"+t;return t}
-function encontrarMoradorDaEncomenda(e){
-if(!e)return null;const a=String(e.apto||"").trim().toLowerCase(),b=String(e.bloco||"").trim().toLowerCase();
-let m=moradores.find(x=>String(x.apto||"").trim().toLowerCase()===a&&String(x.bloco||"").trim().toLowerCase()===b);
-if(!m)m=moradores.find(x=>String(x.apto||"").trim().toLowerCase()===a);
-if(!m)m=moradores.find(x=>String(x.nome||"").trim().toLowerCase()===String(e.nome||"").trim().toLowerCase());return m||null;
-}
-function obterLinkPublicoEncomenda(e){const base="https://vynko-condo.github.io/Vynko-Condo/";return base+"#encomenda="+encodeURIComponent(e.codigoPublico||"")}
-function gerarMensagemWhatsApp(e){
-const u=`${e.apto||""}${e.bloco?" - "+e.bloco:""}`,link=obterLinkPublicoEncomenda(e);
-let m=`📦 *Sua encomenda chegou!*
-
-Olá, ${e.nome||"morador"}!
+Olá, ${x.nome||"morador"}!
 
 Sua encomenda chegou à portaria do *Grand Raya* e está disponível para retirada.
 
-🏢 *Unidade:* ${u}
-🚚 *Transportadora:* ${e.transportadora||"-"}
-📦 *Código de rastreio:* ${e.rastreio||"-"}
-📅 *Recebida em:* ${e.data||""} ${e.hora||""}`;
-if(e.status==="Aguardando")m+=`\n🔐 *Senha de retirada:* ${e.senha||"-"}`;
-m+=`\n\n🔎 *Ver qual é a encomenda:*\n${link}\n\nApresente a senha na portaria para retirar sua encomenda.`;return m;
-}
-function enviarWhatsApp(c){
-const e=encomendas.find(x=>x.codigoPublico===c);if(!e){alert("Encomenda não encontrada.");return}
-const m=encontrarMoradorDaEncomenda(e);if(!m){alert("Não encontrei um morador cadastrado para esta encomenda.");return}
-const n=normalizarTelefoneWhatsApp(m.whatsapp);if(!n){alert("Este morador ainda não possui um WhatsApp cadastrado.");return}
-window.open("https://wa.me/"+n+"?text="+encodeURIComponent(gerarMensagemWhatsApp(e)),"_blank");
-}
+🏢 Unidade: ${x.apto}${x.bloco?" - "+x.bloco:""}
+🚚 Transportadora: ${x.transportadora||"-"}
+📦 Rastreio: ${x.rastreio||"-"}
+🔐 Senha de retirada: ${x.senha}
 
-/* VISUALIZAÇÃO */
-function verEncomenda(codigo){
-const e=encomendas.find(x=>x.codigoPublico===codigo);if(!e){alert("Encomenda não encontrada.");return}
-const foto=e.foto_url||e.foto?`<img src="${escaparHTML(e.foto_url||e.foto)}" alt="Foto da encomenda" style="width:100%;max-height:320px;object-fit:contain;border-radius:10px;margin:10px 0">`:'<div class="empty">📷 Esta encomenda não possui foto salva.</div>';
-document.getElementById("modalVisualizarEncomenda")?.remove();
-document.body.insertAdjacentHTML("beforeend",`<div class="modal show" id="modalVisualizarEncomenda"><div class="modal-box">
-<h2>📦 Encomenda</h2>${foto}<div class="panel" style="box-shadow:none;padding:10px 0">
-<p><strong>Destinatário:</strong> ${escaparHTML(e.nome)}</p><p><strong>Unidade:</strong> ${escaparHTML(e.apto)}${e.bloco?" • "+escaparHTML(e.bloco):""}</p>
-<p><strong>Transportadora:</strong> ${escaparHTML(e.transportadora||"-")}</p><p><strong>Rastreio:</strong> ${escaparHTML(e.rastreio||"-")}</p>
-<p><strong>Recebida em:</strong> ${escaparHTML(e.data)} ${escaparHTML(e.hora)}</p><p><strong>Status:</strong> ${escaparHTML(e.status)}</p>
-${e.status==="Aguardando"?`<p><strong>Senha:</strong> ${escaparHTML(e.senha)}</p>`:""}</div>
-<div class="form-actions"><button class="primary" onclick="enviarWhatsApp('${String(e.codigoPublico).replace(/'/g,"\\'")}')">📲 WhatsApp</button>
-<button class="danger" onclick="excluirEncomenda(${Number(e.id)})">🗑️ Excluir encomenda</button>
-<button class="secondary" onclick="fecharModal('modalVisualizarEncomenda')">Fechar</button></div></div></div>`);
+Apresente a senha na portaria para retirar sua encomenda.`;
+open("https://wa.me/"+n+"?text="+encodeURIComponent(msg),"_blank");
 }
+function viewPhoto(url){window.open(url,"_blank")}
+function support(){alert("Suporte Vynko: configure aqui o número oficial de atendimento do condomínio quando ele estiver definido.")}
+function saveConfig(){localStorage.setItem("vynko_condominio",$("condominio").value);alert("Configuração salva.")}
 
-/* RETIRADA */
-async function buscarSenha(){
-const s=document.getElementById("senhaRetirada").value.trim(),r=document.getElementById("resultadoRetirada");
-if(s.length!==4){r.innerHTML='<div class="empty">Digite uma senha de 4 números.</div>';return}
-if(navigator.onLine)try{
-const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("*").eq("senha",s).eq("status","Aguardando").maybeSingle();
-if(!error&&data){
-const e={id:data.id,codigoPublico:data.codigo_publico||("EN-"+data.id),created_at:data.created_at,data:new Date(data.created_at).toLocaleDateString("pt-BR"),hora:new Date(data.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),nome:data.nome||"",apto:data.apto||"",bloco:data.bloco||"",transportadora:data.transportadora||"",rastreio:data.rastreio||"",senha:data.senha||"",status:data.status||"Aguardando",retirada_em:data.retirada_em||null,foto_url:data.foto_url||"",foto:data.foto_url||""};
-const i=encomendas.findIndex(x=>String(x.id)===String(e.id));if(i>=0)encomendas[i]=e;else encomendas.unshift(e);localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));
-}
-}catch(e){console.warn("Consulta online falhou:",e)}
-const e=encomendas.find(x=>String(x.senha)===s&&x.status==="Aguardando");
-if(!e){r.innerHTML='<div class="empty">❌ Nenhuma encomenda aguardando retirada encontrada para esta senha.</div>';return}
-r.innerHTML=`<div class="password-box"><p>Encomenda encontrada</p><h2>${escaparHTML(e.nome)}</h2><p>Apartamento ${escaparHTML(e.apto)}${e.bloco?" • Bloco "+escaparHTML(e.bloco):""}</p><div class="password">${escaparHTML(e.senha)}</div><button class="primary" onclick="confirmarRetirada(${Number(e.id)})">✅ Confirmar retirada</button></div>`;
-}
-async function confirmarRetirada(id){
-const e=encomendas.find(x=>String(x.id)===String(id));if(!e)return;const agora=new Date().toISOString();
-try{await atualizarEncomendaSupabase(id,{status:"Retirada",retirada_em:agora})}
-catch(err){alert("Não foi possível confirmar a retirada no banco.\n\nA encomenda NÃO foi baixada.");return}
-e.status="Retirada";e.retirada_em=agora;e.retirada=new Date(agora).toLocaleDateString("pt-BR")+" "+new Date(agora).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-localStorage.setItem("vynko_encomendas",JSON.stringify(encomendas));document.getElementById("senhaRetirada").value="";document.getElementById("resultadoRetirada").innerHTML='<div class="empty">✅ Encomenda retirada com sucesso!</div>';atualizarTudo();
-}
-
-/* DASHBOARD */
-function atualizarDashboard(){
-const total=document.getElementById("totalEncomendas"),ag=document.getElementById("aguardando"),rh=document.getElementById("retiradasHoje"),tm=document.getElementById("totalMoradores");
-if(total)total.innerText=encomendas.length;if(ag)ag.innerText=encomendas.filter(e=>e.status==="Aguardando").length;
-const hoje=new Date().toLocaleDateString("pt-BR");if(rh)rh.innerText=encomendas.filter(e=>e.status==="Retirada"&&e.retirada&&e.retirada.startsWith(hoje)).length;if(tm)tm.innerText=moradores.length;
-const d=document.getElementById("ultimasEncomendas");if(!d)return;const u=encomendas.slice(0,5);if(!u.length){d.innerHTML='<div class="empty">Nenhuma encomenda cadastrada.</div>';return}
-d.innerHTML=`<div class="table-scroll"><table><thead><tr><th>Destinatário</th><th>Apto</th><th>Data</th><th>Status</th></tr></thead><tbody>${u.map(e=>`<tr><td>${escaparHTML(e.nome)}</td><td>${escaparHTML(e.apto)}</td><td>${escaparHTML(e.data)}</td><td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${escaparHTML(e.status)}</span></td></tr>`).join("")}</tbody></table></div>`;
-}
-function atualizarRelatorios(){
-const a=document.getElementById("relTotal"),b=document.getElementById("relPendentes"),c=document.getElementById("relRetiradas");
-if(a)a.innerText=encomendas.length;if(b)b.innerText=encomendas.filter(e=>e.status==="Aguardando").length;if(c)c.innerText=encomendas.filter(e=>e.status==="Retirada").length;
-}
-function salvarConfiguracoes(){localStorage.setItem("vynko_condominio",document.getElementById("nomeCondominio").value);alert("Configurações salvas.")}
-function atualizarTudo(){atualizarDashboard();renderEncomendas();renderMoradores();atualizarRelatorios()}
-
-/* LINK PÚBLICO */
-function obterCodigoDaURL(){const hash=window.location.hash||"";if(!hash.startsWith("#encomenda="))return"";return decodeURIComponent(hash.substring("#encomenda=".length))}
-function mostrarPaginaPublica(){
-const codigo=obterCodigoDaURL(),publicPage=document.getElementById("publicPage"),app=document.querySelector(".app");
-if(!codigo){if(publicPage)publicPage.style.display="none";if(app)app.style.display="";return false}
-if(app)app.style.display="none";if(publicPage)publicPage.style.display="block";return true;
-}
-function formatarDataPublica(iso){if(!iso)return"-";const d=new Date(iso);if(Number.isNaN(d.getTime()))return"-";return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
-async function carregarEncomendaPublica(){
-const codigo=obterCodigoDaURL();if(!codigo)return;const content=document.getElementById("publicContent");if(!content)return;
-content.innerHTML=`<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="public-subtitle">Carregando sua encomenda...</div>`;
-try{
-const {data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("id,created_at,nome,apto,bloco,transportadora,rastreio,senha,status,retirada_em,foto_url,codigo_publico").eq("codigo_publico",codigo).maybeSingle();
-if(error)throw error;
-if(!data){content.innerHTML=`<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="public-error"><h2>📦 Encomenda não encontrada</h2><p>O link pode estar incorreto ou esta encomenda já foi excluída.</p></div>`;return}
-const foto=data.foto_url?`<img class="public-photo" src="${escaparHTML(data.foto_url)}" alt="Foto da encomenda">`:"";
-const retirada=data.status==="Retirada";
-const statusHtml=retirada?`<div class="public-password"><small>STATUS</small><strong style="font-size:22px;letter-spacing:0">✅ Retirada</strong></div>`:`<div class="public-password"><small>🔐 SENHA DE RETIRADA</small><strong>${escaparHTML(data.senha||"-")}</strong></div>`;
-content.innerHTML=`<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div>
-<h1 class="public-title">📦 Sua encomenda chegou!</h1><p class="public-subtitle">Confira os dados da encomenda recebida na portaria.</p>${foto}
-<div class="public-info">
-<div class="public-info-box"><small>DESTINATÁRIO</small><strong>${escaparHTML(data.nome||"-")}</strong></div>
-<div class="public-info-box"><small>UNIDADE</small><strong>${escaparHTML(data.apto||"-")}${data.bloco?" - "+escaparHTML(data.bloco):""}</strong></div>
-<div class="public-info-box"><small>TRANSPORTADORA</small><strong>${escaparHTML(data.transportadora||"-")}</strong></div>
-<div class="public-info-box"><small>CÓDIGO DE RASTREIO</small><strong>${escaparHTML(data.rastreio||"-")}</strong></div>
-<div class="public-info-box"><small>RECEBIDA EM</small><strong>${escaparHTML(formatarDataPublica(data.created_at))}</strong></div>
-<div class="public-info-box"><small>STATUS</small><strong>${escaparHTML(data.status||"-")}</strong></div></div>${statusHtml}
-<p class="public-note">${retirada?"Esta encomenda já foi retirada da portaria.":"Apresente a senha acima na portaria para retirar sua encomenda."}</p>`;
-}catch(error){
-console.error(error);
-content.innerHTML=`<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="public-error"><h2>⚠️ Não foi possível carregar</h2><p>Verifique sua conexão com a internet e tente abrir o link novamente.</p></div>`;
-}
-}
-window.addEventListener("hashchange",()=>{if(mostrarPaginaPublica())carregarEncomendaPublica()});
-
-document.addEventListener("DOMContentLoaded",()=>{
-if(mostrarPaginaPublica()){carregarEncomendaPublica();return}
-const nome=localStorage.getItem("vynko_condominio");if(nome)document.getElementById("nomeCondominio").value=nome;
-atualizarTudo();carregarEncomendasOnline();carregarMoradoresOnline();
-const campo=document.getElementById("eFoto"),preview=document.getElementById("previewFoto");
-if(campo&&preview)campo.addEventListener("change",function(){
-preview.innerHTML="";const status=document.getElementById("leituraStatus");if(status)status.innerText="📷 Foto carregada. Iniciando leitura...";
-const arq=this.files[0];if(!arq)return;const img=document.createElement("img");img.src=URL.createObjectURL(arq);img.style.maxWidth="100%";img.style.maxHeight="250px";img.style.borderRadius="10px";img.style.marginTop="10px";preview.appendChild(img);lerEtiqueta();
+$("eFoto").addEventListener("change",e=>{
+let f=e.target.files[0];if(!f)return;
+let img=document.createElement("img");img.src=URL.createObjectURL(f);img.style.maxWidth="100%";img.style.maxHeight="220px";img.style.marginTop="8px";img.style.borderRadius="8px";$("fotoPreview").innerHTML="";$("fotoPreview").appendChild(img);
+$("ocrStatus").textContent="Foto carregada. A leitura automática da etiqueta será adicionada na próxima etapa de OCR.";
 });
-});
+
+(async()=>{
+let s=(await sb.auth.getSession()).data.session;
+if(s)try{await loadProfile(s.user)}catch(e){console.error(e);showError("Não foi possível carregar o perfil.")}
+})();
+sb.auth.onAuthStateChange((event,s)=>{if(event==="SIGNED_IN"&&s)loadProfile(s.user).catch(console.error)});
 </script>
 </body>
 </html>
