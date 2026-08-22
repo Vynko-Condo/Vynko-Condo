@@ -218,7 +218,7 @@ t.innerHTML=l.length?l.map(m=>`<tr><td><strong>${esc(m.nome)}</strong></td><td>$
 }
 function moradorDaEncomenda(e){return moradores.find(m=>String(m.apto).trim()===String(e.apto).trim()&&(!e.bloco||norm(m.bloco)===norm(e.bloco)))||moradores.find(m=>String(m.apto).trim()===String(e.apto).trim())}
 function telefone(n){let x=String(n||"").replace(/\D/g,"");return x?(x.startsWith("55")?x:(x.length===10||x.length===11?"55"+x:x)):""}
-function linkPublico(e){return location.origin+location.pathname+"#encomenda="+encodeURIComponent(e.codigoPublico)}
+function linkPublico(e){return location.origin+location.pathname+"?encomenda="+encodeURIComponent(e.codigoPublico)}
 function enviarWhatsApp(c){
 const e=encomendas.find(x=>x.codigoPublico===c),m=moradorDaEncomenda(e),n=telefone(m?.whatsapp);if(!m||!n)return alert("Não encontrei o WhatsApp desta unidade.");
 const texto=`📦 *Sua encomenda chegou!*\n\nOlá, ${e.nome}!\n\nSua encomenda chegou à portaria do *Grand Raya*.\n\n🏢 Unidade: ${e.apto}${e.bloco?" - "+e.bloco:""}\n🚚 Transportadora: ${e.transportadora||"-"}\n📦 Rastreio: ${e.rastreio||"-"}\n🔐 Senha: ${e.senha}\n\n🔎 Ver encomenda:\n${linkPublico(e)}\n\nApresente a senha na portaria para retirar.`;
@@ -255,7 +255,7 @@ function detectarTransportadora(t,r){t=norm(t);r=norm(r);if(t.includes("AMAZON")
 async function lerEtiqueta(){
 const f=$("eFoto").files?.[0];if(!f)return;try{$("leituraStatus").innerText="🔎 Lendo etiqueta...";const r=await(await carregarOCR()).recognize(f),t=r.data.text||"",rt=extrairRastreio(t),tr=detectarTransportadora(t,rt);if(rt)$("eRastreio").value=rt;if(tr)$("eTransportadora").value=tr;const n=norm(t),ap=n.match(/\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/);if(ap)$("eApto").value=ap[1];let b=n.includes("BOTANIQUE")?"BOTANIQUE":n.includes("NATURE")?"NATURE":n.includes("JARDIN")?"JARDIN":"";if(b)$("eBloco").value=b;const found=moradores.find(m=>String(m.apto).trim()===String($("eApto").value).trim()&&(!b||norm(m.bloco)===norm(b)));if(found)$("eNome").value=found.nome;$("leituraStatus").innerText="✅ Etiqueta lida. Confira os dados antes de registrar."}catch(e){console.error(e);$("leituraStatus").innerText="❌ Não foi possível ler automaticamente."}
 }
-function codigoURL(){return location.hash.startsWith("#encomenda=")?decodeURIComponent(location.hash.slice(11)):""}
+function codigoURL(){return location.search.startsWith("?encomenda=")?decodeURIComponent(location.search.slice(11)):""}
 async function carregarPublica(){
 const c=codigoURL();if(!c)return;const box=$("publicContent");box.innerHTML='<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="public-subtitle">Carregando...</div>';
 const{data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("created_at,nome,apto,bloco,transportadora,rastreio,senha,status,foto_url,codigo_publico").eq("codigo_publico",c).maybeSingle();
