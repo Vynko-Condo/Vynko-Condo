@@ -5,1973 +5,279 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Vynko Condomínio</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
-body{background:#f4f6f8;color:#263238}.hidden{display:none!important}
-button{cursor:pointer}.app{min-height:100vh}
-
-header{
-background:#0b2528;
-color:#fff;
-padding:16px 22px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-position:sticky;
-top:0;
-z-index:10
-}
-
-.logo{font-size:23px;font-weight:bold}
-.logo span{color:#20bfa9}
-.user-pill{
-background:#20bfa9;
-padding:9px 13px;
-border-radius:20px;
-font-size:12px;
-font-weight:bold
-}
-
-.layout{display:flex;min-height:calc(100vh - 64px)}
-.sidebar{
-width:235px;
-background:#071b1e;
-color:#fff;
-padding:18px 12px
-}
-
-.menu{display:flex;flex-direction:column;gap:7px}
-.menu button{
-border:0;
-background:transparent;
-color:#d7e3e5;
-padding:12px 14px;
-text-align:left;
-border-radius:9px;
-font-size:14px
-}
-
-.menu button:hover,
-.menu button.active{
-background:#0e776e;
-color:#fff
-}
-
-.main{
-flex:1;
-padding:25px;
-max-width:1450px
-}
-
-.page{display:none}
-.page.active{display:block}
-
-h1{
-margin-bottom:6px;
-font-size:26px
-}
-
-.subtitle{
-color:#718096;
-margin-bottom:22px
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:16px;
-margin-bottom:24px
-}
-
-.card{
-background:#fff;
-border-radius:14px;
-padding:20px;
-box-shadow:0 3px 12px rgba(0,0,0,.07)
-}
-
-.card-title{
-color:#718096;
-font-size:13px;
-margin-bottom:10px
-}
-
-.card-number{
-font-size:30px;
-font-weight:bold
-}
-
-.card-icon{
-font-size:25px;
-margin-bottom:12px
-}
-
-.panel{
-background:#fff;
-border-radius:14px;
-padding:20px;
-box-shadow:0 3px 12px rgba(0,0,0,.07);
-margin-bottom:20px
-}
-
-.panel-header{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-margin-bottom:18px
-}
-
-.panel-header h2{font-size:18px}
-
-button.primary{
-background:#0e8f83;
-color:#fff;
-border:0;
-padding:11px 16px;
-border-radius:8px;
-font-weight:bold
-}
-
-button.primary:hover{background:#08766d}
-
-button.secondary{
-background:#e8eeee;
-color:#263238;
-border:0;
-padding:10px 14px;
-border-radius:8px
-}
-
-button.danger{
-background:#fee2e2;
-color:#991b1b;
-border:0;
-padding:10px 14px;
-border-radius:8px;
-font-weight:bold
-}
-
-.search,
-.form-group input,
-.form-group select{
-width:100%;
-padding:11px;
-border:1px solid #d5dddd;
-border-radius:8px;
-font-size:14px
-}
-
-.search{margin-bottom:15px}
-
-table{
-width:100%;
-border-collapse:collapse
-}
-
-th,td{
-padding:12px 10px;
-border-bottom:1px solid #edf0f1;
-text-align:left;
-font-size:13px;
-white-space:nowrap
-}
-
-th{
-color:#66777a;
-background:#f7f9f9
-}
-
-.status{
-display:inline-block;
-padding:5px 9px;
-border-radius:20px;
-font-size:11px;
-font-weight:bold
-}
-
-.status.pending{
-background:#fff3cd;
-color:#856404
-}
-
-.status.done{
-background:#d1fae5;
-color:#065f46
-}
-
-.empty{
-padding:35px;
-text-align:center;
-color:#89969a
-}
-
-.table-scroll{overflow-x:auto}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.55);
-align-items:center;
-justify-content:center;
-z-index:50;
-padding:20px
-}
-
-.modal.show{display:flex}
-
-.modal-box{
-background:#fff;
-width:100%;
-max-width:540px;
-border-radius:15px;
-padding:24px;
-max-height:90vh;
-overflow:auto
-}
-
-.modal-box h2{margin-bottom:20px}
-
-.form-group{margin-bottom:15px}
-
-.form-group label{
-display:block;
-font-size:13px;
-font-weight:bold;
-margin-bottom:6px
-}
-
-.form-actions{
-display:flex;
-justify-content:flex-end;
-gap:8px;
-margin-top:20px;
-flex-wrap:wrap
-}
-
-.password-box{
-text-align:center;
-padding:20px;
-background:#eefaf8;
-border-radius:12px;
-margin:15px 0
-}
-
-.password{
-font-size:38px;
-font-weight:bold;
-letter-spacing:8px;
-color:#08766d
-}
-
-.quick{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:15px
-}
-
-.quick button{
-background:#fff;
-border:1px solid #e0e7e8;
-padding:20px;
-border-radius:12px;
-text-align:left
-}
-
-.quick-icon{
-font-size:25px;
-margin-bottom:10px
-}
-
-.report-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:16px
-}
-
-.report-box{
-padding:22px;
-border-radius:12px;
-background:#f6f9f9
-}
-
-.report-box strong{
-display:block;
-font-size:28px;
-margin-top:8px
-}
-
-.login-page{
-min-height:100vh;
-background:linear-gradient(135deg,#071b1e,#0e776e);
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px
-}
-
-.login-card{
-width:100%;
-max-width:430px;
-background:#fff;
-border-radius:20px;
-padding:30px;
-box-shadow:0 15px 45px rgba(0,0,0,.22)
-}
-
-.login-brand{
-text-align:center;
-font-size:29px;
-font-weight:bold;
-color:#0b2528;
-margin-bottom:7px
-}
-
-.login-brand span{color:#20bfa9}
-
-.login-sub{
-text-align:center;
-color:#718096;
-margin-bottom:24px
-}
-
-.login-actions{
-display:grid;
-gap:10px;
-margin-top:18px
-}
-
-.role-badge{
-display:inline-block;
-padding:5px 9px;
-border-radius:20px;
-background:#e8eeee;
-color:#0e776e;
-font-size:11px;
-font-weight:bold
-}
-
-.support-fab{
-position:fixed;
-right:20px;
-bottom:20px;
-background:#0e8f83;
-color:#fff;
-border:0;
-border-radius:50px;
-padding:14px 18px;
-font-weight:bold;
-box-shadow:0 5px 18px rgba(0,0,0,.18);
-z-index:30
-}
-
-.public-page{
-min-height:100vh;
-background:#f4f6f8;
-padding:22px
-}
-
-.public-wrap{
-width:100%;
-max-width:620px;
-margin:0 auto
-}
-
-.public-card{
-background:#fff;
-border-radius:18px;
-padding:24px;
-box-shadow:0 5px 22px rgba(0,0,0,.09)
-}
-
-.public-brand{
-text-align:center;
-margin-bottom:18px
-}
-
-.brand-name{
-font-size:25px;
-font-weight:bold;
-color:#0b2528
-}
-
-.brand-name span{color:#20bfa9}
-
-.public-title{
-text-align:center;
-font-size:24px;
-margin:10px 0 6px
-}
-
-.public-subtitle{
-text-align:center;
-color:#718096;
-margin-bottom:20px
-}
-
-.public-photo{
-width:100%;
-max-height:360px;
-object-fit:contain;
-border-radius:14px;
-background:#f7f9f9;
-margin:5px 0 20px
-}
-
-.public-info{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:18px
-}
-
-.public-info-box{
-background:#f7f9f9;
-border-radius:11px;
-padding:13px
-}
-
-.public-info-box small{
-display:block;
-color:#718096;
-font-size:11px;
-margin-bottom:5px
-}
-
-.public-info-box strong{
-display:block;
-font-size:14px;
-word-break:break-word
-}
-
-.public-password{
-background:#eefaf8;
-border:1px solid #ccefe9;
-border-radius:14px;
-text-align:center;
-padding:18px;
-margin-top:10px
-}
-
-.public-password small{
-display:block;
-color:#0e776e;
-font-weight:bold;
-margin-bottom:6px
-}
-
-.public-password strong{
-font-size:38px;
-letter-spacing:8px;
-color:#08766d
-}
-
-@media(max-width:850px){
-
-.sidebar{width:75px}
-
-.menu button{
-font-size:0;
-text-align:center
-}
-
-.menu button::first-letter{
-font-size:22px
-}
-
-.cards{
-grid-template-columns:repeat(2,1fr)
-}
-
-.quick{
-grid-template-columns:1fr
-}
-
-.report-grid{
-grid-template-columns:1fr
-}
-
-}
-
-@media(max-width:600px){
-
-.main{padding:15px}
-
-.cards{
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-.card{padding:15px}
-
-.public-page{padding:12px}
-
-.public-card{padding:18px}
-
-.public-info{
-grid-template-columns:1fr
-}
-
-}
+body{background:#f4f6f8;color:#263238}.hidden{display:none!important}button{cursor:pointer}
+.app{min-height:100vh}header{background:#0b2528;color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo{font-size:23px;font-weight:bold}.logo span,.login-brand span,.brand-name span{color:#20bfa9}.user-pill{background:#20bfa9;padding:9px 13px;border-radius:20px;font-size:12px;font-weight:bold}
+.layout{display:flex;min-height:calc(100vh - 64px)}.sidebar{width:235px;background:#071b1e;color:#fff;padding:18px 12px}.menu{display:flex;flex-direction:column;gap:7px}
+.menu button{border:0;background:transparent;color:#d7e3e5;padding:12px 14px;text-align:left;border-radius:9px;font-size:14px}.menu button:hover,.menu button.active{background:#0e776e;color:#fff}
+.main{flex:1;padding:25px;max-width:1450px}.page{display:none}.page.active{display:block}h1{margin-bottom:6px;font-size:26px}.subtitle{color:#718096;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}.card,.panel{background:#fff;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+.card{padding:20px}.card-title{color:#718096;font-size:13px;margin-bottom:10px}.card-number{font-size:30px;font-weight:bold}.card-icon{font-size:25px;margin-bottom:12px}
+.panel{padding:20px;margin-bottom:20px}.panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.panel-header h2{font-size:18px}
+.primary{background:#0e8f83;color:#fff;border:0;padding:11px 16px;border-radius:8px;font-weight:bold}.primary:hover{background:#08766d}
+.secondary{background:#e8eeee;color:#263238;border:0;padding:10px 14px;border-radius:8px}
+.search,.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px;border:1px solid #d5dddd;border-radius:8px;font-size:14px}
+.search{margin-bottom:15px}table{width:100%;border-collapse:collapse}th,td{padding:12px 10px;border-bottom:1px solid #edf0f1;text-align:left;font-size:13px;white-space:nowrap}th{color:#66777a;background:#f7f9f9}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold}.status.pending{background:#fff3cd;color:#856404}.status.done{background:#d1fae5;color:#065f46}
+.empty{padding:35px;text-align:center;color:#89969a}.table-scroll{overflow-x:auto}.form-group{margin-bottom:15px}.form-group label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}.modal-box{background:#fff;width:100%;max-width:540px;border-radius:15px;padding:24px;max-height:90vh;overflow:auto}.modal-box h2{margin-bottom:20px}
+.password-box,.public-password{background:#eefaf8;border-radius:12px;padding:20px;text-align:center;margin:15px 0}.password{font-size:38px;font-weight:bold;letter-spacing:8px;color:#08766d}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.quick button{background:#fff;border:1px solid #e0e7e8;padding:20px;border-radius:12px;text-align:left}.quick-icon{font-size:25px;margin-bottom:10px}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.report-box{padding:22px;border-radius:12px;background:#f6f9f9}.report-box strong{display:block;font-size:28px;margin-top:8px}
+.login-page{min-height:100vh;background:linear-gradient(135deg,#071b1e,#0e776e);display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:100%;max-width:430px;background:#fff;border-radius:20px;padding:30px;box-shadow:0 15px 45px rgba(0,0,0,.22)}
+.login-brand{text-align:center;font-size:29px;font-weight:bold;color:#0b2528;margin-bottom:7px}.login-sub{text-align:center;color:#718096;margin-bottom:24px}.login-actions{display:grid;gap:10px;margin-top:18px}
+.role-badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e8eeee;color:#0e776e;font-size:11px;font-weight:bold}.support-fab{position:fixed;right:20px;bottom:20px;background:#0e8f83;color:#fff;border:0;border-radius:50px;padding:14px 18px;font-weight:bold;box-shadow:0 5px 18px rgba(0,0,0,.18);z-index:30}
+.public-page{min-height:100vh;background:#f4f6f8;padding:22px}.public-wrap{width:100%;max-width:620px;margin:0 auto}.public-card{background:#fff;border-radius:18px;padding:24px;box-shadow:0 5px 22px rgba(0,0,0,.09)}
+.public-brand{text-align:center;margin-bottom:18px}.brand-name{font-size:25px;font-weight:bold;color:#0b2528}.public-title{text-align:center;font-size:24px;margin:10px 0 6px}.public-subtitle{text-align:center;color:#718096;margin-bottom:20px}
+.public-photo{width:100%;max-height:360px;object-fit:contain;border-radius:14px;background:#f7f9f9;margin:5px 0 20px}.public-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.public-info-box{background:#f7f9f9;border-radius:11px;padding:13px}.public-info-box small{display:block;color:#718096;font-size:11px;margin-bottom:5px}.public-info-box strong{display:block;font-size:14px;word-break:break-word}
+.error-box{background:#fff0f0;border:1px solid #f2b8b8;color:#8b1e1e;border-radius:10px;padding:12px;margin:10px 0;font-size:13px}.success-box{background:#eefaf8;border:1px solid #ccefe9;color:#08766d;border-radius:10px;padding:12px;margin:10px 0;font-size:13px}
+@media(max-width:850px){.sidebar{width:75px}.menu button{font-size:0;text-align:center}.menu button::first-letter{font-size:22px}.cards{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:15px}.cards{gap:10px}.card{padding:15px}.public-page{padding:12px}.public-card{padding:18px}.public-info{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 
-<div id="loginPage" class="login-page hidden">
-
-<div class="login-card">
-
-<div class="login-brand">
-Vynko <span>Condomínio</span>
-</div>
-
-<p class="login-sub">
-Gestão inteligente de encomendas
-</p>
-
+<div id="loginPage" class="login-page hidden"><div class="login-card">
+<div class="login-brand">Vynko <span>Condomínio</span></div><p class="login-sub">Gestão inteligente de encomendas</p>
 <div id="loginMsg" class="subtitle" style="margin-bottom:12px"></div>
-
 <div id="loginForm">
-
-<div class="form-group">
-<label>E-mail</label>
-<input
-id="loginEmail"
-type="email"
-autocomplete="email"
-placeholder="seu@email.com">
+<div class="form-group"><label>E-mail</label><input id="loginEmail" type="email" autocomplete="email" placeholder="seu@email.com"></div>
+<div class="form-group"><label>Senha</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Sua senha"></div>
+<div class="login-actions"><button class="primary" onclick="entrar()">Entrar</button><button class="secondary" onclick="mostrarCadastro()">Criar acesso</button><button class="secondary" onclick="esqueciSenha()">Esqueci minha senha</button></div>
 </div>
-
-<div class="form-group">
-<label>Senha</label>
-<input
-id="loginPassword"
-type="password"
-autocomplete="current-password"
-placeholder="Sua senha">
-</div>
-
-<div class="login-actions">
-
-<button class="primary" onclick="entrar()">
-Entrar
-</button>
-
-<button class="secondary" onclick="mostrarCadastro()">
-Criar acesso
-</button>
-
-<button class="secondary" onclick="esqueciSenha()">
-Esqueci minha senha
-</button>
-
-</div>
-</div>
-
 <div id="cadastroForm" class="hidden">
+<div class="form-group"><label>Nome completo</label><input id="cNome"></div><div class="form-group"><label>E-mail</label><input id="cEmail" type="email"></div>
+<div class="form-group"><label>WhatsApp</label><input id="cTelefone" placeholder="(00) 00000-0000"></div><div class="form-group"><label>Apartamento</label><input id="cApto"></div>
+<div class="form-group"><label>Bloco / Torre</label><input id="cBloco" placeholder="Ex.: BOTANIQUE"></div><div class="form-group"><label>Senha</label><input id="cSenha" type="password" minlength="6"></div>
+<div class="login-actions"><button class="primary" onclick="cadastrar()">Criar acesso</button><button class="secondary" onclick="mostrarLogin()">Voltar</button></div>
+</div></div></div>
 
-<div class="form-group">
-<label>Nome completo</label>
-<input id="cNome">
-</div>
-
-<div class="form-group">
-<label>E-mail</label>
-<input id="cEmail" type="email">
-</div>
-
-<div class="form-group">
-<label>WhatsApp</label>
-<input id="cTelefone" placeholder="(00) 00000-0000">
-</div>
-
-<div class="form-group">
-<label>Apartamento</label>
-<input id="cApto">
-</div>
-
-<div class="form-group">
-<label>Bloco / Torre</label>
-<input id="cBloco" placeholder="Ex.: BOTANIQUE">
-</div>
-
-<div class="form-group">
-<label>Senha</label>
-<input id="cSenha" type="password" minlength="6">
-</div>
-
-<div class="login-actions">
-
-<button class="primary" onclick="cadastrar()">
-Criar acesso
-</button>
-
-<button class="secondary" onclick="mostrarLogin()">
-Voltar
-</button>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-
-<div id="publicPage" class="public-page hidden">
-
-<div class="public-wrap">
-
-<div class="public-card" id="publicContent"></div>
-
-</div>
-
-</div>
-
+<div id="publicPage" class="public-page hidden"><div class="public-wrap"><div class="public-card" id="publicContent"></div></div></div>
 
 <div id="app" class="app hidden">
-
-<header>
-
-<div class="logo">
-Vynko <span>Condomínio</span>
-</div>
-
-<div style="display:flex;align-items:center;gap:8px">
-
-<span id="userRole" class="role-badge"></span>
-
-<span id="userName" class="user-pill"></span>
-
-<button
-class="secondary"
-style="padding:8px 10px"
-onclick="sair()">
-Sair
-</button>
-
-</div>
-
-</header>
-
-
-<div class="layout">
-
-<aside class="sidebar">
-
-<nav class="menu">
-
-<button
-class="active"
-onclick="showPage('dashboard',this)">
-🏠 Dashboard
-</button>
-
-<button
-onclick="showPage('encomendas',this)">
-📦 Encomendas
-</button>
-
-<button
-onclick="showPage('moradores',this)">
-👥 Moradores
-</button>
-
-<button
-onclick="showPage('retirada',this)">
-🔐 Retirada
-</button>
-
-<button
-onclick="showPage('relatorios',this)">
-📊 Relatórios
-</button>
-
-<button
-id="adminMenu"
-onclick="showPage('configuracoes',this)">
-⚙️ Administração
-</button>
-
-</nav>
-
-</aside>
-
-
-<main class="main">
-
-
-<section id="dashboard" class="page active">
-
-<h1>Dashboard</h1>
-
-<p class="subtitle" id="dashSubtitle">
-Visão geral das encomendas.
-</p>
-
-<div class="cards">
-
-<div class="card">
-<div class="card-icon">📦</div>
-<div class="card-title">Encomendas recebidas</div>
-<div class="card-number" id="totalEncomendas">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">⏳</div>
-<div class="card-title">Aguardando retirada</div>
-<div class="card-number" id="aguardando">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">✅</div>
-<div class="card-title">Retiradas hoje</div>
-<div class="card-number" id="retiradasHoje">0</div>
-</div>
-
-<div class="card">
-<div class="card-icon">👥</div>
-<div class="card-title">Moradores</div>
-<div class="card-number" id="totalMoradores">0</div>
-</div>
-
-</div>
-
-
-<div class="panel" id="quickPanel">
-
-<div class="panel-header">
-<h2>Ações rápidas</h2>
-</div>
-
-<div class="quick">
-
-<button onclick="abrirModalEncomenda()">
-
-<div class="quick-icon">📦</div>
-
-<strong>Registrar encomenda</strong>
-
-<p>Cadastre uma nova encomenda.</p>
-
-</button>
-
-
-<button onclick="showPage('retirada')">
-
-<div class="quick-icon">🔐</div>
-
-<strong>Retirar encomenda</strong>
-
-<p>Informe a senha de retirada.</p>
-
-</button>
-
-
-<button onclick="showPage('moradores')">
-
-<div class="quick-icon">👤</div>
-
-<strong>Moradores</strong>
-
-<p>Consultar moradores.</p>
-
-</button>
-
-</div>
-
-</div>
-
-
-<div class="panel">
-
-<h2>Últimas encomendas</h2>
-
-<br>
-
-<div id="ultimasEncomendas"></div>
-
-</div>
-
-</section>
-
-
-<section id="encomendas" class="page">
-
-<div class="panel-header">
-
-<div>
-
-<h1>Encomendas</h1>
-
-<p class="subtitle">
-Controle das encomendas.
-</p>
-
-</div>
-
-<button
-id="novaEncomendaBtn"
-class="primary"
-onclick="abrirModalEncomenda()">
-
-+ Nova encomenda
-
-</button>
-
-</div>
-
-
-<div class="panel">
-
-<input
-class="search"
-id="buscaEncomenda"
-placeholder="🔎 Buscar por nome, apartamento, bloco ou código..."
-oninput="renderEncomendas()">
-
-
-<div class="table-scroll">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Data</th>
-<th>Destinatário</th>
-<th>Apto</th>
-<th>Bloco</th>
-<th>Transportadora</th>
-<th>Status</th>
-<th>Senha</th>
-<th>Ações</th>
-
-</tr>
-
-</thead>
-
-<tbody id="tabelaEncomendas"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="moradores" class="page">
-
-<div class="panel-header">
-
-<div>
-
-<h1>Moradores</h1>
-
-<p class="subtitle">
-Cadastro das unidades.
-</p>
-
-</div>
-
-<button
-id="novoMoradorBtn"
-class="primary"
-onclick="abrirModalMorador()">
-
-+ Novo morador
-
-</button>
-
-</div>
-
-
-<div class="panel">
-
-<input
-class="search"
-id="buscaMorador"
-placeholder="🔎 Buscar morador, apartamento ou bloco..."
-oninput="renderMoradores()">
-
-
-<div class="table-scroll">
-
-<table>
-
-<thead>
-
-<tr>
-<th>Nome</th>
-<th>Apartamento</th>
-<th>Bloco</th>
-<th>WhatsApp</th>
-</tr>
-
-</thead>
-
-<tbody id="tabelaMoradores"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="retirada" class="page">
-
-<h1>Retirada com senha</h1>
-
-<p class="subtitle">
-Digite a senha informada pelo morador.
-</p>
-
-<div class="panel">
-
-<div class="form-group">
-
-<label>Senha de retirada</label>
-
-<input
-id="senhaRetirada"
-maxlength="4"
-inputmode="numeric"
-placeholder="4 números"
-style="font-size:25px;text-align:center;letter-spacing:8px">
-
-</div>
-
-<button
-class="primary"
-onclick="buscarSenha()">
-
-🔎 Consultar encomenda
-
-</button>
-
-<div id="resultadoRetirada"></div>
-
-</div>
-
-</section>
-
-
-<section id="relatorios" class="page">
-
-<h1>Relatórios</h1>
-
-<p class="subtitle">
-Resumo da movimentação.
-</p>
-
-<div class="report-grid">
-
-<div class="report-box">
-
-Encomendas recebidas
-
-<strong id="relTotal">
-0
-</strong>
-
-</div>
-
-
-<div class="report-box">
-
-Aguardando retirada
-
-<strong id="relPendentes">
-0
-</strong>
-
-</div>
-
-
-<div class="report-box">
-
-Encomendas retiradas
-
-<strong id="relRetiradas">
-0
-</strong>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="configuracoes" class="page">
-
-<h1>Administração</h1>
-
-<p class="subtitle">
-Configurações e acesso administrativo.
-</p>
-
-
-<div class="panel">
-
-<h2>Condomínio</h2>
-
-<br>
-
-<div class="form-group">
-
-<label>Nome do condomínio</label>
-
-<input
-id="nomeCondominio"
-value="Grand Raya">
-
-</div>
-
-<button
-class="primary"
-onclick="salvarConfiguracoes()">
-
-Salvar
-
-</button>
-
-</div>
-
-
-<div class="panel">
-
-<h2>Minha conta</h2>
-
-<br>
-
-<button
-class="secondary"
-onclick="alterarSenha()">
-
-🔑 Alterar senha
-
-</button>
-
-</div>
-
-</section>
-
-
-</main>
-
-</div>
-
-
-<button
-class="support-fab"
-onclick="abrirSuporte()">
-
-🆘 Suporte
-
-</button>
-
-</div>
-
-
-<div class="modal" id="modalEncomenda">
-
-<div class="modal-box">
-
-<h2>📦 Registrar encomenda</h2>
-
-
-<div class="form-group">
-
-<label>Nome do destinatário</label>
-
-<input id="eNome">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Apartamento</label>
-
-<input id="eApto">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Bloco / Torre</label>
-
-<input
-id="eBloco"
-placeholder="Ex.: BOTANIQUE">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Transportadora</label>
-
-<select id="eTransportadora">
-
-<option>Amazon</option>
-<option>Mercado Livre</option>
-<option>Correios</option>
-<option>Jadlog</option>
-<option>Loggi</option>
-<option>Shopee</option>
-<option>Outra</option>
-
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>Código de rastreio</label>
-
-<input id="eRastreio">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Foto da encomenda</label>
-
-<input
-type="file"
-id="eFoto"
-accept="image/*"
-capture="environment">
-
-<small>
-Foto da etiqueta. O OCR tentará identificar dados.
-</small>
-
-<div
-id="previewFoto"
-style="margin-top:10px">
-</div>
-
-<div
-id="leituraStatus"
-style="margin-top:8px;color:#0e776e;font-weight:bold">
-</div>
-
-</div>
-
-
-<div class="form-actions">
-
-<button
-class="secondary"
-onclick="fecharModal('modalEncomenda')">
-
-Cancelar
-
-</button>
-
-<button
-class="primary"
-onclick="salvarEncomenda()">
-
-Registrar
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="modal" id="modalMorador">
-
-<div class="modal-box">
-
-<h2>👤 Novo morador</h2>
-
-
-<div class="form-group">
-
-<label>Nome completo</label>
-
-<input id="mNome">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Apartamento</label>
-
-<input id="mApto">
-
-</div>
-
-
-<div class="form-group">
-
-<label>Bloco / Torre</label>
-
-<input
-id="mBloco"
-placeholder="Ex.: BOTANIQUE">
-
-</div>
-
-
-<div class="form-group">
-
-<label>WhatsApp</label>
-
-<input
-id="mWhatsApp"
-placeholder="(00) 00000-0000">
-
-</div>
-
-
-<div class="form-actions">
-
-<button
-class="secondary"
-onclick="fecharModal('modalMorador')">
-
-Cancelar
-
-</button>
-
-<button
-class="primary"
-onclick="salvarMorador()">
-
-Cadastrar
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="modal" id="modalSuporte">
-
-<div class="modal-box">
-
-<h2>🆘 Suporte Vynko</h2>
-
-<p class="subtitle">
-Descreva o que precisa. O atendimento será direcionado para o suporte.
-</p>
-
-
-<div class="form-group">
-
-<label>Assunto</label>
-
-<select id="suporteAssunto">
-
-<option>Problema com encomenda</option>
-<option>Problema de acesso</option>
-<option>Problema no sistema</option>
-<option>Cadastro de morador</option>
-<option>Outra dúvida</option>
-
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>Mensagem</label>
-
-<textarea
-id="suporteMensagem"
-style="width:100%;min-height:120px;padding:11px;border:1px solid #d5dddd;border-radius:8px">
-</textarea>
-
-</div>
-
-
-<div class="form-actions">
-
-<button
-class="secondary"
-onclick="fecharModal('modalSuporte')">
-
-Cancelar
-
-</button>
-
-<button
-class="primary"
-onclick="enviarSuporte()">
-
-Enviar pelo WhatsApp
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+<header><div class="logo">Vynko <span>Condomínio</span></div><div style="display:flex;align-items:center;gap:8px"><span id="userRole" class="role-badge"></span><span id="userName" class="user-pill"></span><button class="secondary" style="padding:8px 10px" onclick="sair()">Sair</button></div></header>
+<div class="layout"><aside class="sidebar"><nav class="menu">
+<button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button><button onclick="showPage('encomendas',this)">📦 Encomendas</button><button onclick="showPage('moradores',this)">👥 Moradores</button>
+<button onclick="showPage('retirada',this)">🔐 Retirada</button><button onclick="showPage('relatorios',this)">📊 Relatórios</button><button id="adminMenu" onclick="showPage('configuracoes',this)">⚙️ Administração</button>
+</nav></aside><main class="main">
+
+<section id="dashboard" class="page active"><h1>Dashboard</h1><p class="subtitle" id="dashSubtitle">Visão geral das encomendas.</p><div id="systemMsg"></div>
+<div class="cards"><div class="card"><div class="card-icon">📦</div><div class="card-title">Encomendas recebidas</div><div class="card-number" id="totalEncomendas">0</div></div>
+<div class="card"><div class="card-icon">⏳</div><div class="card-title">Aguardando retirada</div><div class="card-number" id="aguardando">0</div></div>
+<div class="card"><div class="card-icon">✅</div><div class="card-title">Retiradas hoje</div><div class="card-number" id="retiradasHoje">0</div></div>
+<div class="card"><div class="card-icon">👥</div><div class="card-title">Moradores</div><div class="card-number" id="totalMoradores">0</div></div></div>
+<div class="panel" id="quickPanel"><div class="panel-header"><h2>Ações rápidas</h2></div><div class="quick">
+<button onclick="abrirModalEncomenda()"><div class="quick-icon">📦</div><strong>Registrar encomenda</strong><p>Cadastre uma nova encomenda.</p></button>
+<button onclick="showPage('retirada')"><div class="quick-icon">🔐</div><strong>Retirar encomenda</strong><p>Informe a senha de retirada.</p></button>
+<button onclick="showPage('moradores')"><div class="quick-icon">👤</div><strong>Moradores</strong><p>Consultar moradores.</p></button></div></div>
+<div class="panel"><h2>Últimas encomendas</h2><br><div id="ultimasEncomendas"></div></div></section>
+
+<section id="encomendas" class="page"><div class="panel-header"><div><h1>Encomendas</h1><p class="subtitle">Controle das encomendas.</p></div><button id="novaEncomendaBtn" class="primary" onclick="abrirModalEncomenda()">+ Nova encomenda</button></div>
+<div class="panel"><input class="search" id="buscaEncomenda" placeholder="🔎 Buscar por nome, apartamento, bloco ou código..." oninput="renderEncomendas()"><div class="table-scroll"><table><thead><tr><th>Data</th><th>Destinatário</th><th>Apto</th><th>Bloco</th><th>Transportadora</th><th>Status</th><th>Senha</th><th>Ações</th></tr></thead><tbody id="tabelaEncomendas"></tbody></table></div></div></section>
+
+<section id="moradores" class="page"><div class="panel-header"><div><h1>Moradores</h1><p class="subtitle">Cadastro das unidades.</p></div><button id="novoMoradorBtn" class="primary" onclick="abrirModalMorador()">+ Novo morador</button></div>
+<div class="panel"><input class="search" id="buscaMorador" placeholder="🔎 Buscar morador, apartamento ou bloco..." oninput="renderMoradores()"><div class="table-scroll"><table><thead><tr><th>Nome</th><th>Apartamento</th><th>Bloco</th><th>WhatsApp</th></tr></thead><tbody id="tabelaMoradores"></tbody></table></div></div></section>
+
+<section id="retirada" class="page"><h1>Retirada com senha</h1><p class="subtitle">Digite a senha informada pelo morador.</p><div class="panel">
+<div class="form-group"><label>Senha de retirada</label><input id="senhaRetirada" maxlength="4" inputmode="numeric" placeholder="4 números" style="font-size:25px;text-align:center;letter-spacing:8px"></div>
+<button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button><div id="resultadoRetirada"></div></div></section>
+
+<section id="relatorios" class="page"><h1>Relatórios</h1><p class="subtitle">Resumo da movimentação.</p><div class="report-grid">
+<div class="report-box">Encomendas recebidas<strong id="relTotal">0</strong></div><div class="report-box">Aguardando retirada<strong id="relPendentes">0</strong></div><div class="report-box">Encomendas retiradas<strong id="relRetiradas">0</strong></div></div></section>
+
+<section id="configuracoes" class="page"><h1>Administração</h1><p class="subtitle">Configurações e acesso administrativo.</p>
+<div class="panel"><h2>Condomínio</h2><br><div class="form-group"><label>Nome do condomínio</label><input id="nomeCondominio" value="Grand Raya"></div><button class="primary" onclick="salvarConfiguracoes()">Salvar</button></div>
+<div class="panel"><h2>Minha conta</h2><br><button class="secondary" onclick="alterarSenha()">🔑 Alterar senha</button></div></section>
+
+</main></div><button class="support-fab" onclick="abrirSuporte()">🆘 Suporte</button></div>
+
+<div class="modal" id="modalEncomenda"><div class="modal-box"><h2>📦 Registrar encomenda</h2>
+<div class="form-group"><label>Nome do destinatário</label><input id="eNome"></div><div class="form-group"><label>Apartamento</label><input id="eApto"></div>
+<div class="form-group"><label>Bloco / Torre</label><input id="eBloco" placeholder="Ex.: BOTANIQUE"></div><div class="form-group"><label>Transportadora</label><select id="eTransportadora"><option>Amazon</option><option>Mercado Livre</option><option>Correios</option><option>Jadlog</option><option>Loggi</option><option>Shopee</option><option>Outra</option></select></div>
+<div class="form-group"><label>Código de rastreio</label><input id="eRastreio"></div><div class="form-group"><label>Foto da encomenda</label><input type="file" id="eFoto" accept="image/*" capture="environment"><small>Foto da etiqueta. O OCR tentará identificar dados.</small><div id="previewFoto" style="margin-top:10px"></div><div id="leituraStatus" style="margin-top:8px;color:#0e776e;font-weight:bold"></div></div>
+<div class="form-actions"><button class="secondary" onclick="fecharModal('modalEncomenda')">Cancelar</button><button class="primary" onclick="salvarEncomenda()">Registrar</button></div></div></div>
+
+<div class="modal" id="modalMorador"><div class="modal-box"><h2>👤 Novo morador</h2><div class="form-group"><label>Nome completo</label><input id="mNome"></div>
+<div class="form-group"><label>Apartamento</label><input id="mApto"></div><div class="form-group"><label>Bloco / Torre</label><input id="mBloco" placeholder="Ex.: BOTANIQUE"></div><div class="form-group"><label>WhatsApp</label><input id="mWhatsApp" placeholder="(00) 00000-0000"></div>
+<div class="form-actions"><button class="secondary" onclick="fecharModal('modalMorador')">Cancelar</button><button class="primary" onclick="salvarMorador()">Cadastrar</button></div></div></div>
+
+<div class="modal" id="modalSuporte"><div class="modal-box"><h2>🆘 Suporte Vynko</h2><p class="subtitle">Descreva o que precisa.</p>
+<div class="form-group"><label>Assunto</label><select id="suporteAssunto"><option>Problema com encomenda</option><option>Problema de acesso</option><option>Problema no sistema</option><option>Cadastro de morador</option><option>Outra dúvida</option></select></div>
+<div class="form-group"><label>Mensagem</label><textarea id="suporteMensagem" style="width:100%;min-height:120px"></textarea></div>
+<div class="form-actions"><button class="secondary" onclick="fecharModal('modalSuporte')">Cancelar</button><button class="primary" onclick="enviarSuporte()">Enviar pelo WhatsApp</button></div></div></div>
 
 <script>
-
+"use strict";
 const SUPABASE_URL="https://dozqaznwcodjvuhsremx.supabase.co";
-
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_wNjWBcOg-Y3PeFEAXJ-yLg_df8WzKob";
+const TABELA_ENCOMENDAS="encomendas",TABELA_MORADORES="moradores",TABELA_PERFIS="perfis",BUCKET_FOTOS="Fotos - encomendas";
+let supabaseClient=null,encomendas=[],moradores=[],perfil=null,ocrWorker=null;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+const ehAdmin=()=>["ADMIN","ADMINISTRADOR","SINDICO"].includes(norm(perfil?.tipo||""));
+const ehPortaria=()=>["PORTARIA","PORTEIRO"].includes(norm(perfil?.tipo||""))||ehAdmin();
+const ehMorador=()=>!ehPortaria()&&!ehAdmin();
+const msg=(t,e=false)=>{if($("loginMsg")){$("loginMsg").innerText=t||"";$("loginMsg").style.color=e?"#991b1b":"#0e776e"}};
+const systemMsg=t=>{if($("systemMsg"))$("systemMsg").innerHTML='<div class="error-box">'+esc(t)+"</div>";console.error(t)};
 
-const supabaseClient=
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
-);
-
-const TABELA_ENCOMENDAS="encomendas";
-const TABELA_MORADORES="moradores";
-const TABELA_PERFIS="perfis";
-
-const BUCKET_FOTOS="Fotos - encomendas";
-
-let encomendas=[];
-let moradores=[];
-let perfil=null;
-let ocrWorker=null;
-
-
-function escaparHTML(v){
-
-return String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;")
-
+function mostrarLogin(){$("loginForm").classList.remove("hidden");$("cadastroForm").classList.add("hidden");msg("")}
+function mostrarCadastro(){$("loginForm").classList.add("hidden");$("cadastroForm").classList.remove("hidden");msg("Crie seu acesso de morador.")}
+async function iniciarSupabase(){
+try{if(!window.supabase?.createClient)throw Error("Biblioteca Supabase não carregou.");supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);return true}
+catch(e){console.error(e);msg("Não foi possível carregar o sistema.",true);return false}
 }
-
-
-function normalizarTexto(v){
-
-return String(v||"")
-.normalize("NFD")
-.replace(/[\u0300-\u036f]/g,"")
-.toUpperCase()
-
-}
-
-
-function dataHoraAtual(){
-
-const a=new Date();
-
-return{
-data:a.toLocaleDateString("pt-BR"),
-hora:a.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
-iso:a.toISOString()
-}
-
-}
-
-
-function roleNormalizado(){
-
-return normalizarTexto(
-perfil?.tipo||"MORADOR"
-)
-
-}
-
-
-function ehAdmin(){
-
-return [
-"ADMIN",
-"ADMINISTRADOR",
-"SINDICO"
-].includes(
-roleNormalizado()
-)
-
-}
-
-
-function ehPortaria(){
-
-return [
-"PORTARIA",
-"PORTEIRO"
-].includes(
-roleNormalizado()
-)||ehAdmin()
-
-}
-
-
-function ehMorador(){
-
-return !ehPortaria()&&!ehAdmin()
-
-}
-
-
-function showLoginMsg(msg,erro=false){
-
-const x=document.getElementById("loginMsg");
-
-if(x){
-
-x.innerText=msg||"";
-
-x.style.color=
-erro
-?"#991b1b"
-:"#0e776e"
-
-}
-
-}
-
-
-function mostrarLogin(){
-
-document
-.getElementById("loginForm")
-.classList.remove("hidden");
-
-document
-.getElementById("cadastroForm")
-.classList.add("hidden");
-
-showLoginMsg("")
-
-}
-
-
-function mostrarCadastro(){
-
-document
-.getElementById("loginForm")
-.classList.add("hidden");
-
-document
-.getElementById("cadastroForm")
-.classList.remove("hidden");
-
-showLoginMsg(
-"Crie seu acesso de morador. A portaria/administração poderá cadastrar acessos internos."
-)
-
-}
-
-
 async function entrar(){
-
-const email=
-document.getElementById("loginEmail")
-.value.trim();
-
-const senha=
-document.getElementById("loginPassword")
-.value;
-
-if(!email||!senha){
-
-showLoginMsg(
-"Informe e-mail e senha.",
-true
-);
-
-return
-
+const email=$("loginEmail").value.trim(),password=$("loginPassword").value;if(!email||!password)return msg("Informe e-mail e senha.",true);
+msg("Entrando...");const{error}=await supabaseClient.auth.signInWithPassword({email,password});
+if(error)return msg("Não foi possível entrar: "+error.message,true);await iniciarSistema()
 }
-
-showLoginMsg("Entrando...");
-
-const {error}=
-await supabaseClient.auth.signInWithPassword({
-email,
-password:senha
-});
-
-if(error){
-
-showLoginMsg(
-"Não foi possível entrar: "+error.message,
-true
-);
-
-return
-
-}
-
-await iniciarSistema();
-
-}
-
-
 async function cadastrar(){
-
-const nome=
-document.getElementById("cNome")
-.value.trim();
-
-const email=
-document.getElementById("cEmail")
-.value.trim();
-
-const telefone=
-document.getElementById("cTelefone")
-.value.trim();
-
-const apto=
-document.getElementById("cApto")
-.value.trim();
-
-const bloco=
-document.getElementById("cBloco")
-.value.trim();
-
-const senha=
-document.getElementById("cSenha")
-.value;
-
-if(!nome||!email||!senha){
-
-showLoginMsg(
-"Preencha nome, e-mail e senha.",
-true
-);
-
-return
-
+const nome=$("cNome").value.trim(),email=$("cEmail").value.trim(),telefone=$("cTelefone").value.trim(),apto=$("cApto").value.trim(),bloco=$("cBloco").value.trim(),password=$("cSenha").value;
+if(!nome||!email||!password)return msg("Preencha nome, e-mail e senha.",true);if(password.length<6)return msg("A senha precisa ter pelo menos 6 caracteres.",true);
+msg("Criando acesso...");
+const{data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{nome,telefone,apto,bloco,tipo:"morador"}}});
+if(error)return msg("Não foi possível criar o acesso: "+error.message,true);
+if(data?.session)await iniciarSistema();else{msg("Acesso criado. Confirme o e-mail, se solicitado, e depois entre.");mostrarLogin()}
 }
-
-showLoginMsg("Criando acesso...");
-
-const {data,error}=
-await supabaseClient.auth.signUp({
-
-email,
-password:senha,
-
-options:{
-data:{
-nome,
-telefone,
-apto,
-bloco,
-tipo:"morador"
-}
-}
-
-});
-
-if(error){
-
-showLoginMsg(
-"Não foi possível criar o acesso: "+error.message,
-true
-);
-
-return
-
-}
-
-showLoginMsg(
-data.session
-?"Acesso criado. Entrando..."
-:"Acesso criado. Se o projeto exigir confirmação de e-mail, confirme o e-mail e depois entre."
-);
-
-if(data.session)
-await iniciarSistema();
-
-}
-
-
 async function esqueciSenha(){
-
-const email=
-prompt(
-"Digite seu e-mail cadastrado:"
-);
-
-if(!email)return;
-
-const {error}=
-await supabaseClient.auth.resetPasswordForEmail(
-email.trim(),
-{
-redirectTo:
-window.location.origin+
-window.location.pathname
+const email=prompt("Digite seu e-mail cadastrado:");if(!email)return;
+const{error}=await supabaseClient.auth.resetPasswordForEmail(email.trim(),{redirectTo:location.origin+location.pathname});
+alert(error?"Erro: "+error.message:"Instruções enviadas para o e-mail.")
 }
-);
-
-alert(
-error
-?"Não foi possível enviar o link: "+error.message
-:"Enviamos as instruções para o e-mail informado."
-);
-
-}
-
-
 async function alterarSenha(){
-
-const nova=
-prompt(
-"Digite a nova senha (mínimo 6 caracteres):"
-);
-
-if(!nova)return;
-
-if(nova.length<6){
-
-alert(
-"A senha precisa ter pelo menos 6 caracteres."
-);
-
-return
-
+const p=prompt("Nova senha (mínimo 6 caracteres):");if(!p)return;if(p.length<6)return alert("A senha precisa ter pelo menos 6 caracteres.");
+const{error}=await supabaseClient.auth.updateUser({password:p});alert(error?"Erro: "+error.message:"Senha alterada com sucesso!")
 }
-
-const {error}=
-await supabaseClient.auth.updateUser({
-password:nova
-});
-
-alert(
-error
-?"Erro: "+error.message
-:"Senha alterada com sucesso!"
-);
-
-}
-
-
-async function sair(){
-
-await supabaseClient.auth.signOut();
-
-location.reload()
-
-}
-
-
-/* =========================================================
-   CARREGAMENTO DO PERFIL
-   ALTERADO PARA NÃO FORÇAR MORADOR EM CASO DE ERRO
-   ========================================================= */
+async function sair(){await supabaseClient.auth.signOut();location.reload()}
 
 async function carregarPerfil(){
-
-const {
-data:{user},
-error:userError
-}=await supabaseClient.auth.getUser();
-
-
-/* ---------------------------------------------------------
-   VERIFICA USUÁRIO AUTENTICADO
-   --------------------------------------------------------- */
-
-if(userError||!user){
-
-console.error(
-"ERRO AO IDENTIFICAR USUÁRIO:",
-userError
-);
-
-alert(
-"Não foi possível identificar o usuário autenticado.\n\n"+
-(
-userError?.message||
-"Usuário não encontrado."
-)
-);
-
-return null;
-
+const{data:{user}}=await supabaseClient.auth.getUser();if(!user)return null;
+const fallback={id:user.id,nome:user.user_metadata?.nome||user.email,email:user.email,tipo:user.user_metadata?.tipo||"morador",apto:user.user_metadata?.apto||"",bloco:user.user_metadata?.bloco||"",whatsapp:user.user_metadata?.telefone||""};
+const{data,error}=await supabaseClient.from(TABELA_PERFIS).select("*").eq("id",user.id).maybeSingle();
+if(error){console.warn("Perfil/RLS:",error);return fallback}return data||fallback
 }
-
-
-/* ---------------------------------------------------------
-   MOSTRA DADOS DO AUTH NO CONSOLE
-   --------------------------------------------------------- */
-
-console.log(
-"================================="
-);
-
-console.log(
-"USUÁRIO AUTENTICADO"
-);
-
-console.log(
-"ID:",
-user.id
-);
-
-console.log(
-"E-MAIL:",
-user.email
-);
-
-console.log(
-"================================="
-);
-
-
-/* ---------------------------------------------------------
-   BUSCA PERFIL NA TABELA perfis
-   --------------------------------------------------------- */
-
-const {
-data,
-error
-}=await supabaseClient
-.from(TABELA_PERFIS)
-.select("*")
-.eq("id",user.id)
-.maybeSingle();
-
-
-/* ---------------------------------------------------------
-   MOSTRA RESULTADO DA CONSULTA
-   --------------------------------------------------------- */
-
-console.log(
-"RESULTADO DA CONSULTA DE PERFIL:"
-);
-
-console.log(
-"DATA:",
-data
-);
-
-console.log(
-"ERRO:",
-error
-);
-
-
-/* ---------------------------------------------------------
-   ERRO DE RLS / PERMISSÃO / BANCO
-   --------------------------------------------------------- */
-
-if(error){
-
-console.error(
-"ERRO AO CONSULTAR A TABELA perfis:",
-error
-);
-
-alert(
-"ERRO AO BUSCAR SEU PERFIL NO SUPABASE\n\n"+
-"Mensagem:\n"+
-error.message+
-"\n\nCódigo:\n"+
-(error.code||"não informado")+
-"\n\nDetalhes:\n"+
-(error.details||"não informado")
-);
-
-return null;
-
-}
-
-
-/* ---------------------------------------------------------
-   USUÁRIO AUTH EXISTE, MAS NÃO POSSUI PERFIL
-   --------------------------------------------------------- */
-
-if(!data){
-
-console.error(
-"PERFIL NÃO ENCONTRADO."
-);
-
-alert(
-"Seu usuário está autenticado, mas não existe um perfil correspondente na tabela 'perfis'.\n\n"+
-"ID do usuário:\n"+
-user.id+
-"\n\n"+
-"E-mail:\n"+
-user.email+
-"\n\n"+
-"É necessário cadastrar esse usuário na tabela perfis."
-);
-
-return null;
-
-}
-
-
-/* ---------------------------------------------------------
-   PERFIL ENCONTRADO
-   --------------------------------------------------------- */
-
-console.log(
-"================================="
-);
-
-console.log(
-"PERFIL ENCONTRADO"
-);
-
-console.log(
-"ID:",
-data.id
-);
-
-console.log(
-"NOME:",
-data.nome
-);
-
-console.log(
-"E-MAIL:",
-data.email
-);
-
-console.log(
-"TIPO:",
-data.tipo
-);
-
-console.log(
-"APTO:",
-data.apto
-);
-
-console.log(
-"BLOCO:",
-data.bloco
-);
-
-console.log(
-"================================="
-);
-
-
-return data;
-
-}
-
-
-/* =========================================================
-   INÍCIO DO SISTEMA
-   ========================================================= */
-
 async function iniciarSistema(){
-
-perfil=await carregarPerfil();
-
-if(!perfil){
-
-return;
-
+try{
+perfil=await carregarPerfil();if(!perfil)return;
+$("loginPage").classList.add("hidden");$("publicPage").classList.add("hidden");$("app").classList.remove("hidden");
+$("userName").innerText=perfil.nome||perfil.email||"Usuário";$("userRole").innerText=String(perfil.tipo||"Morador").toUpperCase();
+$("adminMenu").classList.toggle("hidden",!ehAdmin());$("quickPanel").classList.toggle("hidden",ehMorador());$("novaEncomendaBtn").classList.toggle("hidden",!ehPortaria());$("novoMoradorBtn").classList.toggle("hidden",!ehPortaria());
+await Promise.allSettled([carregarEncomendasOnline(),carregarMoradoresOnline()]);atualizarTudo()
+}catch(e){systemMsg("O sistema abriu, mas não conseguiu carregar algum dado. Verifique as políticas RLS do Supabase.")}
 }
+function showPage(id,b){if(ehMorador()&&id==="configuracoes")return;document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$(id)?.classList.add("active");document.querySelectorAll(".menu button").forEach(x=>x.classList.remove("active"));if(b)b.classList.add("active");atualizarTudo()}
+function abrirModalEncomenda(){if(!ehPortaria())return alert("Apenas portaria e administração podem registrar encomendas.");$("modalEncomenda").classList.add("show")}
+function abrirModalMorador(){if(!ehPortaria())return alert("Apenas portaria e administração podem cadastrar moradores.");$("modalMorador").classList.add("show")}
+function abrirSuporte(){$("modalSuporte").classList.add("show")}
+function fecharModal(id){$(id)?.classList.remove("show")}
+function senhaNova(){let s;do{s=Math.floor(1000+Math.random()*9000).toString()}while(encomendas.some(e=>e.senha===s&&e.status==="Aguardando"));return s}
 
-document
-.getElementById("loginPage")
-.classList.add("hidden");
+async function carregarEncomendasOnline(){
+let q=supabaseClient.from(TABELA_ENCOMENDAS).select("*").order("created_at",{ascending:false});
+if(ehMorador()&&perfil){q=q.eq("apto",perfil.apto||"");if(perfil.bloco)q=q.eq("bloco",perfil.bloco)}
+const{data,error}=await q;if(error){systemMsg("Não foi possível carregar encomendas. Verifique SELECT/RLS da tabela encomendas.");return}
+encomendas=(data||[]).map(e=>({id:e.id,codigoPublico:e.codigo_publico||"EN-"+e.id,created_at:e.created_at,data:e.created_at?new Date(e.created_at).toLocaleDateString("pt-BR"):"",hora:e.created_at?new Date(e.created_at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"",nome:e.nome||"",apto:e.apto||"",bloco:e.bloco||"",transportadora:e.transportadora||"",rastreio:e.rastreio||"",senha:e.senha||"",status:e.status||"Aguardando",retirada_em:e.retirada_em||null,foto_url:e.foto_url||""}))
+}
+async function carregarMoradoresOnline(){
+const{data,error}=await supabaseClient.from(TABELA_MORADORES).select("*").order("nome",{ascending:true});if(error){console.warn("Moradores/RLS:",error);return}
+moradores=(data||[]).map(m=>({id:m.id,created_at:m.created_at,nome:m.nome||"",apto:m.apto||"",bloco:m.bloco||"",whatsapp:m.whatsapp||""}))
+}
+async function fotoUpload(file,id){
+if(!file)return"";if(file.size>5*1024*1024)throw Error("A foto deve ter no máximo 5 MB.");
+const ext=(file.name.split(".").pop()||"jpg").toLowerCase(),ok=["jpg","jpeg","png","webp","gif","heic","heif"].includes(ext)?ext:"jpg",path=`encomendas/${id}_${Date.now()}.${ok}`;
+const{error}=await supabaseClient.storage.from(BUCKET_FOTOS).upload(path,file,{contentType:file.type||"image/jpeg",upsert:false});if(error)throw error;
+return supabaseClient.storage.from(BUCKET_FOTOS).getPublicUrl(path).data.publicUrl||""
+}
+async function salvarEncomenda(){
+if(!ehPortaria())return;const nome=$("eNome").value.trim(),apto=$("eApto").value.trim(),bloco=$("eBloco").value.trim(),transportadora=$("eTransportadora").value,rastreio=$("eRastreio").value.trim(),file=$("eFoto").files?.[0]||null;
+if(!nome||!apto)return alert("Informe nome e apartamento.");
+const id=Date.now(),iso=new Date().toISOString(),e={id,codigoPublico:"EN-"+id+"-"+Math.random().toString(36).slice(2,8).toUpperCase(),created_at:iso,nome,apto,bloco,transportadora,rastreio,senha:senhaNova(),status:"Aguardando",foto_url:""};
+try{
+if(file)e.foto_url=await fotoUpload(file,id);
+const{error}=await supabaseClient.from(TABELA_ENCOMENDAS).insert({id,created_at:iso,nome,apto,bloco:bloco||null,transportadora,rastreio:rastreio||null,senha:e.senha,status:"Aguardando",retirada_em:null,foto_url:e.foto_url||null,codigo_publico:e.codigoPublico});
+if(error)throw error;await carregarEncomendasOnline();fecharModal("modalEncomenda");limparEncomenda();alert("Encomenda registrada!\nSenha: "+e.senha);atualizarTudo()
+}catch(err){alert("Não foi possível salvar.\n\n"+(err.message||err)+"\n\nConfira as políticas RLS da tabela encomendas e do Storage.")}
+}
+function limparEncomenda(){["eNome","eApto","eBloco","eRastreio"].forEach(i=>$(i).value="");$("eFoto").value="";$("previewFoto").innerHTML="";$("leituraStatus").innerText=""}
+async function salvarMorador(){
+if(!ehPortaria())return;const nome=$("mNome").value.trim(),apto=$("mApto").value.trim(),bloco=$("mBloco").value.trim(),whatsapp=$("mWhatsApp").value.trim();if(!nome||!apto)return alert("Informe nome e apartamento.");
+const{error}=await supabaseClient.from(TABELA_MORADORES).insert({id:Date.now(),created_at:new Date().toISOString(),nome,apto,bloco,whatsapp});if(error)return alert("Não foi possível salvar.\n\n"+error.message);
+await carregarMoradoresOnline();fecharModal("modalMorador");["mNome","mApto","mBloco","mWhatsApp"].forEach(i=>$(i).value="");alert("Morador cadastrado com sucesso!");atualizarTudo()
+}
+function renderEncomendas(){
+const b=($("buscaEncomenda")?.value||"").toLowerCase(),l=encomendas.filter(e=>[e.nome,e.apto,e.bloco,e.transportadora,e.rastreio,e.senha,e.codigoPublico].some(v=>String(v||"").toLowerCase().includes(b))),t=$("tabelaEncomendas");if(!t)return;
+t.innerHTML=l.length?l.map(e=>`<tr><td>${esc(e.data)}<br>${esc(e.hora)}</td><td><strong>${esc(e.nome)}</strong></td><td>${esc(e.apto)}</td><td>${esc(e.bloco||"-")}</td><td>${esc(e.transportadora||"-")}</td><td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${esc(e.status)}</span></td><td>${e.status==="Aguardando"?`<strong>${esc(e.senha)}</strong>`:"—"}</td><td><button class="secondary" onclick="verEncomenda('${String(e.codigoPublico).replace(/'/g,"\\'")}')">👁️ Ver</button></td></tr>`).join(""):'<tr><td colspan="8" class="empty">Nenhuma encomenda encontrada.</td></tr>'
+}
+function renderMoradores(){
+const b=($("buscaMorador")?.value||"").toLowerCase(),l=moradores.filter(m=>[m.nome,m.apto,m.bloco,m.whatsapp].some(v=>String(v||"").toLowerCase().includes(b))),t=$("tabelaMoradores");if(!t)return;
+t.innerHTML=l.length?l.map(m=>`<tr><td><strong>${esc(m.nome)}</strong></td><td>${esc(m.apto)}</td><td>${esc(m.bloco||"-")}</td><td>${esc(m.whatsapp||"-")}</td></tr>`).join(""):'<tr><td colspan="4" class="empty">Nenhum morador cadastrado.</td></tr>'
+}
+function moradorDaEncomenda(e){return moradores.find(m=>String(m.apto).trim()===String(e.apto).trim()&&(!e.bloco||norm(m.bloco)===norm(e.bloco)))||moradores.find(m=>String(m.apto).trim()===String(e.apto).trim())}
+function telefone(n){let x=String(n||"").replace(/\D/g,"");return x?(x.startsWith("55")?x:(x.length===10||x.length===11?"55"+x:x)):""}
+function linkPublico(e){return location.origin+location.pathname+"#encomenda="+encodeURIComponent(e.codigoPublico)}
+function enviarWhatsApp(c){
+const e=encomendas.find(x=>x.codigoPublico===c),m=moradorDaEncomenda(e),n=telefone(m?.whatsapp);if(!m||!n)return alert("Não encontrei o WhatsApp desta unidade.");
+const texto=`📦 *Sua encomenda chegou!*\n\nOlá, ${e.nome}!\n\nSua encomenda chegou à portaria do *Grand Raya*.\n\n🏢 Unidade: ${e.apto}${e.bloco?" - "+e.bloco:""}\n🚚 Transportadora: ${e.transportadora||"-"}\n📦 Rastreio: ${e.rastreio||"-"}\n🔐 Senha: ${e.senha}\n\n🔎 Ver encomenda:\n${linkPublico(e)}\n\nApresente a senha na portaria para retirar.`;
+window.open("https://wa.me/"+n+"?text="+encodeURIComponent(texto),"_blank")
+}
+function verEncomenda(c){
+const e=encomendas.find(x=>x.codigoPublico===c);if(!e)return;$("modalVisualizarEncomenda")?.remove();const foto=e.foto_url?`<img src="${esc(e.foto_url)}" style="width:100%;max-height:300px;object-fit:contain;border-radius:10px;margin-bottom:15px">`:"";
+document.body.insertAdjacentHTML("beforeend",`<div class="modal show" id="modalVisualizarEncomenda"><div class="modal-box"><h2>📦 Encomenda</h2>${foto}<p><strong>Destinatário:</strong> ${esc(e.nome)}</p><p><strong>Unidade:</strong> ${esc(e.apto)}${e.bloco?" • "+esc(e.bloco):""}</p><p><strong>Transportadora:</strong> ${esc(e.transportadora||"-")}</p><p><strong>Rastreio:</strong> ${esc(e.rastreio||"-")}</p><p><strong>Status:</strong> ${esc(e.status)}</p>${e.status==="Aguardando"?`<p><strong>Senha:</strong> ${esc(e.senha)}</p>`:""}<div class="form-actions">${ehPortaria()?`<button class="primary" onclick="enviarWhatsApp('${String(e.codigoPublico).replace(/'/g,"\\'")}')">📲 WhatsApp</button>`:""}<button class="secondary" onclick="fecharModal('modalVisualizarEncomenda')">Fechar</button></div></div></div>`)
+}
+async function buscarSenha(){
+if(!ehPortaria())return alert("Apenas portaria e administração podem confirmar retiradas.");const s=$("senhaRetirada").value.trim();if(s.length!==4)return $("resultadoRetirada").innerHTML='<div class="empty">Digite 4 números.</div>';
+const{data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("*").eq("senha",s).eq("status","Aguardando").maybeSingle();if(error||!data)return $("resultadoRetirada").innerHTML='<div class="empty">❌ Nenhuma encomenda encontrada.</div>';
+const e=encomendas.find(x=>String(x.id)===String(data.id))||data;$("resultadoRetirada").innerHTML=`<div class="password-box"><p>Encomenda encontrada</p><h2>${esc(e.nome)}</h2><p>Apartamento ${esc(e.apto)}${e.bloco?" • "+esc(e.bloco):""}</p><div class="password">${esc(e.senha)}</div><button class="primary" onclick="confirmarRetirada(${Number(e.id)})">✅ Confirmar retirada</button></div>`
+}
+async function confirmarRetirada(id){
+if(!ehPortaria())return;const{error}=await supabaseClient.from(TABELA_ENCOMENDAS).update({status:"Retirada",retirada_em:new Date().toISOString()}).eq("id",Number(id));if(error)return alert("Não foi possível confirmar a retirada.\n\n"+error.message);
+await carregarEncomendasOnline();$("senhaRetirada").value="";$("resultadoRetirada").innerHTML='<div class="success-box">✅ Encomenda retirada com sucesso!</div>';atualizarTudo()
+}
+function atualizarTudo(){
+$("totalEncomendas").innerText=encomendas.length;$("aguardando").innerText=encomendas.filter(e=>e.status==="Aguardando").length;
+const hoje=new Date().toLocaleDateString("pt-BR");$("retiradasHoje").innerText=encomendas.filter(e=>e.status==="Retirada"&&e.retirada_em&&new Date(e.retirada_em).toLocaleDateString("pt-BR")===hoje).length;$("totalMoradores").innerText=moradores.length;
+const u=encomendas.slice(0,5);$("ultimasEncomendas").innerHTML=u.length?`<div class="table-scroll"><table><thead><tr><th>Destinatário</th><th>Apto</th><th>Data</th><th>Status</th></tr></thead><tbody>${u.map(e=>`<tr><td>${esc(e.nome)}</td><td>${esc(e.apto)}</td><td>${esc(e.data)}</td><td><span class="status ${e.status==="Aguardando"?"pending":"done"}">${esc(e.status)}</span></td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">Nenhuma encomenda cadastrada.</div>';
+$("relTotal").innerText=encomendas.length;$("relPendentes").innerText=encomendas.filter(e=>e.status==="Aguardando").length;$("relRetiradas").innerText=encomendas.filter(e=>e.status==="Retirada").length;renderEncomendas();renderMoradores()
+}
+function salvarConfiguracoes(){localStorage.setItem("vynko_condominio",$("nomeCondominio").value);alert("Configuração salva.")}
+function enviarSuporte(){const a=$("suporteAssunto").value,m=$("suporteMensagem").value.trim();if(!m)return alert("Descreva o problema.");window.open("https://wa.me/?text="+encodeURIComponent(`🆘 *Suporte Vynko*\n\nUsuário: ${perfil?.nome||"-"}\nPerfil: ${perfil?.tipo||"-"}\nUnidade: ${perfil?.apto||"-"}${perfil?.bloco?" - "+perfil.bloco:""}\n\n*Assunto:* ${a}\n\n*Mensagem:* ${m}`),"_blank");fecharModal("modalSuporte")}
 
-document
-.getElementById("publicPage")
-.classList.add("hidden");
+async function carregarOCR(){
+if(ocrWorker)return ocrWorker;if(typeof Tesseract==="undefined"){const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js";await new Promise((ok,no)=>{s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+ocrWorker=await Tesseract.createWorker("por");return ocrWorker
+}
+function extrairRastreio(t){t=norm(t);for(const p of [/\bTBA[A-Z0-9]{8,25}\b/g,/\b[A-Z]{2}\d{9}BR\b/g,/\bSPX[A-Z0-9]{8,25}\b/g,/\bML[A-Z0-9]{8,25}\b/g]){const a=t.match(p);if(a?.length)return a[0].replace(/[^A-Z0-9]/g,"")}return""}
+function detectarTransportadora(t,r){t=norm(t);r=norm(r);if(t.includes("AMAZON")||/\bTBA[A-Z0-9]+\b/.test(r))return"Amazon";if(t.includes("MERCADO LIVRE")||t.includes("MELI"))return"Mercado Livre";if(t.includes("CORREIOS")||t.includes("SEDEX")||/\b[A-Z]{2}\d{9}BR\b/.test(r))return"Correios";if(t.includes("JADLOG"))return"Jadlog";if(t.includes("LOGGI"))return"Loggi";if(t.includes("SHOPEE")||t.includes("SPX"))return"Shopee";return""}
+async function lerEtiqueta(){
+const f=$("eFoto").files?.[0];if(!f)return;try{$("leituraStatus").innerText="🔎 Lendo etiqueta...";const r=await(await carregarOCR()).recognize(f),t=r.data.text||"",rt=extrairRastreio(t),tr=detectarTransportadora(t,rt);if(rt)$("eRastreio").value=rt;if(tr)$("eTransportadora").value=tr;const n=norm(t),ap=n.match(/\b(?:APTO|APT|APARTAMENTO|UNIDADE|UND)[\s.:#-]*(\d{1,5})\b/);if(ap)$("eApto").value=ap[1];let b=n.includes("BOTANIQUE")?"BOTANIQUE":n.includes("NATURE")?"NATURE":n.includes("JARDIN")?"JARDIN":"";if(b)$("eBloco").value=b;const found=moradores.find(m=>String(m.apto).trim()===String($("eApto").value).trim()&&(!b||norm(m.bloco)===norm(b)));if(found)$("eNome").value=found.nome;$("leituraStatus").innerText="✅ Etiqueta lida. Confira os dados antes de registrar."}catch(e){console.error(e);$("leituraStatus").innerText="❌ Não foi possível ler automaticamente."}
+}
+function codigoURL(){return location.hash.startsWith("#encomenda=")?decodeURIComponent(location.hash.slice(11)):""}
+async function carregarPublica(){
+const c=codigoURL();if(!c)return;const box=$("publicContent");box.innerHTML='<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="public-subtitle">Carregando...</div>';
+const{data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("created_at,nome,apto,bloco,transportadora,rastreio,senha,status,foto_url,codigo_publico").eq("codigo_publico",c).maybeSingle();
+if(error||!data)return box.innerHTML='<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><div class="error-box">📦 Encomenda não encontrada. Verifique o link.</div>';
+const ret=data.status==="Retirada",foto=data.foto_url?`<img class="public-photo" src="${esc(data.foto_url)}">`:"";
+box.innerHTML=`<div class="public-brand"><div class="brand-name">Vynko <span>Condomínio</span></div></div><h1 class="public-title">📦 Sua encomenda chegou!</h1><p class="public-subtitle">Confira os dados da encomenda.</p>${foto}<div class="public-info"><div class="public-info-box"><small>DESTINATÁRIO</small><strong>${esc(data.nome)}</strong></div><div class="public-info-box"><small>UNIDADE</small><strong>${esc(data.apto)}${data.bloco?" - "+esc(data.bloco):""}</strong></div><div class="public-info-box"><small>TRANSPORTADORA</small><strong>${esc(data.transportadora||"-")}</strong></div><div class="public-info-box"><small>RASTREIO</small><strong>${esc(data.rastreio||"-")}</strong></div></div><div class="public-password"><small>${ret?"STATUS":"🔐 SENHA DE RETIRADA"}</small><strong>${ret?"✅ Retirada":esc(data.senha||"-")}</strong></div><p class="public-subtitle" style="margin-top:18px">${ret?"Esta encomenda já foi retirada.":"Apresente a senha na portaria para retirar."}</p>`
+}
+function iniciarPublico(){if(!codigoURL())return false;$("loginPage").classList.add("hidden");$("app").classList.add("hidden");$("publicPage").classList.remove("hidden");carregarPublica();return true}
+window.addEventListener("hashchange",()=>{if(codigoURL())iniciarPublico()});
+window.addEventListener("error",e=>console.error("Erro JavaScript:",e.error||e.message));
+window.addEventListener("unhandledrejection",e=>console.error("Promise:",e.reason));
 
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-
-document
-.getElementById("userName")
-.innerText=
-perfil.nome||
-perfil.email||
-"Usuário";
-
-
-document
-.getElementById("userRole")
-.innerText=
-String(
-perfil.tipo||
-"Morador"
-).toUpperCase();
-
-
-const admin=ehAdmin();
-const port=ehPortaria();
-
-
-document
-.getElementById("adminMenu")
-.classList
-.toggle(
-"hidden",
-!admin
-);
-
-
-document
-.getElementById("quickPanel")
-.classList
-.toggle(
-"hidden",
-ehMorador()
-);
-
-
-document
-.getElementById("novaEncomendaBtn")
-.classList
-.toggle(
-"hidden",
-!port
-);
-
-
-document
-.getElementById("novoMoradorBtn")
-.classList
-.toggle(
-"hidden",
-!port
-);
-
-
-await Promise.all([
-  carregarEncomendasOnline(),
-  carregarMoradoresOnline()
-]);
-
-atualizarTudo();
+document.addEventListener("DOMContentLoaded",async()=>{
+try{
+if(!await iniciarSupabase()){$("loginPage").classList.remove("hidden");return}
+if(iniciarPublico())return;
+const{data:{session},error}=await supabaseClient.auth.getSession();
+if(error){$("loginPage").classList.remove("hidden");msg("Não foi possível verificar sua sessão.",true);return}
+if(session)await iniciarSistema();else{$("loginPage").classList.remove("hidden");mostrarLogin()}
+const nome=localStorage.getItem("vynko_condominio");if(nome)$("nomeCondominio").value=nome;
+$("eFoto").addEventListener("change",()=>{const f=$("eFoto").files?.[0];$("previewFoto").innerHTML="";if(!f)return;const img=document.createElement("img");img.src=URL.createObjectURL(f);img.style.maxWidth="100%";img.style.maxHeight="250px";img.style.borderRadius="10px";$("previewFoto").appendChild(img);lerEtiqueta()});
+}catch(e){console.error(e);$("loginPage").classList.remove("hidden");msg("O sistema não conseguiu iniciar. Atualize a página.",true)}
 });
 </script>
 </body>
