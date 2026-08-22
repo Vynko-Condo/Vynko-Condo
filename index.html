@@ -113,7 +113,7 @@ body{background:#f4f6f8;color:#263238}.hidden{display:none!important}button{curs
 "use strict";
 const SUPABASE_URL="https://dozqaznwcodjvuhsremx.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_wNjWBcOg-Y3PeFEAXJ-yLg_df8WzKob";
-const TABELA_ENCOMENDAS="encomendas",TABELA_MORADORES="moradores",TABELA_PERFIS="perfis",BUCKET_FOTOS="Fotos - encomendas";
+const TABELA_ENCOMENDAS="encomendas",TABELA_MORADORES="moradores",TABELA_PERFIS="perfis",BUCKET_FOTOS="fotos-encomendas";
 let supabaseClient=null,encomendas=[],moradores=[],perfil=null,ocrWorker=null;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
