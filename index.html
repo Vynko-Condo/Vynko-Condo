@@ -234,8 +234,17 @@ const{data,error}=await supabaseClient.from(TABELA_ENCOMENDAS).select("*").eq("s
 const e=encomendas.find(x=>String(x.id)===String(data.id))||data;$("resultadoRetirada").innerHTML=`<div class="password-box"><p>Encomenda encontrada</p><h2>${esc(e.nome)}</h2><p>Apartamento ${esc(e.apto)}${e.bloco?" • "+esc(e.bloco):""}</p><div class="password">${esc(e.senha)}</div><button class="primary" onclick="confirmarRetirada(${Number(e.id)})">✅ Confirmar retirada</button></div>`
 }
 async function confirmarRetirada(id){
-if(!ehPortaria())return;const{error}=await supabaseClient.from(TABELA_ENCOMENDAS).update({status:"Retirada",retirada_em:new Date().toISOString()}).eq("id",Number(id));if(error)return alert("Não foi possível confirmar a retirada.\n\n"+error.message);
-await carregarEncomendasOnline();$("senhaRetirada").value="";$("resultadoRetirada").innerHTML='<div class="success-box">✅ Encomenda retirada com sucesso!</div>';atualizarTudo()
+  if(!ehPortaria())return;
+  const nome=prompt("Quem retirou a encomenda?");
+  if(!nome)return;
+  const{error}=await supabaseClient
+    .from(TABELA_ENCOMENDAS)
+    .update({status:"Retirada",retirado_por:nome})
+    .eq("id",id);
+  if(error)return alert("Erro ao registrar retirada: "+error.message);
+  await carregarEncomendasOnline();
+  $("senhaRetirada").value="";
+  $("resultadoRetirada").innerHTML="Encomenda retirada por: "+esc(nome);
 }
 function atualizarTudo(){
 $("totalEncomendas").innerText=encomendas.length;$("aguardando").innerText=encomendas.filter(e=>e.status==="Aguardando").length;
