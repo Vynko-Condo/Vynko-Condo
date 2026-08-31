@@ -235,23 +235,65 @@ const e=encomendas.find(x=>String(x.id)===String(data.id))||data;$("resultadoRet
 }
 async function confirmarRetirada(id){
   if(!ehPortaria())return;
+
   const nome=prompt("Quem retirou a encomenda?");
   if(!nome)return;
+
+  const retiradaEm=new Date().toISOString();
+
   const{error}=await supabaseClient
     .from(TABELA_ENCOMENDAS)
-    .update({status:"Retirada",retirado_por:nome})
+    .update({
+      status:"Retirada",
+      retirado_por:nome.trim(),
+      retirada_em:retiradaEm
+    })
     .eq("id",id);
-  if(error)return alert("Erro ao registrar retirada: "+error.message);
+
+  if(error){
+    return alert("Erro ao registrar retirada: "+error.message);
+  }
+
   await carregarEncomendasOnline();
+
   const e=encomendas.find(x=>String(x.id)===String(id));
-const m=moradorDaEncomenda(e);
-const n=telefone(m?.telefone);
-if(n){
-  const texto=`📦 Encomenda retirada!\n\nOlá, ${e?.nome||"morador"}!\n\nSua encomenda foi retirada por: ${nome}.\n\nApartamento: ${e?.apto||"-"}`;
-  window.open("https://wa.me/"+n+"?text="+encodeURIComponent(texto),"_blank");
-}
+
+  if(!e){
+    $("senhaRetirada").value="";
+    $("resultadoRetirada").innerHTML="Encomenda retirada por: "+esc(nome);
+    atualizarTudo();
+    return;
+  }
+
+  const m=moradorDaEncomenda(e);
+  const n=telefone(m?.whatsapp);
+
+  if(n){
+    const texto=`📦 *Encomenda retirada!*
+
+Olá, ${e.nome||"morador"}!
+
+Sua encomenda foi retirada.
+
+👤 Retirada por: ${nome.trim()}
+🏢 Apartamento: ${e.apto||"-"}${e.bloco?" - "+e.bloco:""}
+📅 Data: ${new Date(retiradaEm).toLocaleDateString("pt-BR")}
+🕐 Horário: ${new Date(retiradaEm).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}`;
+
+    window.open(
+      "https://wa.me/"+n+"?text="+encodeURIComponent(texto),
+      "_blank"
+    );
+  }
+
   $("senhaRetirada").value="";
-  $("resultadoRetirada").innerHTML="Encomenda retirada por: "+esc(nome);
+  $("resultadoRetirada").innerHTML=
+    '<div class="success-box">✅ Encomenda retirada por: <strong>'+
+    esc(nome.trim())+
+    '</strong></div>';
+
+  atualizarTudo();
+}
 }
 function atualizarTudo(){
 $("totalEncomendas").innerText=encomendas.length;$("aguardando").innerText=encomendas.filter(e=>e.status==="Aguardando").length;
