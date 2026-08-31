@@ -294,7 +294,7 @@ Sua encomenda foi retirada.
 
   atualizarTudo();
 }
-}
+
 function atualizarTudo(){
 $("totalEncomendas").innerText=encomendas.length;$("aguardando").innerText=encomendas.filter(e=>e.status==="Aguardando").length;
 const hoje=new Date().toLocaleDateString("pt-BR");$("retiradasHoje").innerText=encomendas.filter(e=>e.status==="Retirada"&&e.retirada_em&&new Date(e.retirada_em).toLocaleDateString("pt-BR")===hoje).length;$("totalMoradores").innerText=moradores.length;
