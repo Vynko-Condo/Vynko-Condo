@@ -86,7 +86,7 @@ body{background:#f4f6f8;color:#263238}.hidden{display:none!important}button{curs
 <button class="primary" onclick="buscarSenha()">🔎 Consultar encomenda</button><div id="resultadoRetirada"></div></div></section>
 
 <section id="relatorios" class="page"><h1>Relatórios</h1><p class="subtitle">Resumo da movimentação.</p><div class="report-grid">
-<div class="report-box">Encomendas recebidas<strong id="relTotal">0</strong></div><div class="report-box">Aguardando retirada<strong id="relPendentes">0</strong></div><div class="report-box">Encomendas retiradas<strong id="relRetiradas">0</strong></div></div></section>
+<div class="report-box" onclick="mostrarRelatorio('recebidas')" style="cursor:pointer">Encomendas recebidas<strong id="relTotal">0</strong></div><div class="report-box">Aguardando retirada<strong id="relPendentes">0</strong></div><div class="report-box">Encomendas retiradas<strong id="relRetiradas">0</strong></div></div></section>
 
 <section id="configuracoes" class="page"><h1>Administração</h1><p class="subtitle">Configurações e acesso administrativo.</p>
 <div class="panel"><h2>Condomínio</h2><br><div class="form-group"><label>Nome do condomínio</label><input id="nomeCondominio" value="Grand Raya"></div><button class="primary" onclick="salvarConfiguracoes()">Salvar</button></div>
