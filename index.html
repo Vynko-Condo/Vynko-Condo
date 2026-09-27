@@ -9664,12 +9664,71 @@ async function notificarRetiradaWhatsApp(
     }
 
 
+    /* =========================================
+       LINK PÚBLICO DA ENCOMENDA
+    ========================================== */
+
+    const urlEncomenda =
+        new URL(
+            window.location.href
+        );
+
+    urlEncomenda.search = "";
+    urlEncomenda.hash = "";
+
+    urlEncomenda.searchParams.set(
+        "encomenda",
+        encomenda.codigo_publico || ""
+    );
+
+
+    const linkEncomenda =
+        urlEncomenda.toString();
+
+
+    /* =========================================
+       DATA E HORÁRIO DA RETIRADA
+    ========================================== */
+
+    const dataRetirada =
+        formatarDataHora(
+            encomenda.retirada_em
+        );
+
+
+    /* =========================================
+       MENSAGEM WHATSAPP
+    ========================================== */
+
     const mensagem =
         `Olá, ${encomenda.nome || ""}! 👋\n\n` +
+
         `Sua encomenda foi retirada com sucesso no ` +
         `${condominioAtual?.nome || "condomínio"}.\n\n` +
-        `👤 Retirada por: ${encomenda.retirado_por || "—"}\n` +
-        `📦 Transportadora: ${encomenda.transportadora || "—"}`;
+
+        `👤 Retirada por: ` +
+        `${encomenda.retirado_por || "—"}\n` +
+
+        `📅 Data e horário: ` +
+        `${dataRetirada}\n` +
+
+        `📦 Transportadora: ` +
+        `${encomenda.transportadora || "—"}\n\n` +
+
+        `🔗 Ver detalhes da encomenda:\n` +
+        `${linkEncomenda}`;
+
+
+    /* =========================================
+       LINK DIRETO DA FOTO
+    ========================================== */
+
+    if (encomenda.foto_url) {
+
+        mensagem +=
+            `\n\n📷 Ver foto da encomenda:\n` +
+            `${encomenda.foto_url}`;
+    }
 
 
     const url =
@@ -9696,7 +9755,6 @@ async function notificarRetiradaWhatsApp(
         );
     }
 }
-
 
 /* =========================================================
    SUPORTE
