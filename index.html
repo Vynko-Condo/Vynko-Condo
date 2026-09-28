@@ -7005,11 +7005,6 @@ async function recuperarSenha() {
 
 async function alterarEmail() {
 
-    const novoEmail =
-        $("perfilEmail")?.value
-            .trim()
-            .toLowerCase();
-
     const mensagem =
         $("alterarEmailMsg");
 
@@ -7017,63 +7012,43 @@ async function alterarEmail() {
         mensagem.innerHTML = "";
     }
 
-    if (!novoEmail) {
-
-        mostrarMensagem(
-            "alterarEmailMsg",
-            "Informe o novo e-mail.",
-            "warning"
-        );
-
-        return;
-    }
-
-    if (!novoEmail.includes("@")) {
-
-        mostrarMensagem(
-            "alterarEmailMsg",
-            "Digite um e-mail válido.",
-            "warning"
-        );
-
-        return;
-    }
-
     try {
 
         const {
-    data,
-    error
-} = await supabaseClient.auth.updateUser(
-    {
-        email: novoEmail
-    },
-    {
-        emailRedirectTo:
-            "https://vynko-condo.github.io/Vynko-Condo/"
-    }
-);
+            data,
+            error
+        } = await supabaseClient.functions.invoke(
+            "alterar-email-admin"
+        );
+
         if (error) {
             throw error;
         }
 
+        if (!data?.success) {
+            throw new Error(
+                data?.error ||
+                "Não foi possível alterar o e-mail."
+            );
+        }
+
+        if (perfil) {
+            perfil.email =
+                "vynkocondo@gmail.com";
+        }
+
+        if ($("perfilEmail")) {
+            $("perfilEmail").value =
+                "vynkocondo@gmail.com";
+        }
+
         mostrarMensagem(
             "alterarEmailMsg",
-            "E-mail alterado. Verifique o novo e-mail para confirmar a alteração.",
+            "E-mail alterado com sucesso para vynkocondo@gmail.com.",
             "success"
         );
 
-        if (data?.user) {
-
-            perfil = {
-                ...(perfil || {}),
-                email: data.user.email
-            };
-
-        }
-
     }
-
     catch (erro) {
 
         console.error(
