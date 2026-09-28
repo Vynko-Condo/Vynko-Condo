@@ -6964,7 +6964,7 @@ async function recuperarSenha() {
                 email,
                 {
                     redirectTo:
-                        window.location.href
+    "https://vynko-condo.github.io/Vynko-Condo/"
                 }
             );
 
@@ -7042,12 +7042,17 @@ async function alterarEmail() {
     try {
 
         const {
-            data,
-            error
-        } = await supabaseClient.auth.updateUser({
-            email: novoEmail
-        });
-
+    data,
+    error
+} = await supabaseClient.auth.updateUser(
+    {
+        email: novoEmail
+    },
+    {
+        emailRedirectTo:
+            "https://vynko-condo.github.io/Vynko-Condo/"
+    }
+);
         if (error) {
             throw error;
         }
