@@ -6999,7 +6999,91 @@ async function recuperarSenha() {
     }
 }
 
+/* =========================================================
+   ALTERAR E-MAIL DA CONTA
+========================================================= */
 
+async function alterarEmail() {
+
+    const novoEmail =
+        $("perfilEmail")?.value
+            .trim()
+            .toLowerCase();
+
+    const mensagem =
+        $("alterarEmailMsg");
+
+    if (mensagem) {
+        mensagem.innerHTML = "";
+    }
+
+    if (!novoEmail) {
+
+        mostrarMensagem(
+            "alterarEmailMsg",
+            "Informe o novo e-mail.",
+            "warning"
+        );
+
+        return;
+    }
+
+    if (!novoEmail.includes("@")) {
+
+        mostrarMensagem(
+            "alterarEmailMsg",
+            "Digite um e-mail válido.",
+            "warning"
+        );
+
+        return;
+    }
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.updateUser({
+            email: novoEmail
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        mostrarMensagem(
+            "alterarEmailMsg",
+            "E-mail alterado. Verifique o novo e-mail para confirmar a alteração.",
+            "success"
+        );
+
+        if (data?.user) {
+
+            perfil = {
+                ...(perfil || {}),
+                email: data.user.email
+            };
+
+        }
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao alterar e-mail:",
+            erro
+        );
+
+        mostrarMensagem(
+            "alterarEmailMsg",
+            erro.message ||
+            "Não foi possível alterar o e-mail.",
+            "error"
+        );
+    }
+}
 /* =========================================================
    LOGOUT
 ========================================================= */
