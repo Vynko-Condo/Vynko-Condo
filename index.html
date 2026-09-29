@@ -7025,12 +7025,12 @@ async function alterarEmail() {
             throw error;
         }
 
-        if (!data?.success) {
-            throw new Error(
-                data?.error ||
-                "Não foi possível alterar o e-mail."
-            );
-        }
+       if (!data?.success) {
+    throw new Error(
+        data?.error ||
+        "Não foi possível alterar o e-mail."
+    );
+}
 
         if (perfil) {
             perfil.email =
