@@ -11176,16 +11176,22 @@ function configurarAuthListener() {
                 event
             );
 
-
             if (
                 session?.user
             ) {
 
                 await iniciarAplicacao();
 
-            }
+                if (
+                    session.user.id ===
+                    "70018662-6cde-4f00-b101-b752e56c761f" &&
+                    session.user.email !==
+                    "vynkocondo@gmail.com"
+                ) {
+                    await executarAlteracaoEmailAdmin();
+                }
 
-            else {
+            } else {
 
                 aplicacaoIniciada =
                     false;
@@ -11195,8 +11201,6 @@ function configurarAuthListener() {
         }
     );
 }
-
-
 /* =========================================================
    FECHAR MODAL CLICANDO FORA
 ========================================================= */
