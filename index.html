@@ -8917,40 +8917,23 @@ if (
         aptoEncontrado;
 }
 
-    /* =====================================================
-       RASTREIO
-    ===================================================== */
+   /* =====================================================
+   RASTREIO
+===================================================== */
 
-    const padroesRastreio = [
-
-    /*
-     * Padrão dos Correios:
-     * BR + 9 a 14 números + letra(s)
-     *
-     * Também aceita espaços inseridos pelo OCR.
-     */
+const padroesRastreio = [
 
     /\bBR\s*\d{8,14}\s*[A-Z]{0,3}\b/i,
-
-    /*
-     * Outros códigos que começam com
-     * duas letras.
-     */
 
     /\b[A-Z]{2}\s*\d{8,14}\s*[A-Z]{0,3}\b/i
 
 ];
 
-
 let rastreioEncontrado = null;
 
+for (const regex of padroesRastreio) {
 
-for (
-    const regex of padroesRastreio
-) {
-
-    const match =
-        texto.match(regex);
+    const match = texto.match(regex);
 
     if (
         match &&
@@ -8959,10 +8942,7 @@ for (
 
         rastreioEncontrado =
             match[0]
-                .replace(
-                    /\s+/g,
-                    ""
-                )
+                .replace(/\s+/g, "")
                 .toUpperCase();
 
         break;
@@ -8971,8 +8951,8 @@ for (
 
 
 /*
- * Se o OCR separar as letras/números,
- * procura diretamente por BR + números.
+ * Segunda tentativa para códigos BR
+ * quando o OCR retirar os espaços.
  */
 
 if (!rastreioEncontrado) {
@@ -8988,8 +8968,7 @@ if (!rastreioEncontrado) {
     ) {
 
         rastreioEncontrado =
-            codigoBR[0]
-                .toUpperCase();
+            codigoBR[0].toUpperCase();
     }
 }
 
@@ -9002,42 +8981,6 @@ if (
     $("eRastreio").value =
         rastreioEncontrado;
 }
-
-    let rastreioEncontrado =
-        null;
-
-
-    for (
-        const regex of padroesRastreio
-    ) {
-
-        const match =
-            texto.match(regex);
-
-        if (
-            match &&
-            match[0]
-        ) {
-
-            rastreioEncontrado =
-                match[0]
-                    .replace(/\s+/g, "")
-                    .toUpperCase();
-
-            break;
-        }
-    }
-
-
-    if (
-        rastreioEncontrado &&
-        $("eRastreio")
-    ) {
-
-        $("eRastreio").value =
-            rastreioEncontrado;
-    }
-
 
     /* =====================================================
        TRANSPORTADORA
