@@ -8626,9 +8626,7 @@ async function executarOCR(
    ANALISAR OCR
 ========================================================= */
 
-function analisarTextoOCR(
-    texto
-) {
+function analisarTextoOCR(texto) {
 
     if (!texto) return;
 
@@ -8642,20 +8640,25 @@ function analisarTextoOCR(
             )
             .filter(Boolean);
 
-    const textoMaiusculo =
+    const textoNormalizado =
         texto
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
             .toUpperCase()
             .replace(/\s+/g, " ");
 
 
-    /* =========================================
+    /* =====================================================
        NOME DO MORADOR
-    ========================================== */
+    ===================================================== */
 
     const indiceDestinatario =
         linhas.findIndex(linha =>
-            /DESTINAT[ÁA]RIO/i.test(
+            /DESTINAT/.test(
                 linha
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toUpperCase()
             )
         );
 
@@ -8665,72 +8668,160 @@ function analisarTextoOCR(
         $("eNome")
     ) {
 
-        const nome =
+        let nome =
             linhas[
                 indiceDestinatario + 1
             ].trim();
+
+        /*
+         * Remove transportadora que o OCR pode
+         * colocar junto do nome.
+         */
+        nome = nome
+            .replace(
+                /\b(SHOPEE|AMAZON|MERCADO LIVRE|MERCADOLIVRE|CORREIOS)\b/gi,
+                ""
+            )
+            .trim();
 
         if (
             nome.length >= 5 &&
             /[A-Za-zÀ-Ú]/.test(nome)
         ) {
-            $("eNome").value =
-                nome;
+            $("eNome").value = nome;
         }
     }
 
 
-    /* =========================================
+    /* =====================================================
        BLOCO / TORRE
+
+       IMPORTANTE:
+       Não procurar simplesmente "A", "B", etc.
+       Isso fazia o OCR colocar "A" no campo.
+
        BLOCO 2 = BOTANIQUE
-    ========================================== */
+    ===================================================== */
 
     let blocoEncontrado = null;
 
-    const blocoNumero =
-        textoMaiusculo.match(
-            /\bBLOCO\s*[:\-]?\s*(\d+)\b/
-        );
 
-    if (blocoNumero) {
+    /*
+     * Primeiro procura o nome completo da torre.
+     */
+    if (
+        /\bBOTANIQUE\b/.test(
+            textoNormalizado
+        )
+    ) {
 
-        const numero =
-            blocoNumero[1];
+        blocoEncontrado = "BOTANIQUE";
+
+    }
+
+
+    /*
+     * Depois procura BLOCO/TORRE + número.
+     */
+    if (!blocoEncontrado) {
+
+        const blocoNumero =
+            textoNormalizado.match(
+                /\b(?:BLOCO|TORRE)\s*[:\-]?\s*(\d{1,2})\b/
+            );
 
         if (
-            numero === "2" &&
-            blocosCondominio.some(
-                bloco =>
-                    String(bloco)
-                        .toUpperCase() ===
-                    "BOTANIQUE"
-            )
+            blocoNumero &&
+            blocoNumero[1]
         ) {
+
+            const numeroBloco =
+                blocoNumero[1];
+
+            if (
+                numeroBloco === "2"
+            ) {
+
+                blocoEncontrado =
+                    "BOTANIQUE";
+            }
+        }
+    }
+
+
+    /*
+     * Também aceita a informação no formato:
+     * "BLOCO 2"
+     * mesmo quando o OCR separa as palavras.
+     */
+    if (!blocoEncontrado) {
+
+        const possuiBloco2 =
+            /\bBLOCO\s+2\b/.test(
+                textoNormalizado
+            );
+
+        if (possuiBloco2) {
+
             blocoEncontrado =
                 "BOTANIQUE";
         }
     }
 
 
-    /* =========================================
-       TENTAR PELO NOME DO BLOCO
-    ========================================== */
-
+    /*
+     * Só procura outros nomes de blocos se eles
+     * tiverem mais de uma letra.
+     *
+     * Isso evita pegar "A" perdido na etiqueta.
+     */
     if (!blocoEncontrado) {
 
-        blocoEncontrado =
-            blocosCondominio.find(
-                bloco => {
+        if (
+            typeof blocosCondominio !==
+            "undefined" &&
+            Array.isArray(
+                blocosCondominio
+            )
+        ) {
 
-                    const nomeBloco =
-                        String(bloco)
-                            .toUpperCase();
+            blocoEncontrado =
+                blocosCondominio.find(
+                    bloco => {
 
-                    return textoMaiusculo.includes(
-                        nomeBloco
-                    );
-                }
-            );
+                        const nomeBloco =
+                            String(bloco)
+                                .normalize("NFD")
+                                .replace(
+                                    /[\u0300-\u036f]/g,
+                                    ""
+                                )
+                                .toUpperCase()
+                                .trim();
+
+                        if (
+                            nomeBloco.length < 2
+                        ) {
+                            return false;
+                        }
+
+                        const regex =
+                            new RegExp(
+                                "\\b" +
+                                nomeBloco
+                                    .replace(
+                                        /[.*+?^${}()|[\]\\]/g,
+                                        "\\$&"
+                                    ) +
+                                "\\b"
+                            );
+
+                        return regex.test(
+                            textoNormalizado
+                        );
+                    }
+                );
+        }
     }
 
 
@@ -8744,22 +8835,35 @@ function analisarTextoOCR(
     }
 
 
-    /* =========================================
+    /* =====================================================
        APARTAMENTO
-    ========================================== */
 
+       O problema anterior era aceitar números isolados,
+       como "1".
+
+       Agora damos preferência a:
+       APTO 1804
+       APARTAMENTO 1804
+       UNIDADE 1804
+
+       E, se não encontrar, procuramos números de
+       4 ou 5 dígitos.
+    ===================================================== */
+
+    let aptoEncontrado = null;
+
+
+    /*
+     * 1º - padrões explícitos
+     */
     const padroesApto = [
 
-        /(?:APTO|APT|APARTAMENTO|UNIDADE)\s*[:\-]?\s*(\d{1,5})/i,
+        /\b(?:APTO|APT|APARTAMENTO|UNIDADE)\s*[:\-]?\s*(\d{4,5})\b/i,
 
-        /(\d{1,5})\s*,?\s*APTO\b/i,
-
-        /\b(\d{3,5})\s+bloco\s+\d+\b/i
+        /\b(\d{4,5})\s*[-,]?\s*(?:APTO|APT|APARTAMENTO)\b/i
 
     ];
 
-    let aptoEncontrado =
-        null;
 
     for (
         const regex of padroesApto
@@ -8781,6 +8885,55 @@ function analisarTextoOCR(
     }
 
 
+    /*
+     * 2º - se não encontrou "APTO 1804",
+     * procura um número de 4 ou 5 dígitos.
+     *
+     * Não aceita mais "1", "18", "123" etc.
+     */
+    if (!aptoEncontrado) {
+
+        const numeros =
+            texto.match(
+                /\b\d{4,5}\b/g
+            ) || [];
+
+
+        for (
+            const numero of numeros
+        ) {
+
+            /*
+             * Ignora números que fazem parte
+             * do código de rastreio.
+             */
+            const contexto =
+                textoNormalizado.includes(
+                    numero
+                )
+                    ? textoNormalizado
+                    : "";
+
+            if (
+                /\bBR\d{8,14}/.test(
+                    contexto
+                )
+            ) {
+                continue;
+            }
+
+            /*
+             * 1804 é um número válido de
+             * apartamento para este condomínio.
+             */
+            aptoEncontrado =
+                numero;
+
+            break;
+        }
+    }
+
+
     if (
         aptoEncontrado &&
         $("eApto")
@@ -8791,9 +8944,9 @@ function analisarTextoOCR(
     }
 
 
-    /* =========================================
+    /* =====================================================
        RASTREIO
-    ========================================== */
+    ===================================================== */
 
     const padroesRastreio = [
 
@@ -8803,8 +8956,10 @@ function analisarTextoOCR(
 
     ];
 
+
     let rastreioEncontrado =
         null;
+
 
     for (
         const regex of padroesRastreio
@@ -8838,9 +8993,9 @@ function analisarTextoOCR(
     }
 
 
-    /* =========================================
+    /* =====================================================
        TRANSPORTADORA
-    ========================================== */
+    ===================================================== */
 
     const transportadoras = [
 
@@ -8930,8 +9085,13 @@ function analisarTextoOCR(
     const transportadoraEncontrada =
         transportadoras.find(
             item =>
-                textoMaiusculo.includes(
+                textoNormalizado.includes(
                     item.texto
+                        .normalize("NFD")
+                        .replace(
+                            /[\u0300-\u036f]/g,
+                            ""
+                        )
                 )
         );
 
@@ -8946,9 +9106,9 @@ function analisarTextoOCR(
     }
 
 
-    /* =========================================
-       LOG PARA TESTE
-    ========================================== */
+    /* =====================================================
+       LOG DE TESTE
+    ===================================================== */
 
     console.log(
         "OCR recebido:",
@@ -8960,18 +9120,21 @@ function analisarTextoOCR(
         {
             nome:
                 $("eNome")?.value || "",
+
             bloco:
                 $("eBloco")?.value || "",
+
             apto:
                 $("eApto")?.value || "",
+
             transportadora:
                 $("eTransportadora")?.value || "",
+
             rastreio:
                 $("eRastreio")?.value || ""
         }
     );
 }
-
 /* =========================================================
    DETALHES DA ENCOMENDA
 ========================================================= */
