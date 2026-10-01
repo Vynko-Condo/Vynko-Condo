@@ -4500,16 +4500,45 @@ tbody tr:last-child td{
     </button>
 
     <div
-        id="alterarEmailMsg"
+    id="alterarEmailMsg"
+    style="margin-top:10px;"
+></div>
+</div>
+
+<!-- TROCAR SENHA -->
+<div class="form-group">
+
+    <label for="novaSenha">
+        Nova senha
+    </label>
+
+    <input
+        id="novaSenha"
+        type="password"
+        class="form-control"
+        placeholder="Digite a nova senha"
+        autocomplete="new-password"
+    >
+
+    <button
+        type="button"
+        class="btn btn-primary"
+        style="margin-top:10px;"
+        onclick="alterarSenha()"
+    >
+        Trocar senha
+    </button>
+
+    <div
+        id="alterarSenhaMsg"
         style="margin-top:10px;"
     ></div>
 
 </div>
 
-                        <div class="form-group">
-
-                            <label>
-                                Bloco
+<div class="form-group">
+    <label>
+        Bloco
                             </label>
 
                             <input
@@ -7060,6 +7089,70 @@ async function alterarEmail() {
             "alterarEmailMsg",
             erro.message ||
             "Não foi possível alterar o e-mail.",
+            "error"
+        );
+    }
+}
+     /* =========================================================
+   ALTERAR SENHA
+========================================================= */
+
+async function alterarSenha() {
+
+    const novaSenha =
+        $("novaSenha")?.value.trim();
+
+    limparMensagem("alterarSenhaMsg");
+
+    if (!novaSenha) {
+        mostrarMensagem(
+            "alterarSenhaMsg",
+            "Informe a nova senha.",
+            "warning"
+        );
+        return;
+    }
+
+    if (novaSenha.length < 6) {
+        mostrarMensagem(
+            "alterarSenhaMsg",
+            "A senha deve ter pelo menos 6 caracteres.",
+            "warning"
+        );
+        return;
+    }
+
+    try {
+
+        const {
+            error
+        } = await supabaseClient.auth.updateUser({
+            password: novaSenha
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        $("novaSenha").value = "";
+
+        mostrarMensagem(
+            "alterarSenhaMsg",
+            "Senha alterada com sucesso!",
+            "success"
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao alterar senha:",
+            erro
+        );
+
+        mostrarMensagem(
+            "alterarSenhaMsg",
+            erro.message ||
+            "Não foi possível alterar a senha.",
             "error"
         );
     }
