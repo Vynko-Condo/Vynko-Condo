@@ -8853,96 +8853,62 @@ function analisarTextoOCR(texto) {
     let aptoEncontrado = null;
 
 
-    /*
-     * 1º - padrões explícitos
-     */
-    const padroesApto = [
-
-        /\b(?:APTO|APT|APARTAMENTO|UNIDADE)\s*[:\-]?\s*(\d{4,5})\b/i,
-
-        /\b(\d{4,5})\s*[-,]?\s*(?:APTO|APT|APARTAMENTO)\b/i
-
-    ];
+/* =====================================================
+   APARTAMENTO
+   Só aceita apartamento quando houver indicação clara
+   ou quando o número estiver no padrão esperado.
+===================================================== */
 
 
-    for (
-        const regex of padroesApto
-    ) {
+/* APTO 1804 */
+const padroesApto = [
 
-        const match =
-            texto.match(regex);
+    /\b(?:APTO|APT|APARTAMENTO|UNIDADE)\s*[:\-]?\s*(\d{4,5})\b/i,
 
-        if (
-            match &&
-            match[1]
-        ) {
+    /\b(\d{4,5})\s*[-,]?\s*(?:APTO|APT|APARTAMENTO|UNIDADE)\b/i
 
-            aptoEncontrado =
-                match[1];
-
-            break;
-        }
-    }
+];
 
 
-    /*
-     * 2º - se não encontrou "APTO 1804",
-     * procura um número de 4 ou 5 dígitos.
-     *
-     * Não aceita mais "1", "18", "123" etc.
-     */
-    if (!aptoEncontrado) {
+for (const regex of padroesApto) {
 
-        const numeros =
-            texto.match(
-                /\b\d{4,5}\b/g
-            ) || [];
-
-
-        for (
-            const numero of numeros
-        ) {
-
-            /*
-             * Ignora números que fazem parte
-             * do código de rastreio.
-             */
-            const contexto =
-                textoNormalizado.includes(
-                    numero
-                )
-                    ? textoNormalizado
-                    : "";
-
-            if (
-                /\bBR\d{8,14}/.test(
-                    contexto
-                )
-            ) {
-                continue;
-            }
-
-            /*
-             * 1804 é um número válido de
-             * apartamento para este condomínio.
-             */
-            aptoEncontrado =
-                numero;
-
-            break;
-        }
-    }
-
+    const match = texto.match(regex);
 
     if (
-        aptoEncontrado &&
-        $("eApto")
+        match &&
+        match[1]
     ) {
 
-        $("eApto").value =
-            aptoEncontrado;
-    }
+        aptoEncontrado =
+            match[1];
 
+        break;
+    }
+}
+
+
+/*
+ * IMPORTANTE:
+ * Não vamos mais pegar qualquer número de 4 ou 5
+ * dígitos da etiqueta.
+ *
+ * Isso estava fazendo o OCR colocar números errados
+ * como 777 ou outros códigos da etiqueta.
+ *
+ * Se não encontrar "APTO", "APARTAMENTO" ou
+ * "UNIDADE", deixamos o campo vazio para a
+ * portaria conferir manualmente.
+ */
+
+
+if (
+    aptoEncontrado &&
+    $("eApto")
+) {
+
+    $("eApto").value =
+        aptoEncontrado;
+}
 
     /* =====================================================
        RASTREIO
