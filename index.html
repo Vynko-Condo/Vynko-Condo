@@ -9056,18 +9056,37 @@ if (
 
 
     const transportadoraEncontrada =
-        transportadoras.find(
-            item =>
-                textoNormalizado.includes(
-                    item.texto
-                        .normalize("NFD")
-                        .replace(
-                            /[\u0300-\u036f]/g,
-                            ""
-                        )
-                )
-        );
+    transportadoras.find(
+        item => {
 
+            const nomeTransportadora =
+                item.texto
+                    .normalize("NFD")
+                    .replace(
+                        /[\u0300-\u036f]/g,
+                        ""
+                    )
+                    .toUpperCase();
+
+            const textoOCR =
+                textoNormalizado
+                    .replace(
+                        /[^A-Z0-9]/g,
+                        ""
+                    );
+
+            const transportadoraOCR =
+                nomeTransportadora
+                    .replace(
+                        /[^A-Z0-9]/g,
+                        ""
+                    );
+
+            return textoOCR.includes(
+                transportadoraOCR
+            );
+        }
+    );
 
     if (
         transportadoraEncontrada &&
