@@ -8678,12 +8678,19 @@ function analisarTextoOCR(texto) {
          * colocar junto do nome.
          */
         nome = nome
-            .replace(
-                /\b(SHOPEE|AMAZON|MERCADO LIVRE|MERCADOLIVRE|CORREIOS)\b/gi,
-                ""
-            )
-            .trim();
-
+    .replace(
+        /\b(SHOPEE|AMAZON|MERCADO LIVRE|MERCADOLIVRE|CORREIOS)\b/gi,
+        ""
+    )
+    .replace(
+        /[\[\]{}()|_=<>~`#@*]+.*$/g,
+        ""
+    )
+    .replace(
+        /\s{2,}/g,
+        " "
+    )
+    .trim();
         if (
             nome.length >= 5 &&
             /[A-Za-zÀ-Ú]/.test(nome)
