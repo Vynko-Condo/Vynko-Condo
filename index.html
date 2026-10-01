@@ -8923,12 +8923,85 @@ if (
 
     const padroesRastreio = [
 
-        /\b[A-Z]{2}\s*\d{8,14}\s*[A-Z]{0,3}\b/i,
+    /*
+     * Padrão dos Correios:
+     * BR + 9 a 14 números + letra(s)
+     *
+     * Também aceita espaços inseridos pelo OCR.
+     */
 
-        /\bBR\s*\d{8,14}\s*[A-Z]{0,3}\b/i
+    /\bBR\s*\d{8,14}\s*[A-Z]{0,3}\b/i,
 
-    ];
+    /*
+     * Outros códigos que começam com
+     * duas letras.
+     */
 
+    /\b[A-Z]{2}\s*\d{8,14}\s*[A-Z]{0,3}\b/i
+
+];
+
+
+let rastreioEncontrado = null;
+
+
+for (
+    const regex of padroesRastreio
+) {
+
+    const match =
+        texto.match(regex);
+
+    if (
+        match &&
+        match[0]
+    ) {
+
+        rastreioEncontrado =
+            match[0]
+                .replace(
+                    /\s+/g,
+                    ""
+                )
+                .toUpperCase();
+
+        break;
+    }
+}
+
+
+/*
+ * Se o OCR separar as letras/números,
+ * procura diretamente por BR + números.
+ */
+
+if (!rastreioEncontrado) {
+
+    const codigoBR =
+        textoNormalizado.match(
+            /\bBR\d{8,14}[A-Z]{0,3}\b/
+        );
+
+    if (
+        codigoBR &&
+        codigoBR[0]
+    ) {
+
+        rastreioEncontrado =
+            codigoBR[0]
+                .toUpperCase();
+    }
+}
+
+
+if (
+    rastreioEncontrado &&
+    $("eRastreio")
+) {
+
+    $("eRastreio").value =
+        rastreioEncontrado;
+}
 
     let rastreioEncontrado =
         null;
