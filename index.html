@@ -8632,45 +8632,106 @@ function analisarTextoOCR(
 
     if (!texto) return;
 
-
     const linhas =
         texto
             .split(/\r?\n/)
-            .map(
-                linha =>
-                    linha.trim()
+            .map(linha =>
+                linha
+                    .trim()
+                    .replace(/\s+/g, " ")
             )
             .filter(Boolean);
 
-
     const textoMaiusculo =
-        texto.toUpperCase();
+        texto
+            .toUpperCase()
+            .replace(/\s+/g, " ");
 
 
     /* =========================================
-       IDENTIFICAR BLOCOS
-       
-       IMPORTANTE:
-       aceita nomes como BOTANIQUE,
-       JARDIN, NATURE etc.
-       Não limita bloco a uma única letra.
+       NOME DO MORADOR
     ========================================== */
 
-    const blocoEncontrado =
-        blocosCondominio.find(
-            bloco => {
-
-                const blocoUpper =
-                    String(
-                        bloco
-                    ).toUpperCase();
-
-
-                return textoMaiusculo.includes(
-                    blocoUpper
-                );
-            }
+    const indiceDestinatario =
+        linhas.findIndex(linha =>
+            /DESTINAT[ÁA]RIO/i.test(
+                linha
+            )
         );
+
+    if (
+        indiceDestinatario >= 0 &&
+        linhas[indiceDestinatario + 1] &&
+        $("eNome")
+    ) {
+
+        const nome =
+            linhas[
+                indiceDestinatario + 1
+            ].trim();
+
+        if (
+            nome.length >= 5 &&
+            /[A-Za-zÀ-Ú]/.test(nome)
+        ) {
+            $("eNome").value =
+                nome;
+        }
+    }
+
+
+    /* =========================================
+       BLOCO / TORRE
+       BLOCO 2 = BOTANIQUE
+    ========================================== */
+
+    let blocoEncontrado = null;
+
+    const blocoNumero =
+        textoMaiusculo.match(
+            /\bBLOCO\s*[:\-]?\s*(\d+)\b/
+        );
+
+    if (blocoNumero) {
+
+        const numero =
+            blocoNumero[1];
+
+        if (
+            numero === "2" &&
+            blocosCondominio.some(
+                bloco =>
+                    String(bloco)
+                        .toUpperCase() ===
+                    "BOTANIQUE"
+            )
+        ) {
+            blocoEncontrado =
+                "BOTANIQUE";
+        }
+    }
+
+
+    /* =========================================
+       TENTAR PELO NOME DO BLOCO
+    ========================================== */
+
+    if (!blocoEncontrado) {
+
+        blocoEncontrado =
+            blocosCondominio.find(
+                bloco => {
+
+                    const nomeBloco =
+                        String(bloco)
+                            .toUpperCase();
+
+                    return textoMaiusculo.includes(
+                        nomeBloco
+                    );
+                }
+            );
+    }
 
 
     if (
@@ -8684,21 +8745,21 @@ function analisarTextoOCR(
 
 
     /* =========================================
-       TENTATIVA DE APARTAMENTO
+       APARTAMENTO
     ========================================== */
 
     const padroesApto = [
 
         /(?:APTO|APT|APARTAMENTO|UNIDADE)\s*[:\-]?\s*(\d{1,5})/i,
 
-        /(?:TORRE|BLOCO)\s*[A-Z0-9À-Ú]+\s*[-\/]?\s*(\d{1,5})/i
+        /(\d{1,5})\s*,?\s*APTO\b/i,
+
+        /\b(\d{3,5})\s+bloco\s+\d+\b/i
 
     ];
 
-
     let aptoEncontrado =
         null;
-
 
     for (
         const regex of padroesApto
@@ -8707,8 +8768,10 @@ function analisarTextoOCR(
         const match =
             texto.match(regex);
 
-
-        if (match?.[1]) {
+        if (
+            match &&
+            match[1]
+        ) {
 
             aptoEncontrado =
                 match[1];
@@ -8729,90 +8792,185 @@ function analisarTextoOCR(
 
 
     /* =========================================
-       TENTATIVA DE RASTREIO
+       RASTREIO
     ========================================== */
 
-    const rastreioRegex =
-        /\b[A-Z]{2}\d{8,14}[A-Z]{0,3}\b/i;
+    const padroesRastreio = [
 
+        /\b[A-Z]{2}\s*\d{8,14}\s*[A-Z]{0,3}\b/i,
 
-    const rastreio =
-        texto.match(
-            rastreioRegex
-        )?.[0];
+        /\bBR\s*\d{8,14}\s*[A-Z]{0,3}\b/i
+
+    ];
+
+    let rastreioEncontrado =
+        null;
+
+    for (
+        const regex of padroesRastreio
+    ) {
+
+        const match =
+            texto.match(regex);
+
+        if (
+            match &&
+            match[0]
+        ) {
+
+            rastreioEncontrado =
+                match[0]
+                    .replace(/\s+/g, "")
+                    .toUpperCase();
+
+            break;
+        }
+    }
 
 
     if (
-        rastreio &&
-        $("eRastreio") &&
-        !$("eRastreio").value
+        rastreioEncontrado &&
+        $("eRastreio")
     ) {
 
         $("eRastreio").value =
-            rastreio.toUpperCase();
+            rastreioEncontrado;
     }
 
 
     /* =========================================
-       TRANSPORTADORAS
+       TRANSPORTADORA
     ========================================== */
 
     const transportadoras = [
 
-        "MERCADO LIVRE",
-        "MERCADOLIVRE",
-        "SHOPEE",
-        "AMAZON",
-        "CORREIOS",
-        "JADLOG",
-        "TOTAL EXPRESS",
-        "TOTAL EXPRESSO",
-        "SEQUOIA",
-        "LOGGI",
-        "J&T",
-        "J&T EXPRESS",
-        "TNT",
-        "FEDEX",
-        "DHL",
-        "AZUL CARGO",
-        "LATAM CARGO"
+        {
+            texto: "MERCADO LIVRE",
+            nome: "Mercado Livre"
+        },
+
+        {
+            texto: "MERCADOLIVRE",
+            nome: "Mercado Livre"
+        },
+
+        {
+            texto: "SHOPEE",
+            nome: "Shopee"
+        },
+
+        {
+            texto: "AMAZON",
+            nome: "Amazon"
+        },
+
+        {
+            texto: "CORREIOS",
+            nome: "Correios"
+        },
+
+        {
+            texto: "JADLOG",
+            nome: "Jadlog"
+        },
+
+        {
+            texto: "TOTAL EXPRESS",
+            nome: "Total Express"
+        },
+
+        {
+            texto: "SEQUOIA",
+            nome: "Sequoia"
+        },
+
+        {
+            texto: "LOGGI",
+            nome: "Loggi"
+        },
+
+        {
+            texto: "J&T EXPRESS",
+            nome: "J&T Express"
+        },
+
+        {
+            texto: "J&T",
+            nome: "J&T"
+        },
+
+        {
+            texto: "TNT",
+            nome: "TNT"
+        },
+
+        {
+            texto: "FEDEX",
+            nome: "FedEx"
+        },
+
+        {
+            texto: "DHL",
+            nome: "DHL"
+        },
+
+        {
+            texto: "AZUL CARGO",
+            nome: "Azul Cargo"
+        },
+
+        {
+            texto: "LATAM CARGO",
+            nome: "LATAM Cargo"
+        }
 
     ];
 
 
-    const transportadora =
+    const transportadoraEncontrada =
         transportadoras.find(
             item =>
                 textoMaiusculo.includes(
-                    item
+                    item.texto
                 )
         );
 
 
     if (
-        transportadora &&
+        transportadoraEncontrada &&
         $("eTransportadora")
     ) {
 
-        let nomeTransportadora =
-            transportadora;
-
-
-        if (
-            transportadora ===
-            "MERCADOLIVRE"
-        ) {
-
-            nomeTransportadora =
-                "Mercado Livre";
-        }
-
-
         $("eTransportadora").value =
-            nomeTransportadora;
+            transportadoraEncontrada.nome;
     }
-}
 
+
+    /* =========================================
+       LOG PARA TESTE
+    ========================================== */
+
+    console.log(
+        "OCR recebido:",
+        texto
+    );
+
+    console.log(
+        "OCR interpretado:",
+        {
+            nome:
+                $("eNome")?.value || "",
+            bloco:
+                $("eBloco")?.value || "",
+            apto:
+                $("eApto")?.value || "",
+            transportadora:
+                $("eTransportadora")?.value || "",
+            rastreio:
+                $("eRastreio")?.value || ""
+        }
+    );
+}
 
 /* =========================================================
    DETALHES DA ENCOMENDA
