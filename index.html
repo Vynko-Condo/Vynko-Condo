@@ -8565,11 +8565,12 @@ async function abrirCameraEncomenda() {
             return;
         }
 
-        const stream =
-            await navigator.mediaDevices.getUserMedia({
-                video: true
-            });
-
+       const stream =
+    await navigator.mediaDevices.getUserMedia({
+        video: {
+            facingMode: { ideal: "environment" }
+        }
+    });
         window.cameraEncomendaStream = stream;
 
         const modal = document.createElement("div");
