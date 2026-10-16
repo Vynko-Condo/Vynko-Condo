@@ -10239,12 +10239,14 @@ async function notificarMoradorWhatsApp(
     }
 
 
-    const mensagem =
-        `Olá, ${encomenda.nome || ""}! 📦\n\n` +
-        `Sua encomenda chegou ao ` +
-        `${condominioAtual?.nome || "condomínio"}.\n\n` +
-        `🔐 Senha de retirada: *${encomenda.senha || ""}*\n\n` +
-        `Apresente essa senha na portaria para retirar sua encomenda.`;
+  const mensagem =
+    `Olá, ${encomenda.nome || ""}! 📦\n\n` +
+    `Sua encomenda chegou ao ` +
+    `${condominioAtual?.nome || "condomínio"}.\n\n` +
+    `🔐 Senha de retirada: ${encomenda.senha || ""}\n\n` +
+    `📷 Veja os detalhes e a foto da encomenda:\n` +
+    `${linkEncomenda}\n\n` +
+    `Apresente essa senha na portaria para retirar sua encomenda.`;
 
 
     const url =
