@@ -5030,6 +5030,7 @@ tbody tr:last-child td{
                         class="form-control"
                         maxlength="4"
                         inputmode="numeric"
+                        onfocus="if(!this.value)this.value=String(Math.floor(1000+Math.random()*9000))"
                         placeholder="4 dígitos"
                         oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"
                     >
