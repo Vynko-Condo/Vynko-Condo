@@ -8245,7 +8245,9 @@ async function salvarEncomenda() {
 
         senha =
             gerarSenhaRetirada();
-    }
+    } if ($("eSenha")) {
+    $("eSenha").value = senha;
+}
 
 
     if (!/^\d{4}$/.test(senha)) {
